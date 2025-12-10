@@ -6,7 +6,7 @@ import CommonWrapper from "@/components/layout/CommonWrapper";
 import { blogList } from "@/components/lib/dummyProd";
 
 
-  // comment form akash-dev
+  // new commit
   function OurBlogs() {
     return (
      <CommonWrapper>
