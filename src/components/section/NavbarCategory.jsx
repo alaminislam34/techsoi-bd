@@ -50,7 +50,7 @@ export default function NavbarCategory() {
         <>
             <div className="bg-[#eaf7fc] relative">
                 <CommonWrapper>
-                    <div className="flex items-center gap-4 md:gap-8 py-3 md:py-5 overflow-x-auto">
+                    <div className="flex items-center gap-4 md:gap-8 py-3 md:py-5 overflow-x-auto  [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         {categories.map((item, index) => (
                             <div className="flex items-center gap-4 md:gap-8" key={index}>
                                 <Link
