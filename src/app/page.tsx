@@ -40,8 +40,6 @@ export default function Home() {
         <BlogTitle title={'Our Latest Blog'} description={'Get Your Desired Product from Featured Category!'} btnText={'Read All'} btnLink={'#'} />
         <BlogCard limit={3} />
       </CommonWrapper>
-
-      <Footer />
     </>
   );
 }
