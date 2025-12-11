@@ -48,6 +48,7 @@ export default function BlogPage() {
         <p className="text-gray-700 leading-relaxed text-lg">
           {blog.shortDescription}
         </p>
+        {/* new comment for the test */}
       </section>
        <BlogTitle title={'Our Latest Blog'} description={'Get Your Desired Product from Featured Category!'} btnText={'Read All'} btnLink={'#'} />
         <BlogCard limit={3} />
