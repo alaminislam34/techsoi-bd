@@ -41,7 +41,6 @@ export default function RootLayout({
 
         {/* Global Footer */}
         <Footer />
-        
       </body>
     </html>
   );
