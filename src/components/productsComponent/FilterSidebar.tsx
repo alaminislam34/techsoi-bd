@@ -42,7 +42,7 @@ export default function FilterSidebar({
 
   return (
     <>
-      {/* Overlay for small screens */}
+      {/* Overlay / Dim background */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 backdrop-blur-[2px] z-40 md:hidden"
@@ -52,12 +52,16 @@ export default function FilterSidebar({
 
       <aside
         className={`
-          fixed md:sticky top-0 left-0 h-full md:h-auto w-64 bg-white rounded-xl p-4 space-y-6
+          fixed md:sticky top-0 left-0 
+          w-64 bg-white rounded-xl p-4 space-y-6
           transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0
           transition-transform duration-300 ease-in-out z-50
+
+          /* THIS IS THE FIX */
+          h-full overflow-y-auto md:h-auto md:overflow-visible
         `}
       >
-        {/* Close button on small screens */}
+        {/* Close button (mobile only) */}
         <div className="md:hidden flex justify-end mb-2">
           <button
             onClick={() => setSidebarOpen(false)}
@@ -67,8 +71,8 @@ export default function FilterSidebar({
           </button>
         </div>
 
-        {/* Price */}
-        <div className="bg-white border border-[#2CACE2] rounded-xl p-4 hover:ring-2 hover:ring-[#2CACE2] focus-within:ring-2 focus-within:ring-[#2CACE2] transition">
+        {/* Price Section */}
+        <div className="bg-white  border border-[#bee5f6] p-4 rounded-2xl hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_3px_15px_#72C7EC] hover:border-[#72C7EC] transition">
           <button
             onClick={() => setOpenPrice(!openPrice)}
             className="w-full flex items-center justify-between text-left"
@@ -88,8 +92,9 @@ export default function FilterSidebar({
                 step={100}
                 value={price}
                 onChange={(e) => setPrice(Number(e.target.value))}
-                className="w-full accent-[#2CACE2]"
+                className="w-full priceRange"
               />
+
               <div className="flex items-center justify-between text-sm text-gray-500 mt-2">
                 <span>৳100</span>
                 <span>৳{price}</span>
@@ -100,7 +105,7 @@ export default function FilterSidebar({
         </div>
 
         {/* Categories */}
-        <div className="bg-white border border-[#2CACE2] rounded-xl p-4 hover:ring-2 hover:ring-[#2CACE2] focus-within:ring-2 focus-within:ring-[#2CACE2] transition">
+        <div className="bg-white border border-[#bee5f6] p-4 rounded-2xl hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_3px_15px_#72C7EC] hover:border-[#72C7EC] transition">
           <button
             onClick={() => setOpenCategory(!openCategory)}
             className="w-full flex items-center justify-between text-left"
@@ -114,10 +119,7 @@ export default function FilterSidebar({
           {openCategory && (
             <div className="mt-3 space-y-2">
               {CATEGORIES.map((cat) => (
-                <label
-                  key={cat}
-                  className="flex items-center gap-3 cursor-pointer select-none"
-                >
+                <label key={cat} className="flex items-center gap-3 cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={selectedCategories.includes(cat)}
@@ -132,7 +134,7 @@ export default function FilterSidebar({
         </div>
 
         {/* Brands */}
-        <div className="bg-white border border-[#2CACE2] rounded-xl p-4 hover:ring-2 hover:ring-[#2CACE2] focus-within:ring-2 focus-within:ring-[#2CACE2] transition">
+        <div className="bg-white border border-[#bee5f6] p-4 rounded-2xl hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_3px_15px_#72C7EC] hover:border-[#72C7EC] transition">
           <button
             onClick={() => setOpenBrands(!openBrands)}
             className="w-full flex items-center justify-between text-left"
@@ -146,10 +148,7 @@ export default function FilterSidebar({
           {openBrands && (
             <div className="mt-3 space-y-2">
               {BRANDS.map((brand) => (
-                <label
-                  key={brand}
-                  className="flex items-center gap-3 cursor-pointer select-none"
-                >
+                <label key={brand} className="flex items-center gap-3 cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={selectedBrands.includes(brand)}
