@@ -45,7 +45,7 @@ export default function ProductPage() {
         />
 
         {/* Product Grid */}
-        <div className="flex-1 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 md:gap-x-6 gap-y-4 md:gap-y-10 mt-5">
+        <div className="flex-1 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-x-4 md:gap-x-6 gap-y-4 md:gap-y-10 mt-5">
 
           {filteredProducts.map((p) => (
             <div className="" key={p.id}>
