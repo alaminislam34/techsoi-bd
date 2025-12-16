@@ -77,9 +77,9 @@ export default function ProductDetails({
               </p>
               <p className="mt-2">
                 <span className="font-semibold">Availability:</span>{" "}
-                <span className="bg-yellow-400 text-white px-3 py-1 rounded-full font-semibold">
-                  {product.stockStatus}
-                </span>
+              <span className="bg-yellow-400 text-black px-3 py-1 rounded-lg text-sm font-medium">
+                {product.stockStatus}
+              </span>
               </p>
 
               {/* Prices dynamically based on quantity */}
