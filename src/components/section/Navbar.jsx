@@ -308,6 +308,10 @@ export default function Navbar() {
 
                         {/* ---------- SEARCH (MOBILE) ---------- */}
                         <button className="flex items-center relative gap-2.5 p-2 rounded-xl bg-white border border-[#bee5f6] cursor-pointer md:hidden ml-auto mr-3">
+                             <input
+                                className="text-lg w-full focus:outline-none"
+                                placeholder="Search products.."
+                            />
                             <svg
                                 width={24}
                                 height={24}
@@ -359,7 +363,7 @@ export default function Navbar() {
                                 </div>
 
                                 <div className="md:block hidden">
-                                    <p className="text-base font-medium text-[#2cace2]">Favourite</p>
+                                    <p className="text-base font-medium text-[#2cace2]">Favourites</p>
                                     <p className="text-sm text-[#505050]">৳650</p>
                                 </div>
                             </Link>
@@ -424,38 +428,78 @@ export default function Navbar() {
                             </button>
 
                             {openDropdown && (
-                                <div className="absolute right-0 mt-3 w-40 bg-white border border-[#bee5f6] rounded-xl shadow-lg p-3 flex flex-col gap-3">
+  <div className="absolute right-0 mt-3 w-40 bg-white border border-[#bee5f6] rounded-xl shadow-lg p-3 flex flex-col gap-3">
 
-                                    {/* Favourite */}
-                                    <Link
-                                        href={'/favourite'}
-                                        className="flex items-center gap-2"
-                                        onClick={() => setOpenDropdown(false)}
-                                    >
-                                        <div className="w-7 h-7 relative rounded-full bg-[#eaf7fc] flex items-center justify-center">
-                                            <svg width={20} height={20} viewBox="0 0 24 24">
-                                                <path d="M19.4626..." stroke="#303030" strokeWidth="1.5" />
-                                            </svg>
-                                        </div>
-                                        <span className="text-sm text-[#303030]">Favourite</span>
-                                    </Link>
+    {/* Favourite */}
+    <Link
+      href="/favourite"
+      className="flex items-center gap-2"
+      onClick={() => setOpenDropdown(false)}
+    >
+      <div className="w-7 h-7 rounded-full bg-[#eaf7fc] flex items-center justify-center">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-6 h-6"
+        >
+          <path
+            d="M19.4626 3.99415C16.7809 2.34923 14.4404 3.01211 13.0344 4.06801C12.4578 4.50096 12.1696 4.71743 12 4.71743C11.8304 4.71743 11.5422 4.50096 10.9656 4.06801C9.55962 3.01211 7.21909 2.34923 4.53744 3.99415C1.01807 6.15294 0.221721 13.2749 8.33953 19.2834C9.88572 20.4278 10.6588 21 12 21C13.3412 21 14.1143 20.4278 15.6605 19.2834C23.7783 13.2749 22.9819 6.15294 19.4626 3.99415Z"
+            stroke="#303030"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      </div>
+      <span className="text-sm text-[#303030]">Favourite</span>
+    </Link>
 
-                                    {/* Cart */}
-                                    <Link
-                                        href={'/mycart'}
-                                        className="flex items-center gap-2"
-                                        onClick={() => setOpenDropdown(false)}
-                                    >
-                                        <div className="w-7 h-7 relative rounded-full bg-[#eaf7fc] flex items-center justify-center">
-                                            <svg width={20} height={20} viewBox="0 0 24 24">
-                                                <path d="M8 16H15.2632..." stroke="#303030" strokeWidth="1.5" />
-                                            </svg>
-                                        </div>
-                                        <span className="text-sm text-[#303030]">My Cart</span>
-                                    </Link>
+    {/* Cart */}
+    <Link
+      href="/mycart"
+      className="flex items-center gap-2"
+      onClick={() => setOpenDropdown(false)}
+    >
+      <div className="w-7 h-7 rounded-full bg-[#eaf7fc] flex items-center justify-center">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-6 h-6"
+        >
+          <path
+            d="M8 16H15.2632C19.7508 16 20.4333 13.1808 21.261 9.06908C21.4998 7.88311 21.6192 7.29013 21.3321 6.89507C21.045 6.5 20.4947 6.5 19.3941 6.5H6"
+            stroke="#303030"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+          <path
+            d="M8 16L5.37873 3.51493C5.15615 2.62459 4.35618 2 3.43845 2H2.5"
+            stroke="#303030"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+          <path
+            d="M8.88 16H8.46857C7.10522 16 6 17.1513 6 18.5714C6 18.8081 6.1842 19 6.41143 19H17.5"
+            stroke="#303030"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <circle cx="10.5" cy="20.5" r="1.5" stroke="#303030" strokeWidth="1.5" />
+          <circle cx="17.5" cy="20.5" r="1.5" stroke="#303030" strokeWidth="1.5" />
+        </svg>
+      </div>
+      <span className="text-sm text-[#303030]">My Cart</span>
+    </Link>
 
-                                </div>
-                            )}
+  </div>
+)}
+
                         </div>
 
                     </div>
