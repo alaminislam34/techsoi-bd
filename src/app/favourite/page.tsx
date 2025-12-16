@@ -66,8 +66,10 @@ it.id === id && it.qty > 1 ? { ...it, qty: it.qty - 1 } : it
 };
 
 return (
-<>
-{/* Favourite Section */} <CommonWrapper> <section className="w-full py-10 px-4 md:px-0"> <div className="max-w-6xl mx-auto bg-white border border-gray-200 rounded-2xl p-6 md:p-8"> <h2 className="text-2xl font-semibold mb-6">My Favourite</h2>
+<> <CommonWrapper> 
+  <section className="w-full py-10 ">
+     <div className=" bg-white border border-gray-200 rounded-2xl p-6 ">
+       <h2 className="text-2xl font-semibold mb-6">My Favourite</h2>
 
         {/* Table header - visible on md+ */}
         <div className="hidden md:grid grid-cols-12 text-gray-600 font-medium text-sm border-b pb-3 mb-4">

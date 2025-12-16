@@ -8,6 +8,7 @@ import "swiper/css/navigation";
 import ProductCard from "./ProductCard";
 import { productList, ProductType } from "@/components/lib/dummyProd";
 import { StaticImageData } from "next/image";
+import CommonWrapper from "../layout/CommonWrapper";
 
 interface RelevantProductsProps {
   currentProductId: string;
@@ -34,7 +35,8 @@ const RelevantProducts: React.FC<RelevantProductsProps> = ({
   if (relevantProducts.length === 0) return null;
 
   return (
-    <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <CommonWrapper>
+      <section className="py-12">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-3xl font-bold text-cyan-600">Relevant Products</h2>
@@ -91,6 +93,7 @@ const RelevantProducts: React.FC<RelevantProductsProps> = ({
         ))}
       </Swiper>
     </section>
+    </CommonWrapper>
   );
 };
 

@@ -211,6 +211,7 @@
 // }
 "use client";
 import CommonWrapper from '@/components/layout/CommonWrapper';
+import { Handbag } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -412,6 +413,35 @@ export default function Navbar() {
                                     <p className="text-sm text-[#505050]">৳200</p>
                                 </div>
                             </Link>
+                            {/* my order */}
+                            <Link href={'/myorders'} className="flex items-center relative gap-2">
+                                <div className="w-10 h-10 relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
+                                    <div className='flex items-center justify-center'>
+                                        <Handbag />
+                                    </div>
+                                    <div className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-[#2cace2]">
+                                        <p className="text-[10px] text-white">3</p>
+                                    </div>
+                                </div>
+
+                                <div className="md:block hidden">
+                                    <p className="text-base font-medium text-[#2cace2]">My Orders</p>
+                                    <p className="text-sm text-[#505050]">৳200</p>
+                                </div>
+                            </Link>
+                            {/* for desktopa avatar */}
+                             <button
+                                onClick={() => setOpenDropdown(!openDropdown)}
+                                className="w-10 h-10 rounded-full bg-[#d8f1fb] flex items-center justify-center overflow-hidden"
+                            >
+                                {/* SIMPLE USER AVATAR ICON */}
+                                <svg width={26} height={26} viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="8" r="4" stroke="#303030" strokeWidth="1.5" />
+                                    <path d="M4 20C4 15.5817 7.58172 12 12 12C16.4183 12 20 15.5817 20 20" stroke="#303030" strokeWidth="1.5" strokeLinecap="round"/>
+                                </svg>
+                            </button>
+                            {/* ------------ */}
+                               
                         </div>
 
                         {/* ---------- USER AVATAR (MOBILE + MEDIUM) ---------- */}
