@@ -10,6 +10,7 @@ import CommonWrapper from "@/components/layout/CommonWrapper";
 import WebFutures from "@/components/section/WebFutures";
 import BlogTitle from "@/components/layout/BlogTitle";
 import BlogCard from "@/components/parts/BlogCard";
+import BuyNowModal from "@/components/ui/BuyNowModal"; // <-- import modal
 
 export default function ProductDetails({
   params,
@@ -23,6 +24,7 @@ export default function ProductDetails({
 
   const [activeImg, setActiveImg] = useState(product.gallery[0]);
   const [qty, setQty] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false); // <-- modal state
 
   const totalSalePrice = product.salePrice * qty;
   const totalRegularPrice = product.regularPrice * qty;
@@ -77,9 +79,9 @@ export default function ProductDetails({
               </p>
               <p className="mt-2">
                 <span className="font-semibold">Availability:</span>{" "}
-              <span className="bg-yellow-400 text-black px-3 py-1 rounded-lg text-sm font-medium">
-                {product.stockStatus}
-              </span>
+                <span className="bg-yellow-400 text-black px-3 py-1 rounded-lg text-sm font-medium">
+                  {product.stockStatus}
+                </span>
               </p>
 
               {/* Prices dynamically based on quantity */}
@@ -112,7 +114,10 @@ export default function ProductDetails({
 
               {/* Action Buttons */}
               <div className="mt-8 flex gap-4 flex-wrap md:flex-nowrap">
-                <button className="px-8 py-3 rounded-xl bg-[#2cace2] text-white font-semibold text-lg">
+                <button
+                  className="px-8 cursor-pointer py-3 rounded-xl bg-[#2cace2] text-white font-semibold text-lg"
+                  onClick={() => setIsModalOpen(true)} // <-- open modal
+                >
                   Buy Now
                 </button>
                 <button className="px-8 py-3 rounded-xl border border-[#2cace2] text-[#2cace2] font-semibold text-lg">
@@ -129,7 +134,9 @@ export default function ProductDetails({
           />
         </div>
       </CommonWrapper>
+
       <WebFutures />
+
       <CommonWrapper>
         <BlogTitle
           title={"Our Latest Blog"}
@@ -139,6 +146,12 @@ export default function ProductDetails({
         />
         <BlogCard limit={3} />
       </CommonWrapper>
+
+      {/* BUY NOW MODAL */}
+      <BuyNowModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </>
   );
 }
