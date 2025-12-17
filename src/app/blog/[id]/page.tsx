@@ -51,7 +51,7 @@ export default function BlogPage() {
         {/* new comment for the test */}
       </section>
        <BlogTitle title={'Our Latest Blog'} description={'Get Your Desired Product from Featured Category!'} btnText={'Read All'} btnLink={'#'} />
-        <BlogCard limit={3} />
+      <BlogCard limit={3} />
     </CommonWrapper>
   );
 }

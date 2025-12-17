@@ -8,7 +8,7 @@ export default function ProductTabs() {
   return (
     <div className="mt-16 border rounded-xl">
       {/* Tab Buttons */}
-      <div className="flex border-b">
+      <div className="flex border-b p-4">
         {["description", "specs", "reviews"].map((tab) => (
           <button
             key={tab}

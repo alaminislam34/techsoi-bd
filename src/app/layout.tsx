@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 
-import NavbarTop from "@/components/section/NavbarTop";
+// import NavbarTop from "@/components/section/NavbarTop";
 import Navbar from "@/components/section/Navbar";
 import Manubar from "@/components/section/Manubar";
 import NavbarCategory from "@/components/section/NavbarCategory";
@@ -31,7 +31,7 @@ export default function RootLayout({
       <body className={dmSans.className}>
         
         {/* Global Navbar */}
-        <NavbarTop />
+        {/* <NavbarTop /> */}
         <Navbar />
         <Manubar />
         <NavbarCategory />
