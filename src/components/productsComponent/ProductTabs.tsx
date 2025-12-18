@@ -8,25 +8,26 @@ export default function ProductTabs() {
   return (
     <div className="mt-16 border rounded-xl">
       {/* Tab Buttons */}
-      <div className="flex border-b p-4">
-        {["description", "specs", "reviews"].map((tab) => (
-          <button
-            key={tab}
-            className={`px-6 py-3 rounded-xl font-semibold transition-colors duration-200 ${
-              activeTab === tab
-                ? "text-white bg-[#2cace2]"
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab === "description"
-              ? "Description"
-              : tab === "specs"
-              ? "Technical Specs"
-              : "Reviews"}
-          </button>
-        ))}
-      </div>
+      <div className="flex border-b lg:p-4 md:p-2 sm:p-2 p-1">
+  {["description", "specs", "reviews"].map((tab) => (
+    <button
+      key={tab}
+      className={`px-3 py-2 text-xs sm:px-6 sm:py-3 sm:text-base rounded-xl font-semibold transition-colors duration-200 ${
+        activeTab === tab
+          ? "text-white bg-[#2cace2]"
+          : "text-gray-600 hover:bg-gray-100"
+      }`}
+      onClick={() => setActiveTab(tab)}
+    >
+      {tab === "description"
+        ? "Description"
+        : tab === "specs"
+        ? "Technical Specs"
+        : "Reviews"}
+    </button>
+  ))}
+</div>
+
 
       {/* Tab Content */}
       <div className="p-6 text-gray-700 leading-relaxed">

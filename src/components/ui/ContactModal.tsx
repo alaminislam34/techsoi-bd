@@ -1,6 +1,7 @@
 'use client';
 
 import { X, Upload } from "lucide-react";
+import { useState } from "react";
 
 type ContactModalProps = {
     isOpen: boolean;
@@ -8,6 +9,8 @@ type ContactModalProps = {
 };
 
 export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
     if (!isOpen) return null;
 
     return (
@@ -21,7 +24,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
             {/* Modal */}
             <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
                 <div className="relative w-full max-w-lg bg-white rounded-2xl p-6 border border-[#9ED9F2]">
-                    
+
                     {/* Close Button */}
                     <button
                         onClick={onClose}
@@ -87,13 +90,19 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                                 className="mt-1 flex items-center gap-3 px-4 py-3 border border-[#9ED9F2] rounded-lg cursor-pointer text-[#2cace2]"
                             >
                                 <Upload size={18} />
-                                <span className="text-sm">Choose a file</span>
+                                <span className="text-sm">
+                                    {selectedFile ? selectedFile.name : "Choose a file"}
+                                </span>
                             </label>
 
                             <input
                                 id="file-upload"
                                 type="file"
                                 className="hidden"
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) setSelectedFile(file);
+                                }}
                             />
                         </div>
 
