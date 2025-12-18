@@ -28,7 +28,7 @@ export default function ProductPage() {
       <div className="w-full py-10 ">
 
         {/* Small Screen Sidebar Button */}
-        <div className="md:hidden fixed top-4 left-4 z-50">
+        <div className="md:hidden fixed top-12 left-3 z-50">
           <button
             onClick={() => setSidebarOpen(true)}
             className="p-2 cursor-pointer rounded-lg bg-[#2CACE2] text-white shadow-md"

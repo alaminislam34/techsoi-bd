@@ -102,7 +102,16 @@ export default function NavbarCategory() {
             {/* ===== BOTTOM SUB MENU (VERTICAL) ===== */}
             {activeFilter !== null && (
                 <div className="absolute top-full left-0 right-0 z-40">
-                    <div className="bg-[#f1f1f1] border-t border-[#BEE5F6] rounded-b-xl">
+                 <CommonWrapper>
+                     <div
+                        className="
+                            backdrop-blur-sm
+                            bg-white/40
+                            border
+                            border-[#72C7EC]
+                            rounded-b-xl
+                        "
+                    >
                         <CommonWrapper>
                             <div className="py-6 flex flex-col gap-4">
                                 {categories[activeFilter].sub_category.map((sub, idx) => (
@@ -117,6 +126,7 @@ export default function NavbarCategory() {
                             </div>
                         </CommonWrapper>
                     </div>
+                 </CommonWrapper>
                 </div>
             )}
         </div>
