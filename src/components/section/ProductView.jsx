@@ -148,12 +148,12 @@ export default function ProductView({limit}) {
                 {productList.slice(0,limit).map((item, index) => (
                     <div className="" key={index}>
                         <div 
-                            className="flex flex-col gap-2 md:gap-5 p-[6px] md:p-4 rounded-[12px] md:rounded-[20px] bg-white border border-[#bee5f6] hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_3px_15px_#72C7EC] hover:border-[#72C7EC]"
+                            className="flex flex-col gap-2 md:gap-5 p-1.5 md:p-4 rounded-xl md:rounded-[20px] bg-white border border-[#bee5f6] hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_3px_15px_#72C7EC] hover:border-[#72C7EC]"
                         >
                             <Image
                                 src={item.image}
                                 alt="product"
-                                className="w-full rounded-[8px] md:rounded-[18px] object-cover"
+                                className="w-full rounded-lg md:rounded-[18px] object-cover"
                             />
                             <div className="flex flex-col gap-2 md:gap-4">
                                 <div className="flex flex-col gap-2 md:gap-6 overflow-hidden">
@@ -200,7 +200,7 @@ export default function ProductView({limit}) {
                                 <div className="flex justify-between items-center">
                                     <Link
                                         href={'#'} 
-                                        className="flex items-center gap-1 xl:gap-2.5 px-[6px] xl:px-3 py-[6px] xl:py-2 rounded-[8px] xl:rounded-xl bg-[#eaf7fc] hover:bg-[#2CACE2] group"
+                                        className="flex items-center gap-1 xl:gap-2.5 px-1.5 xl:px-3 py-1.5 xl:py-2 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-[#2CACE2] group"
                                     >
                                         <svg
                                             width={24}
@@ -208,7 +208,7 @@ export default function ProductView({limit}) {
                                             viewBox="0 0 24 24"
                                             fill="none"
                                             xmlns="http://www.w3.org/2000/svg"
-                                            className="w-[18px] xl:w-6 h-[18px] xl:h-6 relative text-[#303030] group-hover:text-[#fff]"
+                                            className="w-[18px] xl:w-6 h-[18px] xl:h-6 relative text-[#303030] group-hover:text-white"
                                             preserveAspectRatio="none"
                                         >
                                             <path
@@ -222,12 +222,12 @@ export default function ProductView({limit}) {
                                                 strokeWidth="1.5"
                                             />
                                         </svg>
-                                        <p className="flex gap-1 text-[12px] xl:text-lg text-[#303030] group-hover:text-[#fff]">Buy <span className="hidden xl:block">Now</span></p>
+                                        <p className="flex gap-1 text-[12px] xl:text-lg text-[#303030] group-hover:text-white">Buy <span className="hidden xl:block">Now</span></p>
                                     </Link>
                                     <div className="flex items-center gap-1 xl:gap-3">
                                         <Link
                                             href={'#'} 
-                                            className="flex justify-center items-center w-8 xl:w-12 h-8 xl:h-12 gap-2 p-1 xl:p-2 rounded-[8px] xl:rounded-xl bg-[#eaf7fc] hover:bg-[#2CACE2] group"
+                                            className="flex justify-center items-center w-8 xl:w-12 h-8 xl:h-12 gap-2 p-1 xl:p-2 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-[#2CACE2] group"
                                         >
                                             <svg
                                                 width={24}
@@ -235,7 +235,7 @@ export default function ProductView({limit}) {
                                                 viewBox="0 0 24 24"
                                                 fill="none"
                                                 xmlns="http://www.w3.org/2000/svg"
-                                                className="w-[18px] xl:w-6 h-[18px] xl:h-6 relative text-[#303030] group-hover:text-[#fff]"
+                                                className="w-[18px] xl:w-6 h-[18px] xl:h-6 relative text-[#303030] group-hover:text-white"
                                                 preserveAspectRatio="none"
                                             >
                                                 <path
@@ -263,7 +263,7 @@ export default function ProductView({limit}) {
                                         </Link>
                                         <Link
                                             href={'#'} 
-                                            className="flex justify-center items-center w-8 xl:w-12 h-8 xl:h-12 gap-2 p-1 xl:p-2 rounded-[8px] xl:rounded-xl bg-[#eaf7fc] hover:bg-[#2CACE2] group"
+                                            className="flex justify-center items-center w-8 xl:w-12 h-8 xl:h-12 gap-2 p-1 xl:p-2 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-[#2CACE2] group"
                                         >
                                             <svg
                                                 width={24}
@@ -271,7 +271,7 @@ export default function ProductView({limit}) {
                                                 viewBox="0 0 24 24"
                                                 fill="none"
                                                 xmlns="http://www.w3.org/2000/svg"
-                                                className="w-[18px] xl:w-6 h-[18px] xl:h-6 relative text-[#303030] group-hover:text-[#fff]"
+                                                className="w-[18px] xl:w-6 h-[18px] xl:h-6 relative text-[#303030] group-hover:text-white"
                                                 preserveAspectRatio="none"
                                             >
                                                 <path

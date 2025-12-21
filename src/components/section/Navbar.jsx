@@ -24,7 +24,7 @@
                                             xmlns="http://www.w3.org/2000/svg"
                                             className="w-[90px] md:w-[220px]"
                                             preserveAspectRatio="xMidYMid meet"
-                                        >
+                                            >
                                             <path
                                                 d="M105.522 0.370789H114.498V15.2943C116.567 12.1072 119.224 9.20602 123.774 9.20602C130.569 9.20602 134.529 14.5835 134.529 23.2893V47.8441H125.547V26.6855C125.547 21.5913 123.537 18.9714 120.113 18.9714C116.688 18.9714 114.498 21.5917 114.498 26.6855V47.8441H105.522V0.370789Z"
                                                 fill="#231F20"
@@ -68,7 +68,7 @@
                                     </Link>
 
                                     {/* ---------- SEARCH (DESKTOP) ---------- */}
-                                    <div className="hidden px-2 md:flex justify-between items-center md:w-xs lg:w-xs  relative mx-4 sm:mx-0 lg:mx-0 md:mx-0  py-3 rounded-xl bg-white border border-[#bee5f6]">
+                                    <div className="hidden px-2 md:flex justify-between items-center w-xs sm:w-xs md:w-xs lg:w-xl  relative mx-4 sm:mx-0 lg:mx-0 md:mx-4  py-3 rounded-xl bg-white border border-[#bee5f6]">
                                         <input
                                             className="text-lg w-full focus:outline-none"
                                             placeholder="Search products.."
@@ -98,34 +98,51 @@
                                         </button>
                                     </div>
 
-                                    {/* ---------- SEARCH (MOBILE) ---------- */}
-                                    <button className="flex items-center relative gap-2.5 p-2 rounded-xl bg-white border border-[#bee5f6] cursor-pointer md:hidden ml-auto mr-3">
-                                        <input
-                                            className="text-lg w-full focus:outline-none"
-                                            placeholder="Search products.."
-                                        />
-                                        <svg
-                                            width={24}
-                                            height={24}
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="w-6 h-6 relative"
-                                        >
+                                   {/* ---------- SEARCH (MOBILE) ---------- */}
+                                            <div className="md:hidden w-full px-1.5">
+                                            <div
+                                                className="
+                                                flex items-center gap-2
+                                                w-full
+                                                px-3 py-2
+                                                rounded-xl
+                                                bg-white
+                                                border border-[#bee5f6]
+                                                "
+                                            >
+                                                <input
+                                                className="
+                                                    w-full
+                                                    text-sm
+                                                    focus:outline-none
+                                                "
+                                                placeholder="Search products.."
+                                                />
+
+                                                <svg
+                                                width={24}
+                                                height={24}
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="w-6 h-6 relative"
+                                                >
                                             <path
-                                                d="M17.5 17.5L22 22"
-                                                stroke="#303030"
-                                                strokeWidth="1.5"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
+                                            d="M17.5 17.5L22 22"
+                                            stroke="#303030"
+                                            strokeWidth="1.5"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
                                             />
                                             <path
-                                                d="M20 11C20 6.02944 15.9706 2 11 2C6.02944 2 2 6.02944 2 11C2 15.9706 6.02944 20 11 20C15.9706 20 20 15.9706 20 11Z"
-                                                stroke="#303030"
-                                                strokeWidth="1.5"
+                                            d="M20 11C20 6.02944 15.9706 2 11 2C6.02944 2 2 6.02944 2 11C2 15.9706 6.02944 20 11 20C15.9706 20 20 15.9706 20 11Z"
+                                            stroke="#303030"
+                                            strokeWidth="1.5"
                                             />
                                         </svg>
-                                    </button>
+                                            </div>
+                                            </div>
+
 
                                     {/* ---------- DESKTOP FAV + CART ---------- */}
                                     <div className="hidden md:flex items-center gap-6">
@@ -291,36 +308,36 @@
                 >
                 <div className="w-10 h-10 relative rounded-full bg-[#eaf7fc] flex items-center justify-center">
                     <svg
-                                                    width={24}
-                                                    height={24}
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    xmlns="http:www.w3.org/2000/svg"
-                                                    className="w-6 h-6 absolute left-2 top-2"
-                                                    preserveAspectRatio="none"
-                                                >
-                                                    <path
-                                                        d="M8 16H15.2632C19.7508 16 20.4333 13.1808 21.261 9.06908C21.4998 7.88311 21.6192 7.29013 21.3321 6.89507C21.045 6.5 20.4947 6.5 19.3941 6.5H6"
-                                                        stroke="#303030"
-                                                        strokeWidth="1.5"
-                                                        strokeLinecap="round"
-                                                    />
-                                                    <path
-                                                        d="M8 16L5.37873 3.51493C5.15615 2.62459 4.35618 2 3.43845 2H2.5"
-                                                        stroke="#303030"
-                                                        strokeWidth="1.5"
-                                                        strokeLinecap="round"
-                                                    />
-                                                    <path
-                                                        d="M8.88 16H8.46857C7.10522 16 6 17.1513 6 18.5714C6 18.8081 6.1842 19 6.41143 19H17.5"
-                                                        stroke="#303030"
-                                                        strokeWidth="1.5"
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                    />
-                                                    <circle cx="10.5" cy="20.5" r="1.5" stroke="#303030" strokeWidth="1.5" />
-                                                    <circle cx="17.5" cy="20.5" r="1.5" stroke="#303030" strokeWidth="1.5" />
-                                                </svg>
+                     width={24}
+                     height={24}
+                     viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http:www.w3.org/2000/svg"
+                    className="w-6 h-6 absolute left-2 top-2"
+                    preserveAspectRatio="none"
+                    >
+                    <path
+                    d="M8 16H15.2632C19.7508 16 20.4333 13.1808 21.261 9.06908C21.4998 7.88311 21.6192 7.29013 21.3321 6.89507C21.045 6.5 20.4947 6.5 19.3941 6.5H6"
+                    stroke="#303030"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    />
+                    <path
+                    d="M8 16L5.37873 3.51493C5.15615 2.62459 4.35618 2 3.43845 2H2.5"
+                    stroke="#303030"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                     />
+                    <path
+                    d="M8.88 16H8.46857C7.10522 16 6 17.1513 6 18.5714C6 18.8081 6.1842 19 6.41143 19H17.5"
+                    stroke="#303030"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    />
+                  <circle cx="10.5" cy="20.5" r="1.5" stroke="#303030" strokeWidth="1.5" />
+                <circle cx="17.5" cy="20.5" r="1.5" stroke="#303030" strokeWidth="1.5" />
+                </svg>
 
                     <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#2cace2] flex items-center justify-center">
                     <span className="text-[10px] text-white">3</span>
@@ -356,11 +373,10 @@
             </div>
             )}
 
-                                    </div>
-
-                                </div>
-                            </CommonWrapper>
-                        </div>
-                    </>
-                );
-            }
+         </div>
+  </div>
+    </CommonWrapper> 
+   </div>
+ </>
+ );
+ }

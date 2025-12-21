@@ -56,7 +56,7 @@ export default function ReviewsSection() {
         {/* ---------- LEFT: REVIEW LIST ----------- */}
         <div className="lg:col-span-2 space-y-8">
           {reviews.map((rev) => (
-            <div key={rev.id} className="flex gap-4 border-b pb-6">
+            <div key={rev.id} className="flex gap-4 border-b border-[#BEE5F6] pb-6">
               <div className="w-[55px] h-[55px] rounded-full overflow-hidden">
   <Image
     src={rev.img}
@@ -89,7 +89,7 @@ export default function ReviewsSection() {
         <div className="space-y-6">
           <h2 className="text-xl font-semibold">Based on those reviews</h2>
 
-          <div className="rounded-xl border bg-gray-50 p-6">
+          <div className="rounded-xl border border-[#BEE5F6] bg-gray-50 p-6">
             <p className="text-5xl font-bold text-blue-500 text-center">4.3</p>
             <p className="text-center text-gray-600 mt-1">Average reviews</p>
 
@@ -110,7 +110,7 @@ export default function ReviewsSection() {
               ))}
             </div>
             {/* -------------- ADD REVIEW -------------- */}
-      <div className="mt-10 border-t pt-8">
+      <div className="mt-10 border-t border-[#BEE5F6] pt-8">
         <h2 className="text-xl font-semibold mb-4">Add a review</h2>
 
         {/* Rating stars */}
@@ -129,7 +129,7 @@ export default function ReviewsSection() {
         <textarea
           rows={5}
           placeholder="Write your comment"
-          className="w-full border rounded-xl p-4 focus:ring-2 focus:ring-blue-300"
+          className="w-full border border-[#BEE5F6] rounded-xl p-4 focus:ring-2 focus:ring-blue-300"
         ></textarea>
 
         <button className="mt-4 w-full py-3 bg-blue-500 text-white rounded-xl font-medium">

@@ -28,10 +28,10 @@ export default function ProductPage() {
       <div className="w-full py-10 ">
 
         {/* Small Screen Sidebar Button */}
-        <div className="md:hidden fixed top-12 left-3 z-50">
+        <div className="md:hidden fixed  top-48 left-0 z-50">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-2 cursor-pointer rounded-lg bg-[#2CACE2] text-white shadow-md"
+            className="p-2 cursor-pointer backdrop:blur-2xl rounded-lg bg-[#2cabe291] text-white shadow-md"
           >
             <Menu size={22} />
           </button>

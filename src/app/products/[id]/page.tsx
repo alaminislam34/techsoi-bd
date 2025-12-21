@@ -10,7 +10,7 @@ import CommonWrapper from "@/components/layout/CommonWrapper";
 import WebFutures from "@/components/section/WebFutures";
 import BlogTitle from "@/components/layout/BlogTitle";
 import BlogCard from "@/components/parts/BlogCard";
-import BuyNowModal from "@/components/ui/BuyNowModal"; // <-- import modal
+import BuyNowModal from "@/components/ui/BuyNowModal"; 
 
 export default function ProductDetails({
   params,
@@ -36,7 +36,7 @@ export default function ProductDetails({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* LEFT IMAGES */}
             <div>
-              <div className="w-full h-[380px] md:h-[420px] relative border rounded-2xl p-4">
+              <div className="w-full h-[380px] md:h-[420px] relative border border-[#BEE5F6] rounded-2xl p-4">
                 <Image
                   src={activeImg}
                   alt={product.name}
