@@ -6,28 +6,27 @@ export default function ProductTabs() {
   const [activeTab, setActiveTab] = useState("description");
 
   return (
-    <div className="mt-16 border rounded-xl">
+    <div className="mt-16 border border-[#BEE5F6] rounded-xl">
       {/* Tab Buttons */}
-      <div className="flex border-b lg:p-4 md:p-2 sm:p-2 p-1">
-  {["description", "specs", "reviews"].map((tab) => (
-    <button
-      key={tab}
-      className={`px-3 py-2 text-xs sm:px-6 sm:py-3 sm:text-base rounded-xl font-semibold transition-colors duration-200 ${
-        activeTab === tab
-          ? "text-white bg-[#2cace2]"
-          : "text-gray-600 hover:bg-gray-100"
-      }`}
-      onClick={() => setActiveTab(tab)}
-    >
-      {tab === "description"
-        ? "Description"
-        : tab === "specs"
-        ? "Technical Specs"
-        : "Reviews"}
-    </button>
-  ))}
-</div>
-
+      <div className="flex border-b border-[#BEE5F6] lg:p-4 md:p-2 sm:p-2 p-1">
+        {["description", "specs", "reviews"].map((tab) => (
+          <button
+            key={tab}
+            className={`px-3 py-2 text-xs sm:px-6 sm:py-3 sm:text-base rounded-xl font-semibold transition-colors duration-200 ${
+              activeTab === tab
+                ? "text-white bg-[#2cace2]"
+                : "text-gray-600 hover:bg-gray-100"
+            }`}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab === "description"
+              ? "Description"
+              : tab === "specs"
+              ? "Technical Specs"
+              : "Reviews"}
+          </button>
+        ))}
+      </div>
 
       {/* Tab Content */}
       <div className="p-6 text-gray-700 leading-relaxed">
@@ -39,30 +38,30 @@ export default function ProductTabs() {
         )}
 
         {activeTab === "specs" && (
-          <div className="divide-y rounded-xl  bg-white overflow-hidden">
+          <div className="divide-y divide-[#BEE5F6] rounded-xl bg-white overflow-hidden">
             {[
-                { label: "Height", value: "1" },
-                { label: "Material", value: "2" },
-                { label: "Case", value: "3" },
-                { label: "Color", value: "4" },
-                { label: "Depth", value: "5" },
-                { label: "Width", value: "6" },
-                { label: "Size", value: "7" },
+              { label: "Height", value: "1" },
+              { label: "Material", value: "2" },
+              { label: "Case", value: "3" },
+              { label: "Color", value: "4" },
+              { label: "Depth", value: "5" },
+              { label: "Width", value: "6" },
+              { label: "Size", value: "7" },
             ].map((item) => (
-                <div
+              <div
                 key={item.label}
                 className="grid grid-cols-2 px-4 py-3 hover:bg-gray-50 transition"
-                >
-                <div className="text-gray-600 font-medium">{item.label}:</div>
-                <div className="text-gray-900">{item.value}</div>
+              >
+                <div className="text-gray-600 font-medium">
+                  {item.label}:
                 </div>
+                <div className="text-gray-900">{item.value}</div>
+              </div>
             ))}
-</div>
-
-
+          </div>
         )}
 
-        {activeTab === "reviews" && <ReviewsSection/>}
+        {activeTab === "reviews" && <ReviewsSection />}
       </div>
     </div>
   );

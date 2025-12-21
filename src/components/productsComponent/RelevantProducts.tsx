@@ -35,7 +35,7 @@ const RelevantProducts: React.FC<RelevantProductsProps> = ({
   if (relevantProducts.length === 0) return null;
 
   return (
-    <CommonWrapper>
+  
       <section className="py-12">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
@@ -93,7 +93,6 @@ const RelevantProducts: React.FC<RelevantProductsProps> = ({
         ))}
       </Swiper>
     </section>
-    </CommonWrapper>
   );
 };
 
