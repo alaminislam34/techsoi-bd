@@ -106,8 +106,8 @@ export default function ProductPage() {
                         <div className="flex flex-col md:flex-row justify-between md:items-center">
 
                           {/* Price */}
-                          <div className="flex md:justify-center items-center gap-2">
-                            <p className="text-[14px] md:text-2xl font-semibold text-[#2cace2]">
+                          <div className="flex md:justify-evenly items-center gap-2">
+                            <p className="text-[14px] md:text-2xl lg:text-xl font-semibold text-[#2cace2]">
                               ৳{p.salePrice}
                             </p>
                             <p className="text-sm md:text-lg line-through text-[#808080]">
@@ -171,7 +171,7 @@ export default function ProductPage() {
                           </svg>
 
                           <p className="flex gap-1 text-[12px] xl:text-lg text-[#303030] group-hover:text-white">
-                            Buy <span className="hidden xl:block">Now</span>
+                            Buy <span className="hidden lg:hidden md:block xl:block">Now</span>
                           </p>
                         </Link>
 
