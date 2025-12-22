@@ -68,7 +68,7 @@
                                     </Link>
 
                                     {/* ---------- SEARCH (DESKTOP) ---------- */}
-                                    <div className="hidden px-2 md:flex justify-between items-center w-xs sm:w-xs md:w-xs lg:w-xl  relative mx-4 sm:mx-0 lg:mx-0 md:mx-4  py-3 rounded-xl bg-white border border-[#bee5f6]">
+                                    <div className="hidden px-2 md:flex justify-between items-center w-xs sm:w-xs md:w-xs lg:w-xl  relative mx-4 sm:mx-0 lg:mx-3 md:mx-4  py-3 rounded-xl bg-white border border-[#bee5f6]">
                                         <input
                                             className="text-lg w-full focus:outline-none"
                                             placeholder="Search products.."
@@ -217,7 +217,7 @@
                                             </div>
 
                                             <div className="md:block hidden">
-                                                <p className="text-base font-medium text-[#2cace2]">My Cart</p>
+                                                <p className="text-sm font-medium text-[#2cace2]">Cart</p>
                                                 <p className="text-sm text-[#505050]">৳200</p>
                                             </div>
                                         </Link>
@@ -233,7 +233,7 @@
                                             </div>
 
                                             <div className="md:block hidden">
-                                                <p className="text-base font-medium text-[#2cace2]">My Orders</p>
+                                                <p className="text-sm font-medium text-[#2cace2]">Orders</p>
                                                 <p className="text-sm text-[#505050]">৳200</p>
                                             </div>
                                         </Link>
@@ -295,7 +295,7 @@
                 </div>
 
                 <div className="flex flex-col">
-                    <p className="text-base font-medium text-[#2cace2]">Favourite</p>
+                    <p className="text-sm font-medium text-[#2cace2]">Favourite</p>
                     <p className="text-sm text-[#505050]">৳650</p>
                 </div>
                 </Link>
@@ -345,7 +345,7 @@
                 </div>
 
                 <div className="flex flex-col">
-                    <p className="text-base font-medium text-[#2cace2]">My Cart</p>
+                    <p className="text-sm font-medium text-[#2cace2]">My Cart</p>
                     <p className="text-sm text-[#505050]">৳200</p>
                 </div>
                 </Link>
@@ -365,7 +365,7 @@
                 </div>
 
                 <div className="flex flex-col">
-                    <p className="text-base font-medium text-[#2cace2]">My Orders</p>
+                    <p className="text-sm font-medium text-[#2cace2]">My Orders</p>
                     <p className="text-sm text-[#505050]">৳200</p>
                 </div>
                 </Link>
