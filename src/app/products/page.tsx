@@ -28,10 +28,10 @@ export default function ProductPage() {
       <div className="w-full py-10 ">
 
         {/* Small Screen Sidebar Button */}
-        <div className="md:hidden fixed  top-48 left-0 z-50">
+        <div className="md:hidden fixed  top-140 left-0 z-50">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-2 cursor-pointer backdrop:blur-2xl rounded-lg bg-[#2cabe291] text-white shadow-md"
+            className="p-1 cursor-pointer backdrop:backdrop-blur-3xl rounded-lg bg-[#2cabe291] text-white shadow-md"
           >
             <Menu size={22} />
           </button>
@@ -98,7 +98,7 @@ export default function ProductPage() {
                       <div className="flex flex-col gap-2 md:gap-6 overflow-hidden">
 
                         {/* Title */}
-                        <p className="w-full text-[14px] md:text-[22px] font-medium text-[#303030]">
+                        <p className="w-full text-[14px] md:text-[16px] lg:text-[18px] font-medium text-[#303030]">
                           {p.name}
                         </p>
 
