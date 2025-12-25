@@ -6,7 +6,7 @@ import CommonWrapper from "@/components/layout/CommonWrapper";
 import { blogList } from "@/components/lib/dummyProd";
 
 
-  
+  // new commit
   function OurBlogs() {
     return (
      <CommonWrapper>

@@ -29,7 +29,7 @@ export default function CategorySmall() {
 
     return (
         <>
-            <div className="flex justify-around items-center gap-5 overflow-x-auto">
+            <div className="flex justify-around items-center gap-5 overflow-x-auto  [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 {categories.map((item, index) => (
                     <Link
                         href={item.to}
