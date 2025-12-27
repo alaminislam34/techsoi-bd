@@ -159,7 +159,7 @@ export default function BlogCard({ limit }) {
                             <Link
                                 href={'#'}
                                 key={index}
-                                className="flex flex-col gap-2 md:gap-3 p-3 md:p-4 rounded-2xl border border-[#bee5f6] hover:border-[#2CACE2]"
+                                className="flex flex-col gap-2 md:gap-3 p-3 md:p-4 rounded-2xl border border-[#bee5f6] bg-white  hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_3px_15px_#72C7EC] hover:border-[#72C7EC]"
                             >
                                 <Image
                                     src={item.image}

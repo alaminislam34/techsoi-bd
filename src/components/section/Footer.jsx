@@ -1,5 +1,8 @@
 import CommonWrapper from '@/components/layout/CommonWrapper';
 import Link from 'next/link';
+import { CiYoutube } from 'react-icons/ci';
+import { FaWhatsapp } from 'react-icons/fa';
+import { PiTiktokLogoLight } from 'react-icons/pi';
 
 export default function Footer() {
 
@@ -146,6 +149,13 @@ export default function Footer() {
                                             +888 0000 000 000
                                         </p>
                                     </Link>
+                                      <Link 
+                                            href={'#'}
+                                            className="flex items-center gap-2"
+                                        >
+                                           <FaWhatsapp size={24} className='text-[#2CACE2]' />
+                                            <p className="text-[14px] md:text-lg text-[#303030]">WhatsApp</p>
+                                        </Link>
                                     <div className="flex items-end gap-3">
                                         <svg
                                             width={24}
@@ -269,6 +279,20 @@ export default function Footer() {
                                             </svg>
                                             <p className="text-[14px] md:text-lg text-[#303030]">Instagram</p>
                                         </Link>
+                                         <Link 
+                                            href={'#'}
+                                            className="flex items-center gap-2"
+                                        >
+                                           <CiYoutube size={24}/>
+                                            <p className="text-[14px] md:text-lg text-[#303030]">YouTube </p>
+                                        </Link>
+                                         <Link 
+                                            href={'#'}
+                                            className="flex items-center gap-2"
+                                        >
+                                           <PiTiktokLogoLight size={24} />
+                                            <p className="text-[14px] md:text-lg text-[#303030]">Tik Tok </p>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>
@@ -278,7 +302,7 @@ export default function Footer() {
                                 Build by Mr. Jhon &amp; Mr. Don
                             </p>
                         </div>
-                    </div>
+                    </div> 
                 </CommonWrapper>
             </div>
         </>

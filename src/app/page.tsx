@@ -8,7 +8,6 @@ import WebFutures from '@/components/section/WebFutures';
 import CustomerSays from '@/components/section/CustomerSays';
 import BlogTitle from '@/components/layout/BlogTitle';
 import BlogCard from '@/components/parts/BlogCard';
-import Footer from '@/components/section/Footer';
 
 export default function Home() {
   return (

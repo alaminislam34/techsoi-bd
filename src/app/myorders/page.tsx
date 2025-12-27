@@ -2,9 +2,11 @@
 
 import Image, { StaticImageData } from "next/image";
 import { Eye, Download } from "lucide-react";
+import { useState } from "react";
 import CommonWrapper from "@/components/layout/CommonWrapper";
 
 import OrderImg from "@/assets/reviewImg/fav1.jpg";
+import ReviewModal from "@/components/ui/ReviewModal";
 
 type OrderItem = {
   id: number;
@@ -53,6 +55,8 @@ const statusStyles = {
 };
 
 export default function MyOrdersPage() {
+  const [openReview, setOpenReview] = useState(false);
+
   return (
     <CommonWrapper>
       <section className="py-10">
@@ -73,7 +77,8 @@ export default function MyOrdersPage() {
           {orders.map((order) => (
             <div
               key={order.id}
-              className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 items-center py-6 border-b last:border-none"
+              className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-y-0 items-center py-6 border-b "
+              style={{ borderColor: "#E6E6E6" }} 
             >
               {/* Product */}
               <div className="md:col-span-4 flex items-center gap-4">
@@ -82,14 +87,13 @@ export default function MyOrdersPage() {
                     src={order.img}
                     alt={order.name}
                     fill
-                    className="object-cover" // <-- use object-cover to fully fill container
+                    className="object-cover"
                   />
                 </div>
                 <p className="text-sm sm:text-base font-medium text-gray-700">
                   {order.name}
                 </p>
               </div>
-
 
               {/* Date */}
               <div className="md:col-span-2 text-sm text-gray-600">
@@ -102,7 +106,7 @@ export default function MyOrdersPage() {
               </div>
 
               {/* Price */}
-              <div className="md:col-span-2 text-blue-500 font-semibold">
+              <div className="md:col-span-2" style={{ color: "#2CACE2", fontWeight: 600 }}>
                 ৳{order.price}
               </div>
 
@@ -117,9 +121,14 @@ export default function MyOrdersPage() {
 
               {/* Invoice */}
               <div className="md:col-span-1 flex md:justify-end gap-3 text-blue-500">
-                <button aria-label="View invoice">
+                <button
+                  aria-label="View invoice"
+                  className="cursor-pointer"
+                  onClick={() => setOpenReview(true)}
+                >
                   <Eye size={18} />
                 </button>
+
                 <button aria-label="Download invoice">
                   <Download size={18} />
                 </button>
@@ -128,6 +137,12 @@ export default function MyOrdersPage() {
           ))}
         </div>
       </section>
+
+      {/* Review Modal */}
+      <ReviewModal
+        isOpen={openReview}
+        onClose={() => setOpenReview(false)}
+      />
     </CommonWrapper>
   );
 }
