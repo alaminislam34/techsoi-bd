@@ -1,13 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
 import ImgA from "@/assets/reviewImg/0bd7b336ee0f46c2c76b65c477da259f0e5150e8.png";
 import ImgB from "@/assets/reviewImg/3dfd7536813e08be8c37daddad937a682336646a.png";
 import ImgC from "@/assets/reviewImg/59dd59bf65ddedbc29d142fbac28b6b94972e288.png";
 
 export default function ReviewsSection() {
-  const [rating, setRating] = useState(3);
 
   const reviews = [
     {
@@ -39,13 +37,7 @@ export default function ReviewsSection() {
     },
   ];
 
-  const summary = [
-    { stars: 5, count: 22 },
-    { stars: 4, count: 75 },
-    { stars: 3, count: 12 },
-    { stars: 2, count: 8 },
-    { stars: 1, count: 7 },
-  ];
+  
 
   return (
     <div className="p-8  rounded-xl bg-white mt-10">
@@ -83,60 +75,6 @@ export default function ReviewsSection() {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* ----------- RIGHT: SUMMARY ----------- */}
-        <div className="space-y-6">
-          <h2 className="text-xl font-semibold">Based on those reviews</h2>
-
-          <div className="rounded-xl border border-[#BEE5F6] bg-gray-50 p-6">
-            <p className="text-5xl font-bold text-blue-500 text-center">4.3</p>
-            <p className="text-center text-gray-600 mt-1">Average reviews</p>
-
-            <div className="mt-6 space-y-3">
-              {summary.map((s) => (
-                <div key={s.stars} className="flex items-center gap-3">
-                  <span className="text-sm text-gray-700 w-12">{s.stars} ⭐</span>
-
-                  <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-blue-400"
-                      style={{ width: `${s.count}%` }}
-                    ></div>
-                  </div>
-
-                  <span className="w-8 text-right text-sm">{s.count}</span>
-                </div>
-              ))}
-            </div>
-            {/* -------------- ADD REVIEW -------------- */}
-      <div className="mt-10 border-t border-[#BEE5F6] pt-8">
-        <h2 className="text-xl font-semibold mb-4">Add a review</h2>
-
-        {/* Rating stars */}
-        <div className="flex gap-1 mb-4">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <button
-              key={star}
-              onClick={() => setRating(star)}
-              className="text-2xl"
-            >
-              {star <= rating ? "⭐" : "★"}
-            </button>
-          ))}
-        </div>
-
-        <textarea
-          rows={5}
-          placeholder="Write your comment"
-          className="w-full border border-[#BEE5F6] rounded-xl p-4 focus:ring-2 focus:ring-blue-300"
-        ></textarea>
-
-        <button className="mt-4 w-full py-3 bg-blue-500 text-white rounded-xl font-medium">
-          Add Review
-        </button>
-      </div>
-          </div>
         </div>
         
       </div>

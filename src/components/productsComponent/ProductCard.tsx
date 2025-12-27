@@ -27,7 +27,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   saveAmount 
 }) => {
   return (
-    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100 p-4 relative">
+    <div className="rounded-xl shadow-lg bg-white border my-2 border-[#bee5f6] hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_3px_15px_#72C7EC] hover:border-[#72C7EC] p-4 relative">
 
       {/* Save Badge */}
       {saveAmount && (
@@ -70,7 +70,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* BUY NOW — Navigates to Dynamic Product Page */}
         <Link href={`/products/${id}`} className="flex-1">
-          <button className="w-full flex items-center justify-center text-cyan-600 border border-cyan-600 hover:bg-cyan-50 text-sm py-2 rounded-lg transition-colors duration-200">
+          <button className="w-full flex items-center justify-center text-[#2CACE2] border border-cyan-600 hover:bg-cyan-50 text-sm py-2 rounded-lg transition-colors duration-200">
             Buy Now
           </button>
         </Link>

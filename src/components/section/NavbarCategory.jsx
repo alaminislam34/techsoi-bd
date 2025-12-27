@@ -32,7 +32,7 @@ export default function NavbarCategory() {
         },
         {
             to: "/category/accessories",
-            label: "PC Acces..",
+            label: "Accessories",
             sub_category: ["Webcam", "USB Hub", "Cooling Pad"]
         },
         {
