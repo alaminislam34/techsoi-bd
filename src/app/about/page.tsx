@@ -10,7 +10,7 @@ export default function AboutPage() {
   return (
     <>
     <CommonWrapper>
-      <main className="max-w-6xl mx-auto px-4 py-10">
+      <main className=" py-10">
         {/* Hero Image */}
         <div className="relative w-full h-[380px] rounded-2xl overflow-hidden">
           <Image
