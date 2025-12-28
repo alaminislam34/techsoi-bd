@@ -1,9 +1,10 @@
 import CommonWrapper from '@/components/layout/CommonWrapper';
+import Image from 'next/image';
 import Link from 'next/link';
 import { CiYoutube } from 'react-icons/ci';
 import { FaWhatsapp } from 'react-icons/fa';
-import { PiTiktokLogoLight } from 'react-icons/pi';
-
+import tiktokIcon from "../../../public/icons/Vector.png";
+import youtubeIcon from "../../../public/icons/youtTb.png"
 export default function Footer() {
 
     const quickLinks = [
@@ -283,14 +284,24 @@ export default function Footer() {
                                             href={'#'}
                                             className="flex items-center gap-2"
                                         >
-                                           <CiYoutube size={24}/>
+                                           <div>
+                                            <Image
+                                            src={youtubeIcon}
+                                            alt='youtube.png'
+                                            />
+                                           </div>
                                             <p className="text-[14px] md:text-lg text-[#303030]">YouTube </p>
                                         </Link>
                                          <Link 
                                             href={'#'}
                                             className="flex items-center gap-2"
                                         >
-                                           <PiTiktokLogoLight size={24} />
+                                         <div className='border p-1 rounded'>
+                                             <Image
+                                          src={tiktokIcon}
+                                          alt='tiktok.png'
+                                          />
+                                         </div>
                                             <p className="text-[14px] md:text-lg text-[#303030]">Tik Tok </p>
                                         </Link>
                                     </div>

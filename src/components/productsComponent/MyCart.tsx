@@ -63,7 +63,7 @@ export default function MyCart() {
 
   return (
     <CommonWrapper>
-      <section className=" py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <section className="py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* LEFT – CART */}
         <div className="lg:col-span-2 border border-blue-200 rounded-2xl p-6">
           <h2 className="text-xl font-semibold mb-6">My Cart</h2>
@@ -81,6 +81,7 @@ export default function MyCart() {
             <div
               key={item.id}
               className="grid md:grid-cols-12 gap-y-4 items-center py-6 border-b last:border-none"
+              style={{ borderColor: "#E6E6E6" }} // ✅ divider color
             >
               {/* Delete */}
               <div className="md:col-span-1">
@@ -94,12 +95,15 @@ export default function MyCart() {
 
               {/* Product */}
               <div className="md:col-span-6 flex items-center gap-4">
-                <div className="w-20 h-20 rounded-xl border overflow-hidden relative">
+                <div
+                  className="w-20 h-20 rounded-xl border overflow-hidden relative"
+                  style={{ borderColor: "#EAF7FC" }} // ✅ image border color
+                >
                   <Image
                     src={item.img}
                     alt={item.name}
                     fill
-                    className="object-cover"  // ✅ FIXED: fully fills border
+                    className="object-cover"
                   />
                 </div>
                 <p className="font-medium text-gray-700">{item.name}</p>
@@ -107,7 +111,10 @@ export default function MyCart() {
 
               {/* Quantity */}
               <div className="md:col-span-3 flex justify-center">
-                <div className="flex items-center border rounded-lg px-3 py-1 gap-4">
+                <div
+                  className="flex items-center border border-[#2CACE2] rounded-lg px-3 py-1 gap-4"
+                  style={{ color: "#808080" }} // ✅ qty color
+                >
                   <button
                     onClick={() => decrease(item.id)}
                     className="cursor-pointer"
@@ -127,7 +134,10 @@ export default function MyCart() {
               </div>
 
               {/* Price */}
-              <div className="md:col-span-2 text-right text-blue-500 font-semibold">
+              <div
+                className="md:col-span-2 text-right font-semibold"
+                style={{ color: "#2CACE2" }} // ✅ unit price color
+              >
                 ৳{item.price * item.qty}
               </div>
             </div>
