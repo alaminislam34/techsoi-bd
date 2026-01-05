@@ -197,7 +197,7 @@ export default function ProductView({ limit }) {
                 <div className="flex justify-between gap-2 items-center">
                   <Link
                     href={"#"}
-                    className="flex items-center w-full justify-center gap-1 xl:gap-2.5 px-1.5 xl:px-3 py-1.5 xl:py-2 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-[#2CACE2] group"
+                    className="flex items-center justify-center gap-1 xl:gap-2.5 px-1.5 xl:px-3 py-1.5 xl:py-2 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-[#2CACE2] group"
                   >
                     <svg
                       width={24}
@@ -219,7 +219,7 @@ export default function ProductView({ limit }) {
                         strokeWidth="1.5"
                       />
                     </svg>
-                    <p className="flex gap-1 text-[12px] lg:text-base text-[#303030] group-hover:text-white truncate">
+                    <p className="flex gap-1 text-[12px] lg:text-lg text-[#303030] group-hover:text-white truncate">
                       Buy now
                     </p>
                   </Link>

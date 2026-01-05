@@ -9,7 +9,8 @@ import { Menu } from "lucide-react";
 import CommonWrapper from "@/components/layout/CommonWrapper";
 
 export default function ProductPage() {
-  const [filteredProducts, setFilteredProducts] = useState<ProductType[]>(productList);
+  const [filteredProducts, setFilteredProducts] =
+    useState<ProductType[]>(productList);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleCategoryFilter = (selectedCategories: string[]) => {
@@ -26,7 +27,6 @@ export default function ProductPage() {
   return (
     <CommonWrapper>
       <div className="w-full py-10 ">
-
         {/* Small Screen Sidebar Button */}
         <div className="md:hidden fixed  top-140 left-0 z-50">
           <button
@@ -38,7 +38,6 @@ export default function ProductPage() {
         </div>
 
         <div className="flex ">
-
           {/* Sidebar */}
           <FilterSidebar
             onCategoryChange={handleCategoryFilter}
@@ -48,7 +47,6 @@ export default function ProductPage() {
 
           {/* Product Section */}
           <div className="flex-1">
-
             {/*  TOP INFO BAR (NEW – ONLY ADDITION) */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6 px-2">
               {/* Left */}
@@ -83,10 +81,8 @@ export default function ProductPage() {
             {/* Product Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols3 gap-x-4 md:gap-x-6 gap-y-4 md:gap-y-10 mt-5">
               {filteredProducts.map((p) => (
-                <div className="" key={p.id}>
-                  <div
-                    className="flex flex-col gap-2 md:gap-5 p-1.5 md:p-4 rounded-xl md:rounded-[20px] bg-white border border-[#bee5f6] hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_3px_15px_#72C7EC] hover:border-[#72C7EC]"
-                  >
+                <div className="h-full" key={p.id}>
+                  <div className="flex flex-col gap-2 justify-between md:gap-5 p-1.5 md:p-4 rounded-xl md:rounded-[20px] bg-white border border-[#bee5f6] hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_3px_15px_#72C7EC] hover:border-[#72C7EC] h-full">
                     {/* Image */}
                     <Image
                       src={p.image as StaticImageData}
@@ -94,9 +90,8 @@ export default function ProductPage() {
                       className="w-full rounded-lg md:rounded-[18px] object-cover"
                     />
 
-                    <div className="flex flex-col gap-2 md:gap-4">
+                    <div className="flex flex-col justify-between gap-2 md:gap-4">
                       <div className="flex flex-col gap-2 md:gap-6 overflow-hidden">
-
                         {/* Title */}
                         <p className="w-full text-[14px] md:text-[16px] lg:text-[18px] font-medium text-[#303030]">
                           {p.name}
@@ -104,13 +99,12 @@ export default function ProductPage() {
 
                         {/* Price + Rating */}
                         <div className="flex flex-col md:flex-row justify-between md:items-center">
-
                           {/* Price */}
                           <div className="flex md:justify-evenly items-center gap-2">
-                            <p className="text-[14px] md:text-2xl lg:text-xl font-semibold text-[#2cace2]">
+                            <p className="text-[14px] md:text-lg xl:text-xl font-semibold text-[#2cace2]">
                               ৳{p.salePrice}
                             </p>
-                            <p className="text-sm md:text-lg line-through text-[#808080]">
+                            <p className="text-sm lg:text-lg line-through text-[#808080]">
                               ৳{p.regularPrice}
                             </p>
                           </div>
@@ -131,11 +125,11 @@ export default function ProductPage() {
                               />
                             </svg>
 
-                            <p className="text-[12px] md:text-base text-[#505050]">
+                            <p className="text-[12px] lg:text-sm text-[#505050]">
                               {p.rating}
                             </p>
 
-                            <p className="text-[12px] md:text-base text-[#505050]">
+                            <p className="text-[12px] lg:text-sm text-[#505050]">
                               ({p.reviewCount})
                             </p>
                           </div>
@@ -144,7 +138,6 @@ export default function ProductPage() {
 
                       {/* Action buttons */}
                       <div className="flex justify-between items-center">
-
                         {/* Buy Now */}
                         <Link
                           href={`/products/${p.id}`}
@@ -171,13 +164,12 @@ export default function ProductPage() {
                           </svg>
 
                           <p className="flex gap-1 text-[12px] xl:text-lg text-[#303030] group-hover:text-white">
-                            Buy <span className="hidden lg:hidden md:block xl:block">Now</span>
+                            Buy now
                           </p>
                         </Link>
 
                         {/* Cart + Wishlist */}
                         <div className="flex items-center gap-1 xl:gap-3">
-
                           {/* Add to cart */}
                           <button className="flex justify-center items-center w-8 xl:w-12 h-8 xl:h-12 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-[#2CACE2] group">
                             <svg
@@ -211,16 +203,13 @@ export default function ProductPage() {
                               <path d="M19.4626 3.99415C16.7809 2.34923 14.4404 3.01211 13.0344 4.06801C12.4578 4.50096 12.1696 4.71743 12 4.71743C11.8304 4.71743 11.5422 4.50096 10.9656 4.06801C9.55962 3.01211 7.21909 2.34923 4.53744 3.99415C1.01807 6.15294 0.221721 13.2749 8.33953 19.2834C9.88572 20.4278 10.6588 21 12 21C13.3412 21 14.1143 20.4278 15.6605 19.2834C23.7783 13.2749 22.9819 6.15294 19.4626 3.99415Z" />
                             </svg>
                           </button>
-
                         </div>
                       </div>
-
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-
           </div>
         </div>
       </div>
