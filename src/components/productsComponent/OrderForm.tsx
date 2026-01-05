@@ -7,12 +7,21 @@ type InputProps = {
 
 function Input({ label, placeholder }: InputProps) {
   return (
-    <div>
-      <label className="text-sm text-gray-600 block mb-1">{label}</label>
+    <div className="space-y-1">
+      <label
+        className="text-sm block"
+        style={{ color: "#808080" }}
+      >
+        {label}
+      </label>
+
       <input
         type="text"
         placeholder={placeholder}
-        className="w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
+        className="w-full rounded-lg px-4 py-3 bg-white focus:outline-none"
+        style={{
+          border: "1px solid #E6E6E6",
+        }}
       />
     </div>
   );
@@ -20,10 +29,16 @@ function Input({ label, placeholder }: InputProps) {
 
 export default function OrderForm() {
   return (
-    <div className="border border-blue-200 rounded-2xl p-6 bg-blue-50">
-      <h2 className="text-xl font-semibold mb-5">Your Order</h2>
+    <div
+      className="rounded-2xl p-6"
+      style={{
+        backgroundColor: "#EAF7FC",
+        border: "1px solid #CFEAF8",
+      }}
+    >
+      <h2 className="text-xl font-semibold mb-6">Your Order</h2>
 
-      <form className="space-y-4">
+      <form className="space-y-5">
         <Input label="Full Name" placeholder="Mr. Jhon Don" />
         <Input label="Phone number" placeholder="+888 0000 0000" />
         <Input label="Email Address" placeholder="yourmail@mail.com" />
@@ -33,8 +48,7 @@ export default function OrderForm() {
 
         <button
           type="submit"
-          className="w-full mt-4 bg-sky-500 text-white py-3 rounded-xl font-semibold
-                     hover:bg-sky-600 transition cursor-pointer"
+          className="w-full mt-6 bg-[#2CACE2] cursor-pointer text-white py-4 rounded-xl font-semibold hover:bg-sky-600 transition"
         >
           Place Order
         </button>

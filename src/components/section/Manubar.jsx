@@ -40,18 +40,18 @@ export default function Manubar() {
               ))}
             </div>
             <div className="flex flex-row gap-2">
-              <button className="px-4 cursor-pointer py-2 rounded-lg text-white border border-white">
+              <button className="sm:px-4 px-3 cursor-pointer text-sm md:text-base truncate py-2 rounded-lg text-white border border-white">
                 Compare
               </button>
               <Link
                 href={"/pcbuilder"}
-                className="px-4 cursor-pointer py-2 rounded-lg text-white border border-white"
+                className="sm:px-4 px-3 cursor-pointer py-2 text-sm md:text-base truncate rounded-lg text-white border border-white"
               >
                 PC Builder
               </Link>
               <button
                 onClick={() => setIsContactOpen(true)}
-                className="px-4 cursor-pointer py-2 rounded-lg bg-white text-[#505050]"
+                className="sm:px-4 px-3 cursor-pointer text-sm md:text-base truncate py-2 rounded-lg bg-white text-[#505050]"
               >
                 Contact Us
               </button>
@@ -69,18 +69,18 @@ export default function Manubar() {
             </button>
 
             <div className="flex flex-row gap-2">
-              <button className="px-4 cursor-pointer py-2 rounded-lg bg-white text-[#505050]">
+              <button className="sm:px-4 px-3 cursor-pointer text-sm md:text-base truncate py-2 rounded-lg bg-white text-[#505050]">
                 Compare
               </button>
               <Link
                 href={"/pcbuilder"}
-                className="px-4 cursor-pointer py-2 rounded-lg text-white border border-white"
+                className="sm:px-4 px-3 cursor-pointer py-2 text-sm md:text-base truncate rounded-lg text-white border border-white"
               >
                 PC Builder
               </Link>
               <button
                 onClick={() => setIsContactOpen(true)}
-                className="px-4 cursor-pointer py-2 rounded-lg bg-white text-[#505050]"
+                className="sm:px-4 px-3 cursor-pointer text-sm md:text-base truncate py-2 rounded-lg bg-white text-[#505050]"
               >
                 Contact Us
               </button>

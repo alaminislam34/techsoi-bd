@@ -85,16 +85,48 @@ export default function ProductDetails({
               </p>
 
               {/* Prices dynamically based on quantity */}
-              <div className="mt-4 flex items-center gap-10">
-                <div>
-                  <p className="line-through text-gray-400 text-lg">
-                    ৳{totalRegularPrice}
-                  </p>
-                  <p className="text-3xl font-bold text-primary">
-                    ৳{totalSalePrice}
-                  </p>
+                <div className="mt-4 flex items-center">
+                  {/* Price section */}
+                  <div className="pr-8">
+                    <p className="line-through text-gray-400 text-lg">
+                      ৳{totalRegularPrice}
+                    </p>
+                    <p className="text-3xl font-bold text-primary">
+                      ৳{totalSalePrice}
+                    </p>
+                  </div>
+
+                  {/* Vertical divider */}
+                  <div className="h-12 w-px bg-gray-300 mx-6"></div>
+
+                  {/* EMI system */}
+                  <div className="flex flex-col items-center justify-center text-center pl-2">
+                    {/* Heading */}
+                    <h1 className="text-sm font-semibold text-gray-600 mb-2">
+                      EMI System:
+                    </h1>
+
+                    {/* Price row */}
+                    <div className="flex items-center gap-2">
+                      {/* Selected double circle icon */}
+                      <div className="relative -translate-y-0.5">
+                        <div className="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
+                          <div className="w-3 h-3 rounded-full bg-primary"></div>
+                        </div>
+                      </div>
+
+                      {/* Amount */}
+                      <span className="text-primary text-2xl font-bold leading-none">
+                        ৳1200
+                      </span>
+
+                      {/* mth text */}
+                      <span className="text-gray-500 text-xl font-medium">
+                        mth
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
               {/* Quantity Selector */}
               <div className="mt-6 flex gap-4 items-center">
