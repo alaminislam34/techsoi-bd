@@ -79,7 +79,7 @@ export default function ProductPage() {
             </div>
 
             {/* Product Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols3 gap-x-4 md:gap-x-6 gap-y-4 md:gap-y-10 mt-5">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols3 gap-x-4 md:gap-x-6 gap-y-4 md:gap-y-10 mt-5 pl-2">
               {filteredProducts.map((p) => (
                 <div className="h-full" key={p.id}>
                   <div className="flex flex-col gap-2 justify-between md:gap-5 p-1.5 md:p-4 rounded-xl md:rounded-[20px] bg-white border border-[#bee5f6] hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_3px_15px_#72C7EC] hover:border-[#72C7EC] h-full">
@@ -98,9 +98,9 @@ export default function ProductPage() {
                         </p>
 
                         {/* Price + Rating */}
-                        <div className="flex flex-col md:flex-row justify-between md:items-center">
+                        <div className="flex flex-col md:flex-wrap md:flex-row justify-between">
                           {/* Price */}
-                          <div className="flex md:justify-evenly items-center gap-2">
+                          <div className="flex items-center gap-2">
                             <p className="text-[14px] md:text-lg xl:text-xl font-semibold text-[#2cace2]">
                               ৳{p.salePrice}
                             </p>
