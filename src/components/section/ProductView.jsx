@@ -159,7 +159,7 @@ export default function ProductView({ limit }) {
                   </p>
                   <div className="flex flex-col md:flex-row justify-between md:items-center">
                     <div className="flex md:justify-center items-center gap-2">
-                      <p className="text-[14px] md:text-lg lg:text-xl xl:text-[22px] font-semibold text-[#2cace2]">
+                      <p className="text-[14px] md:text-lg lg:text-xl xl:text-[22px] font-semibold text-primary">
                         ৳{item.salePrice}
                       </p>
                       <p className="text- md:text-lg text-[#808080]">
@@ -197,7 +197,7 @@ export default function ProductView({ limit }) {
                 <div className="flex justify-between items-center gap-2">
                   <Link
                     href={"#"}
-                    className="flex items-center gap-1 xl:gap-2.5 px-1.5 xl:px-3 py-1.5 xl:py-2 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-[#2CACE2] group w-full"
+                    className="flex items-center gap-1 xl:gap-2.5 px-1.5 xl:px-3 py-1.5 xl:py-2 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-primary group"
                   >
                     <svg
                       width={24}
@@ -226,7 +226,7 @@ export default function ProductView({ limit }) {
                   <div className="flex items-center gap-2 xl:gap-3">
                     <Link
                       href={"#"}
-                      className="flex justify-center items-center w-8 xl:w-12 h-8 xl:h-12 gap-2 p-1 xl:p-2 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-[#2CACE2] group"
+                      className="flex justify-center items-center w-8 xl:w-12 h-8 xl:h-12 gap-2 p-1 xl:p-2 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-primary group"
                     >
                       <svg
                         width={24}
@@ -274,7 +274,7 @@ export default function ProductView({ limit }) {
                     </Link>
                     <Link
                       href={"#"}
-                      className="flex justify-center items-center w-8 xl:w-12 h-8 xl:h-12 gap-2 p-1 xl:p-2 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-[#2CACE2] group"
+                      className="flex justify-center items-center w-8 xl:w-12 h-8 xl:h-12 gap-2 p-1 xl:p-2 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-primary group"
                     >
                       <svg
                         width={24}

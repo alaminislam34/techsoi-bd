@@ -53,7 +53,7 @@ export default function ProductDetails({
                     onClick={() => setActiveImg(img)}
                     className={`w-20 h-20 p-1 rounded-xl border transition-all duration-200 ${
                       activeImg === img
-                        ? "border-[#2cace2] ring-1 ring-[#2cace2]"
+                        ? "border-primary ring-1 ring-primary"
                         : "border-gray-300"
                     }`}
                   >
@@ -90,7 +90,7 @@ export default function ProductDetails({
                   <p className="line-through text-gray-400 text-lg">
                     ৳{totalRegularPrice}
                   </p>
-                  <p className="text-3xl font-bold text-[#2cace2]">
+                  <p className="text-3xl font-bold text-primary">
                     ৳{totalSalePrice}
                   </p>
                 </div>
@@ -115,12 +115,12 @@ export default function ProductDetails({
               {/* Action Buttons */}
               <div className="mt-8 flex gap-4 flex-wrap md:flex-nowrap">
                 <button
-                  className="px-8 cursor-pointer py-3 rounded-xl bg-[#2cace2] text-white font-semibold text-lg"
+                  className="px-8 cursor-pointer py-3 rounded-xl bg-primary text-white font-semibold text-lg"
                   onClick={() => setIsModalOpen(true)} // <-- open modal
                 >
                   Buy Now
                 </button>
-                <button className="px-8 py-3 rounded-xl border border-[#2cace2] text-[#2cace2] font-semibold text-lg">
+                <button className="px-8 py-3 rounded-xl border border-primary text-primary font-semibold text-lg">
                   Add to Cart
                 </button>
               </div>
