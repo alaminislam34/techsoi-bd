@@ -1,4 +1,6 @@
 "use client";
+
+
 import Image from "next/image";
 import BlogImage from "@/assets/blog.png";
 import Link from "next/link";
