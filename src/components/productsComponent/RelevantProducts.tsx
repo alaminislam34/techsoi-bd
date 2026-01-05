@@ -34,8 +34,7 @@ const RelevantProducts: React.FC<RelevantProductsProps> = ({
   if (relevantProducts.length === 0) return null;
 
   return (
-  
-      <section className="py-12">
+    <section className="py-12">
       {/* Header */}
       <div className="flex items-center justify-between mb-8 ">
         <h2 className="text-3xl font-bold text-cyan-600">Relevant Products</h2>
@@ -64,7 +63,10 @@ const RelevantProducts: React.FC<RelevantProductsProps> = ({
         modules={[Navigation]}
         onSwiper={(swiper) => (swiperRef.current = swiper)}
         onBeforeInit={(swiper) => {
-          if (swiper.params.navigation && typeof swiper.params.navigation !== "boolean") {
+          if (
+            swiper.params.navigation &&
+            typeof swiper.params.navigation !== "boolean"
+          ) {
             swiper.params.navigation.prevEl = navigationPrevRef.current;
             swiper.params.navigation.nextEl = navigationNextRef.current;
           }
