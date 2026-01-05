@@ -1,6 +1,7 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import ProductImage from "@/assets/product-image.png";
+import CommonWrapper from "@/components/layout/CommonWrapper";
 import {
   Cpu,
   HardDrive,
@@ -19,7 +20,6 @@ import {
   Trash2,
   Download,
 } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
 
 const productList = [
@@ -318,145 +318,155 @@ const PcBuilder = () => {
   };
 
   return (
-    <div className="min-h-screen p-4 bg-slate-50 md:p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-          {/* LEFT COLUMN: Categories (Span 5) */}
-          <div className="lg:col-span-5 border border-primary/30 bg-white shadow-sm rounded-2xl p-4 h-fit">
-            <h2 className="mb-6 text-xl text-primary py-3 border-b border-b-primary font-bold flex justify-between">
-              PC Builder <span>৳{totalPrice}</span>
-            </h2>
-            <section className="mb-8">
-              <h3 className="pb-2 mb-4 text-xs font-bold text-gray-500 border-b border-b-primary/20 uppercase tracking-widest">
-                Main Components
-              </h3>
-              {mainComponents.map((item) => (
-                <ComponentRow key={item.id} name={item.name} Icon={item.icon} />
-              ))}
-            </section>
-            <section>
-              <h3 className="pb-2 mb-4 text-xs font-bold text-gray-500 border-b border-b-primary/20 uppercase tracking-widest">
-                Accessories
-              </h3>
-              {otherAccessories.map((item) => (
-                <ComponentRow key={item.id} name={item.name} Icon={item.icon} />
-              ))}
-            </section>
-          </div>
+    <CommonWrapper>
+      <div className="min-h-screen my-4">
+        <div className="">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {/* LEFT COLUMN: Categories (Span 5) */}
+            <div className="border border-primary/30 bg-white shadow-sm rounded-2xl p-4 h-fit">
+              <h2 className="mb-6 text-xl text-primary py-3 border-b border-b-primary font-bold flex justify-between">
+                PC Builder <span>৳{totalPrice}</span>
+              </h2>
+              <section className="mb-8">
+                <h3 className="pb-2 mb-4 text-xs font-bold text-gray-500 border-b border-b-primary/20 uppercase tracking-widest">
+                  Main Components
+                </h3>
+                {mainComponents.map((item) => (
+                  <ComponentRow
+                    key={item.id}
+                    name={item.name}
+                    Icon={item.icon}
+                  />
+                ))}
+              </section>
+              <section>
+                <h3 className="pb-2 mb-4 text-xs font-bold text-gray-500 border-b border-b-primary/20 uppercase tracking-widest">
+                  Accessories
+                </h3>
+                {otherAccessories.map((item) => (
+                  <ComponentRow
+                    key={item.id}
+                    name={item.name}
+                    Icon={item.icon}
+                  />
+                ))}
+              </section>
+            </div>
 
-          {/* RIGHT COLUMN: Product List OR Build Summary (Span 7) */}
-          <div className="lg:col-span-7 border border-primary/30 bg-white shadow-sm rounded-2xl p-4">
-            {viewMode === "list" ? (
-              <>
-                {/* SELECTING PRODUCTS VIEW */}
-                <div className="flex justify-between items-center mb-6 border-b border-b-primary py-3">
-                  <h2 className="text-xl text-primary font-bold">
-                    Select {activeCategory}
-                  </h2>
-                  <button
-                    onClick={() => setViewMode("build")}
-                    className="text-sm text-gray-500 hover:underline"
-                  >
-                    Back to Build
-                  </button>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[1000px] overflow-y-auto pr-2">
-                  {filteredProducts.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-col p-4 rounded-xl bg-white border border-[#bee5f6] hover:shadow-md transition-all"
+            {/* RIGHT COLUMN: Product List OR Build Summary (Span 7) */}
+            <div className="border border-primary/30 bg-white shadow-sm rounded-2xl p-4">
+              {viewMode === "list" ? (
+                <>
+                  {/* SELECTING PRODUCTS VIEW */}
+                  <div className="flex justify-between items-center mb-6 border-b border-b-primary py-3">
+                    <h2 className="text-xl text-primary font-bold">
+                      Select {activeCategory}
+                    </h2>
+                    <button
+                      onClick={() => setViewMode("build")}
+                      className="text-sm text-gray-500 hover:underline"
                     >
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        width={200}
-                        height={200}
-                        className="w-full object-cover mb-4 rounded-lg"
-                      />
-                      <p className="text-sm font-bold text-gray-800 line-clamp-2 mb-2">
-                        {item.name}
-                      </p>
-                      <p className="text-lg font-bold text-primary mb-4">
-                        ৳{item.salePrice}
-                      </p>
-                      <button
-                        onClick={() => handleAddToBuild(item)}
-                        className="w-full py-2 bg-[#eaf7fc] text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all"
-                      >
-                        Add to PC Build
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <>
-                {/* BUILD SUMMARY VIEW (Shown when product is selected or by default) */}
-                <div className="mb-6 border-b border-b-primary py-3 flex flex-row justify-between items-center">
-                  <h2 className="text-xl text-primary font-bold">Your PC</h2>
-                  <div className="flex flex-row items-center gap-2">
-                    <h1 className="md:text-lg font-semibold text-gray-500">
-                      Total
-                    </h1>
-                    <p className="p-2 border border-primary text-primary font-semibold rounded-xl">
-                      ৳ {totalPrice}
-                    </p>
+                      Back to Build
+                    </button>
                   </div>
-                </div>
-
-                {Object.keys(selectedProducts).length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-                    <Box size={64} strokeWidth={1} />
-                    <p className="mt-4">
-                      Your build is empty. Choose a component to start!
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {Object.entries(selectedProducts).map(([cat, prod]) => (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[1000px] overflow-y-auto pr-2">
+                    {filteredProducts.map((item, index) => (
                       <div
-                        key={cat}
-                        className="flex items-center gap-4 p-3 border-b border-primary/50"
+                        key={index}
+                        className="flex flex-col p-4 rounded-xl bg-white border border-[#bee5f6] hover:shadow-md transition-all"
                       >
-                        <div className="grow">
-                          <p className="">
-                            <span className="bg-primary text-white py-0.5 px-2 rounded-full text-xs">
-                              {cat}
-                            </span>
-                          </p>
-                          <p className="text-sm font-medium text-gray-800 line-clamp-1">
-                            {prod.name}
-                          </p>
-                        </div>
-                        <div className="text-right flex flex-row gap-2">
-                          <p className="text-sm font-semibold  items-center text-primary">
-                            ৳{prod.salePrice}
-                          </p>
-                          <button
-                            onClick={() => removeItem(cat)}
-                            className="text-red-400 hover:text-red-600"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          width={200}
+                          height={200}
+                          className="w-full object-cover mb-4 rounded-lg"
+                        />
+                        <p className="text-sm font-bold text-gray-800 line-clamp-2 mb-2">
+                          {item.name}
+                        </p>
+                        <p className="text-lg font-bold text-primary mb-4">
+                          ৳{item.salePrice}
+                        </p>
+                        <button
+                          onClick={() => handleAddToBuild(item)}
+                          className="w-full py-2 bg-[#eaf7fc] text-primary font-bold rounded-lg hover:bg-primary hover:text-white transition-all"
+                        >
+                          Add to PC Build
+                        </button>
                       </div>
                     ))}
-                    <div className="flex justify-end">
-                      <button
-                        className="px-4 py-2 fome\
-semibold bg-white text-primary border border-primary rounded-xl hover:bg-blue-50 transition-all flex items-center flex-row gap-2 cursor-pointer"
-                      >
-                        <Download /> Download
-                      </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* BUILD SUMMARY VIEW (Shown when product is selected or by default) */}
+                  <div className="mb-6 border-b border-b-primary py-3 flex flex-row justify-between items-center">
+                    <h2 className="text-xl text-primary font-bold">Your PC</h2>
+                    <div className="flex flex-row items-center gap-2">
+                      <h1 className="md:text-lg font-semibold text-gray-500">
+                        Total
+                      </h1>
+                      <p className="p-2 border border-primary text-primary font-semibold rounded-xl">
+                        ৳ {totalPrice}
+                      </p>
                     </div>
                   </div>
-                )}
-              </>
-            )}
+
+                  {Object.keys(selectedProducts).length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+                      <Box size={64} strokeWidth={1} />
+                      <p className="mt-4">
+                        Your build is empty. Choose a component to start!
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {Object.entries(selectedProducts).map(([cat, prod]) => (
+                        <div
+                          key={cat}
+                          className="flex items-center gap-4 p-3 border-b border-primary/50"
+                        >
+                          <div className="grow">
+                            <p className="">
+                              <span className="bg-primary text-white py-0.5 px-2 rounded-full text-xs">
+                                {cat}
+                              </span>
+                            </p>
+                            <p className="text-sm font-medium text-gray-800 line-clamp-1">
+                              {prod.name}
+                            </p>
+                          </div>
+                          <div className="text-right flex flex-row gap-2">
+                            <p className="text-sm font-semibold  items-center text-primary">
+                              ৳{prod.salePrice}
+                            </p>
+                            <button
+                              onClick={() => removeItem(cat)}
+                              className="text-red-400 hover:text-red-600"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      <div className="flex justify-end">
+                        <button
+                          className="px-4 py-2 fome\
+semibold bg-white text-primary border border-primary rounded-xl hover:bg-blue-50 transition-all flex items-center flex-row gap-2 cursor-pointer"
+                        >
+                          <Download /> Download
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </CommonWrapper>
   );
 };
 
