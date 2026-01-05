@@ -50,7 +50,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <div className="flex flex-col md:flex-row justify-between md:items-center">
             {/* Price */}
             <div className="flex md:justify-evenly items-center gap-2">
-              <p className="text-[14px] md:text-lg xl:text-xl font-semibold text-[#2cace2]">
+              <p className="text-[14px] md:text-lg xl:text-xl font-semibold text-primary">
                 ৳{price}
               </p>
               <p className="text-sm lg:text-lg line-through text-[#808080]">
@@ -88,7 +88,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           {/* Buy Now */}
           <Link
             href={`/products/${id}`}
-            className="flex items-center gap-1 xl:gap-2.5 px-1.5 xl:px-3 py-1.5 xl:py-2 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-[#2CACE2] group"
+            className="flex items-center gap-1 xl:gap-2.5 px-1.5 xl:px-3 py-1.5 xl:py-2 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-primary group"
           >
             <svg
               width={24}
@@ -118,7 +118,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           {/* Cart + Wishlist */}
           <div className="flex items-center gap-1 xl:gap-3">
             {/* Add to cart */}
-            <button className="flex justify-center items-center w-8 xl:w-12 h-8 xl:h-12 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-[#2CACE2] group">
+            <button className="flex justify-center items-center w-8 xl:w-12 h-8 xl:h-12 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-primary group">
               <svg
                 width={24}
                 height={24}
@@ -137,7 +137,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </button>
 
             {/* Wishlist */}
-            <button className="flex justify-center items-center w-8 xl:w-12 h-8 xl:h-12 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-[#2CACE2] group">
+            <button className="flex justify-center items-center w-8 xl:w-12 h-8 xl:h-12 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-primary group">
               <svg
                 width={24}
                 height={24}
