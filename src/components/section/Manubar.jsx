@@ -40,9 +40,12 @@ export default function Manubar() {
               ))}
             </div>
             <div className="flex flex-row gap-2">
-              <button className="sm:px-4 px-3 cursor-pointer text-sm md:text-base truncate py-2 rounded-lg text-white border border-white">
+              <Link
+                href={"/compare"}
+                className="sm:px-4 px-3 cursor-pointer text-sm md:text-base truncate py-2 rounded-lg text-white border border-white"
+              >
                 Compare
-              </button>
+              </Link>
               <Link
                 href={"/pcbuilder"}
                 className="sm:px-4 px-3 cursor-pointer py-2 text-sm md:text-base truncate rounded-lg text-white border border-white"
@@ -69,9 +72,12 @@ export default function Manubar() {
             </button>
 
             <div className="flex flex-row gap-2">
-              <button className="sm:px-4 px-3 cursor-pointer text-sm md:text-base truncate py-2 rounded-lg bg-white text-[#505050]">
+              <Link
+                href={"/compare"}
+                className="sm:px-4 px-3 cursor-pointer text-sm md:text-base truncate py-2 rounded-lg text-white border border-white"
+              >
                 Compare
-              </button>
+              </Link>
               <Link
                 href={"/pcbuilder"}
                 className="sm:px-4 px-3 cursor-pointer py-2 text-sm md:text-base truncate rounded-lg text-white border border-white"
