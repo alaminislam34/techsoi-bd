@@ -3,7 +3,12 @@
 @theme {
   --color-primary: #2cace2;
 }
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+}
+
+button {
+  cursor: pointer;
 }

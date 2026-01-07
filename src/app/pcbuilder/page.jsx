@@ -262,7 +262,7 @@ const PcBuilder = () => {
       ...prev,
       [product.category]: product,
     }));
-    setViewMode("build"); // Automatically hide product list and show build list
+    setViewMode("build");
   };
 
   const removeItem = (category) => {
