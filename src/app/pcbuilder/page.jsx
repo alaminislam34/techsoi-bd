@@ -262,7 +262,7 @@ const PcBuilder = () => {
       ...prev,
       [product.category]: product,
     }));
-    setViewMode("build"); // Automatically hide product list and show build list
+    setViewMode("build");
   };
 
   const removeItem = (category) => {
@@ -319,42 +319,56 @@ const PcBuilder = () => {
 
   return (
     <CommonWrapper>
-      <div className="min-h-screen my-4">
+      <div className="my-4">
         <div className="">
+          {Object.keys(selectedProducts).length > 0 && (
+            <div className="flex justify-end py-4">
+              <button className="px-4 py-2 font-semibold bg-white text-primary border border-primary rounded-xl hover:bg-blue-50 transition-all flex items-center flex-row gap-2 cursor-pointer">
+                <Download /> Download
+              </button>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {/* LEFT COLUMN: Categories (Span 5) */}
-            <div className="border border-primary/30 bg-white shadow-sm rounded-2xl p-4 h-fit">
+            <div className="border border-primary/30 bg-white shadow-sm rounded-2xl p-4 ">
               <h2 className="mb-6 text-xl text-primary py-3 border-b border-b-primary font-bold flex justify-between">
                 PC Builder <span>৳{totalPrice}</span>
               </h2>
-              <section className="mb-8">
-                <h3 className="pb-2 mb-4 text-xs font-bold text-gray-500 border-b border-b-primary/20 uppercase tracking-widest">
-                  Main Components
-                </h3>
-                {mainComponents.map((item) => (
-                  <ComponentRow
-                    key={item.id}
-                    name={item.name}
-                    Icon={item.icon}
-                  />
-                ))}
-              </section>
-              <section>
-                <h3 className="pb-2 mb-4 text-xs font-bold text-gray-500 border-b border-b-primary/20 uppercase tracking-widest">
-                  Accessories
-                </h3>
-                {otherAccessories.map((item) => (
-                  <ComponentRow
-                    key={item.id}
-                    name={item.name}
-                    Icon={item.icon}
-                  />
-                ))}
-              </section>
+              <div className="max-h-screen overflow-y-auto">
+                <section className="mb-8">
+                  <h3 className="pb-2 mb-4 text-xs font-bold text-gray-500 border-b border-b-primary/20 uppercase tracking-widest">
+                    Main Components
+                  </h3>
+                  <div className="">
+                    {mainComponents.map((item) => (
+                      <ComponentRow
+                        key={item.id}
+                        name={item.name}
+                        Icon={item.icon}
+                      />
+                    ))}
+                  </div>
+                </section>
+                <section>
+                  <h3 className="pb-2 mb-4 text-xs font-bold text-gray-500 border-b border-b-primary/20 uppercase tracking-widest">
+                    Accessories
+                  </h3>
+                  <div>
+                    {otherAccessories.map((item) => (
+                      <ComponentRow
+                        key={item.id}
+                        name={item.name}
+                        Icon={item.icon}
+                      />
+                    ))}
+                  </div>
+                </section>
+              </div>
             </div>
 
             {/* RIGHT COLUMN: Product List OR Build Summary (Span 7) */}
-            <div className="border border-primary/30 bg-white shadow-sm rounded-2xl p-4">
+            <div className="border border-primary/30 bg-white shadow-sm rounded-2xl p-4  ">
               {viewMode === "list" ? (
                 <>
                   {/* SELECTING PRODUCTS VIEW */}
@@ -369,7 +383,7 @@ const PcBuilder = () => {
                       Back to Build
                     </button>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[1000px] overflow-y-auto pr-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pr-2 max-h-screen overflow-y-auto">
                     {filteredProducts.map((item, index) => (
                       <div
                         key={index}
@@ -421,7 +435,7 @@ const PcBuilder = () => {
                       </p>
                     </div>
                   ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-4 max-h-screen overflow-y-auto">
                       {Object.entries(selectedProducts).map(([cat, prod]) => (
                         <div
                           key={cat}
@@ -450,14 +464,6 @@ const PcBuilder = () => {
                           </div>
                         </div>
                       ))}
-                      <div className="flex justify-end">
-                        <button
-                          className="px-4 py-2 fome\
-semibold bg-white text-primary border border-primary rounded-xl hover:bg-blue-50 transition-all flex items-center flex-row gap-2 cursor-pointer"
-                        >
-                          <Download /> Download
-                        </button>
-                      </div>
                     </div>
                   )}
                 </>

@@ -79,7 +79,7 @@ const RelevantProducts: React.FC<RelevantProductsProps> = ({
         }}
       >
         {relevantProducts.map((product: ProductType) => (
-          <SwiperSlide key={product.id}>
+          <SwiperSlide key={product.id} className="p-2">
             <ProductCard
               id={Number(product.id)}
               name={product.name}

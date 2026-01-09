@@ -4,9 +4,15 @@ import Image from "next/image";
 import ImgA from "@/assets/reviewImg/0bd7b336ee0f46c2c76b65c477da259f0e5150e8.png";
 import ImgB from "@/assets/reviewImg/3dfd7536813e08be8c37daddad937a682336646a.png";
 import ImgC from "@/assets/reviewImg/59dd59bf65ddedbc29d142fbac28b6b94972e288.png";
+const summary = [
+  { stars: 5, count: 22 },
+  { stars: 4, count: 75 },
+  { stars: 3, count: 12 },
+  { stars: 2, count: 8 },
+  { stars: 1, count: 7 },
+];
 
 export default function ReviewsSection() {
-
   const reviews = [
     {
       id: 1,
@@ -37,27 +43,28 @@ export default function ReviewsSection() {
     },
   ];
 
-  
-
   return (
-    <div className="p-8  rounded-xl bg-white mt-10">
+    <div className="p-8 rounded-xl bg-white mt-10">
       {/* -------- TABS CONTENT -------- */}
       <h2 className="text-xl font-semibold mb-6">Customer Review</h2>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-10">
         {/* ---------- LEFT: REVIEW LIST ----------- */}
         <div className="lg:col-span-2 space-y-8">
           {reviews.map((rev) => (
-            <div key={rev.id} className="flex gap-4 border-b border-[#BEE5F6] pb-6">
+            <div
+              key={rev.id}
+              className="flex gap-4 border-b border-[#BEE5F6] pb-6"
+            >
               <div className="w-[55px] h-[55px] rounded-full overflow-hidden">
-  <Image
-    src={rev.img}
-    alt={rev.name}
-    width={55}
-    height={55}
-    className="object-cover w-full h-full"
-  />
-</div>
+                <Image
+                  src={rev.img}
+                  alt={rev.name}
+                  width={55}
+                  height={55}
+                  className="object-cover w-full h-full"
+                />
+              </div>
 
               <div className="flex-1">
                 <div className="flex justify-between">
@@ -76,9 +83,41 @@ export default function ReviewsSection() {
             </div>
           ))}
         </div>
-        
+        {/* ----------- SUMMARY / LEFT ----------- */}
+        <div className="flex-1 flex flex-col justify-between">
+          <div className="space-y-4 md:space-y-6 h-full">
+            <h2 className="text-xl font-semibold text-center md:text-left">
+              Based on those reviews
+            </h2>
+
+            <div className="rounded-xl border border-[#BEE5F6] p-4 md:p-6 flex flex-col justify-center">
+              <p className="text-4xl md:text-5xl font-bold text-blue-500 text-center">
+                4.3
+              </p>
+              <p className="text-center text-gray-600 mt-1">Average reviews</p>
+
+              <div className="mt-4 md:mt-6 space-y-2">
+                {summary.map((s) => (
+                  <div key={s.stars} className="flex items-center gap-3">
+                    <span className="text-sm text-gray-700 w-12">
+                      {s.stars} ⭐
+                    </span>
+
+                    <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-blue-400"
+                        style={{ width: `${s.count}%` }}
+                      />
+                    </div>
+
+                    <span className="w-8 text-right text-sm">{s.count}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-
   );
 }
