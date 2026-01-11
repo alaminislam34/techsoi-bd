@@ -3,7 +3,7 @@ import CommonWrapper from "@/components/layout/CommonWrapper";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react"; // lucide-react ব্যবহার করা হয়েছে
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function NavbarCategory() {
   const parthName = usePathname();
@@ -85,7 +85,6 @@ export default function NavbarCategory() {
     >
       <CommonWrapper>
         <div className="relative flex items-center group">
-          {/* Left Arrow - শুধুমাত্র ছোট ডিভাইসে দৃশ্যমান বা সবসময় রাখতে পারেন */}
           <button
             onClick={() => scroll("left")}
             className="absolute left-0 z-20 p-1 bg-[#eaf7fc]/80 hover:text-primary lg:hidden"

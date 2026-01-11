@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 
@@ -7,8 +6,10 @@ import Navbar from "@/components/section/Navbar";
 import Manubar from "@/components/section/Manubar";
 import NavbarCategory from "@/components/section/NavbarCategory";
 import Footer from "@/components/section/Footer";
+import { AuthProvider } from "@/Provider/AuthProvider";
 
-import "./globals.css"; 
+import "./globals.css";
+import { ToastContainer } from "react-toastify";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -28,20 +29,22 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={dmSans.className}>
-        
-        {/* Global Navbar */}
-        {/* <NavbarTop /> */}
-        <Navbar />
-        <Manubar />
-        <NavbarCategory />
+      <AuthProvider>
+        <body className={dmSans.className}>
+          {/* Global Navbar */}
+          {/* <NavbarTop /> */}
+          <Navbar />
+          <Manubar />
+          <NavbarCategory />
 
-        {/* Page Content */}
-        <main>{children}</main>
+          {/* Page Content */}
+          <main>{children}</main>
 
-        {/* Global Footer */}
-        <Footer />
-      </body>
+          {/* Global Footer */}
+          <Footer />
+          <ToastContainer position="top-center" />
+        </body>
+      </AuthProvider>
     </html>
   );
 }
