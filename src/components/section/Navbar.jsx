@@ -1,7 +1,7 @@
 "use client";
 import CommonWrapper from "@/components/layout/CommonWrapper";
 import { useAuth } from "@/Provider/AuthProvider";
-import { User, LogOut, Handbag } from "lucide-react"; 
+import { User, LogOut, Handbag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -233,11 +233,6 @@ export default function Navbar() {
             </div>
           </div>
         </CommonWrapper>
-        <ToastContainer
-          position="top-center"
-          autoClose={2000}
-          hideProgressBar={false}
-        />
       </div>
     </>
   );

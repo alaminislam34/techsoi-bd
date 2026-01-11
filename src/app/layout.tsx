@@ -36,13 +36,15 @@ export default function RootLayout({
           <Navbar />
           <Manubar />
           <NavbarCategory />
-
           {/* Page Content */}
           <main>{children}</main>
-
           {/* Global Footer */}
           <Footer />
-          <ToastContainer position="top-center" />
+          <ToastContainer
+            position="top-center"
+            autoClose={2000}
+            hideProgressBar={false}
+          />{" "}
         </body>
       </AuthProvider>
     </html>
