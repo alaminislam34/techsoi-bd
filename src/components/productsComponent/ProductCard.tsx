@@ -37,7 +37,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
       {/* Product Image */}
       <div className="w-full h-48 relative mb-3">
-        <Image src={imageSrc} alt={name} fill className="object-contain p-4" />
+        <Image
+          src={imageSrc || "/images/monitor.jpg"}
+          alt={name}
+          fill
+          className="object-contain"
+        />
       </div>
       <div className="flex flex-col justify-between gap-2 md:gap-4">
         <div className="flex flex-col gap-2 md:gap-6 overflow-hidden">

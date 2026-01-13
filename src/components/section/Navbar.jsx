@@ -13,7 +13,7 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="bg-white/50 backdrop-blur-[50px] sticky top-0 z-50">
+      <div className="bg-white/50 backdrop-blur-[50px] sticky top-0 z-50 shadow-xs">
         <CommonWrapper>
           <div className="flex justify-between items-center relative py-2.5 md:py-4">
             {/* ---------- LOGO ---------- */}
