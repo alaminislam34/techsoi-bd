@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { ToastContainer } from "react-toastify";
 
 export default function Navbar() {
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -19,13 +18,13 @@ export default function Navbar() {
           <div className="flex justify-between items-center relative py-2.5 md:py-4">
             {/* ---------- LOGO ---------- */}
             <Link href={"/"}>
-              <div className="sm:block md:block mr-1">
+              <div className="sm:block md:block mr-1 py-2">
                 <Image
                   src={"/icons/logo.png"}
                   height={400}
                   width={800}
                   alt="Website logo"
-                  className="h-14 w-auto"
+                  className="h-10 md:h-14 w-auto object-contain"
                 />
               </div>
             </Link>
@@ -111,24 +110,7 @@ export default function Navbar() {
                   <p className="text-sm text-[#505050]">৳200</p>
                 </div>
               </Link>
-              <Link
-                href={"/myorders"}
-                className="hidden md:flex items-center relative gap-2"
-              >
-                <div className="w-10 h-10 relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
-                  <div className="flex items-center mt-2 justify-center">
-                    <Handbag size={20} />
-                  </div>
-                  <div className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
-                    <p className="text-[10px] text-white">3</p>
-                  </div>
-                </div>
 
-                <div className="md:block hidden">
-                  <p className="text-sm font-medium text-primary">Orders</p>
-                  <p className="text-sm text-[#505050]">৳200</p>
-                </div>
-              </Link>
               {/* User Dropdown */}
               <div className="relative ml-1">
                 <button
@@ -171,7 +153,9 @@ export default function Navbar() {
                         <div className="flex flex-col gap-4">
                           <div className="flex items-center gap-3">
                             <img
-                              src={user.image || "/default-avatar.png"}
+                              src={
+                                user?.image ? user?.image : "/images/user.jpg"
+                              }
                               className="w-10 h-10 rounded-full"
                               alt="avatar"
                             />
@@ -186,6 +170,23 @@ export default function Navbar() {
                           </div>
                           <hr className="border-gray-100" />
                           <Link
+                            href={"/myorders"}
+                            className="hidden md:flex items-center relative gap-2"
+                          >
+                            <div className="w-10 h-10 relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
+                              <div className="flex items-center mt-2 justify-center">
+                                <Handbag size={20} />
+                              </div>
+                              <div className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
+                                <p className="text-[10px] text-white">3</p>
+                              </div>
+                            </div>
+
+                            <div>
+                              <p className="font-medium text-primary">Orders</p>
+                            </div>
+                          </Link>
+                          <Link
                             href={"/profile"}
                             onClick={() => setOpenDropdown(false)}
                             className="flex items-center gap-3 group"
@@ -193,7 +194,7 @@ export default function Navbar() {
                             <span className="p-2 bg-primary/10 text-primary rounded-full group-hover:bg-primary group-hover:text-white transition-colors">
                               <User size={20} />
                             </span>
-                            <span className="font-medium text-gray-700">
+                            <span className="font-medium text-primary">
                               My Profile
                             </span>
                           </Link>
