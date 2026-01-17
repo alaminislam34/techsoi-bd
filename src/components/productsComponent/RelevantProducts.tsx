@@ -26,7 +26,6 @@ const RelevantProducts: React.FC<RelevantProductsProps> = ({
   const getImageSrc = (img: string | StaticImageData) =>
     typeof img === "string" ? img : img.src;
 
-  // Filter products by category excluding current product
   const relevantProducts = productList.filter(
     (p) => p.category === currentCategory && p.id !== currentProductId
   );
@@ -88,7 +87,6 @@ const RelevantProducts: React.FC<RelevantProductsProps> = ({
               rating={product.rating}
               reviews={product.reviewCount}
               imageSrc={getImageSrc(product.image)}
-              saveAmount={product.regularPrice - product.salePrice}
             />
           </SwiperSlide>
         ))}
