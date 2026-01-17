@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { ToastContainer } from "react-toastify";
 
 export default function Navbar() {
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -62,73 +61,82 @@ export default function Navbar() {
 
             {/* ---------- ACTIONS (Orders, Cart, Profile) ---------- */}
             <div className="flex items-center gap-2 md:gap-4">
-              {/* favaroute Icon */}
-              <Link
-                href={"/favourite"}
-                className="hidden md:flex items-center relative gap-2"
-              >
-                <div className="w-10 h-10 flex items-center justify-center relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
-                  <Image
-                    src={"/icons/heart.png"}
-                    height={500}
-                    width={500}
-                    alt="Favourite icon"
-                    className="w-5 h-auto"
-                  />
-                  <div className="flex flex-col justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
-                    <p className="text-[10px] text-white">2</p>
-                  </div>
-                </div>
+              {/* --- এই অংশটুকু শুধু ইউজার লগইন থাকলে দেখাবে --- */}
+              {user && (
+                <>
+                  {/* favaroute Icon */}
+                  <Link
+                    href={"/favourite"}
+                    className="hidden md:flex items-center relative gap-2"
+                  >
+                    <div className="w-10 h-10 flex items-center justify-center relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
+                      <Image
+                        src={"/icons/heart.png"}
+                        height={500}
+                        width={500}
+                        alt="Favourite icon"
+                        className="w-5 h-auto"
+                      />
+                      <div className="flex flex-col justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
+                        <p className="text-[10px] text-white">2</p>
+                      </div>
+                    </div>
 
-                <div className="md:block hidden">
-                  <p className="text-base font-medium text-primary">
-                    Favourites
-                  </p>
-                  <p className="text-sm text-[#505050]">৳650</p>
-                </div>
-              </Link>
+                    <div className="md:block hidden">
+                      <p className="text-base font-medium text-primary">
+                        Favourites
+                      </p>
+                      <p className="text-sm text-[#505050]">৳650</p>
+                    </div>
+                  </Link>
 
-              {/* Cart Icon */}
-              <Link
-                href={"/mycart"}
-                className="hidden md:flex items-center relative gap-2"
-              >
-                <div className="w-10 h-10 flex items-center justify-center relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
-                  <Image
-                    src={"/icons/cart.png"}
-                    height={500}
-                    width={500}
-                    alt="Cart icon"
-                    className="w-5 h-auto"
-                  />
-                  <div className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
-                    <p className="text-[10px] text-white">3</p>
-                  </div>
-                </div>
+                  {/* Cart Icon */}
+                  <Link
+                    href={"/mycart"}
+                    className="hidden md:flex items-center relative gap-2"
+                  >
+                    <div className="w-10 h-10 flex items-center justify-center relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
+                      <Image
+                        src={"/icons/cart.png"}
+                        height={500}
+                        width={500}
+                        alt="Cart icon"
+                        className="w-5 h-auto"
+                      />
+                      <div className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
+                        <p className="text-[10px] text-white">3</p>
+                      </div>
+                    </div>
 
-                <div className="md:block hidden">
-                  <p className="text-sm font-medium text-primary">Cart</p>
-                  <p className="text-sm text-[#505050]">৳200</p>
-                </div>
-              </Link>
-              <Link
-                href={"/myorders"}
-                className="hidden md:flex items-center relative gap-2"
-              >
-                <div className="w-10 h-10 relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
-                  <div className="flex items-center mt-2 justify-center">
-                    <Handbag size={20} />
-                  </div>
-                  <div className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
-                    <p className="text-[10px] text-white">3</p>
-                  </div>
-                </div>
+                    <div className="md:block hidden">
+                      <p className="text-sm font-medium text-primary">Cart</p>
+                      <p className="text-sm text-[#505050]">৳200</p>
+                    </div>
+                  </Link>
 
-                <div className="md:block hidden">
-                  <p className="text-sm font-medium text-primary">Orders</p>
-                  <p className="text-sm text-[#505050]">৳200</p>
-                </div>
-              </Link>
+                  {/* Orders Icon */}
+                  <Link
+                    href={"/myorders"}
+                    className="hidden md:flex items-center relative gap-2"
+                  >
+                    <div className="w-10 h-10 relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
+                      <div className="flex items-center mt-2 justify-center">
+                        <Handbag size={20} />
+                      </div>
+                      <div className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
+                        <p className="text-[10px] text-white">3</p>
+                      </div>
+                    </div>
+
+                    <div className="md:block hidden">
+                      <p className="text-sm font-medium text-primary">Orders</p>
+                      <p className="text-sm text-[#505050]">৳200</p>
+                    </div>
+                  </Link>
+                </>
+              )}
+              {/* --- ইউজার পার্ট শেষ --- */}
+
               {/* User Dropdown */}
               <div className="relative ml-1">
                 <button
@@ -217,7 +225,7 @@ export default function Navbar() {
                           </p>
                           <button
                             onClick={loginWithGoogle}
-                            className="w-full mt-3 flex items-center justify-center gap-3 border border-gray-200 py-2.5 rounded-xl hover:bg-gray-50 transition-all active:scale-95"
+                            className="w-full mt-4 flex items-center justify-center gap-3 border border-gray-200 py-2.5 rounded-xl hover:bg-gray-50 transition-all active:scale-95"
                           >
                             <FcGoogle />
                             <span className="text-sm font-semibold text-gray-700">
