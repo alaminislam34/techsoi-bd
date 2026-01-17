@@ -93,7 +93,7 @@ export default function FilterSidebar({
         {openPrice && (
           <div className="mt-5 space-y-5">
             {/* Dual Range Slider Container */}
-            <div className="relative h-2 w-full bg-gray-200 rounded-lg">
+            <div className="relative h-0.5 w-full bg-gray-200 rounded-lg">
               {/* This div creates the colored bar between handles */}
               <div
                 className="absolute h-full bg-[#2CACE2] rounded-lg"
@@ -110,7 +110,7 @@ export default function FilterSidebar({
                 onChange={(e) =>
                   setMinPrice(Math.min(Number(e.target.value), maxPrice - 1000))
                 }
-                className="absolute w-full -top-1 h-2 bg-transparent appearance-none pointer-events-none cursor-pointer accent-[#2CACE2] [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto"
+                className="absolute w-full -top-0.5 h-1 bg-transparent appearance-none pointer-events-none cursor-pointer accent-[#2CACE2] [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto"
               />
               <input
                 type="range"
@@ -120,16 +120,14 @@ export default function FilterSidebar({
                 onChange={(e) =>
                   setMaxPrice(Math.max(Number(e.target.value), minPrice + 1000))
                 }
-                className="absolute w-full -top-1 h-2 bg-transparent appearance-none pointer-events-none cursor-pointer accent-[#2CACE2] [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto"
+                className="absolute w-full -top-0.5 h-1 bg-transparent appearance-none pointer-events-none cursor-pointer accent-[#2CACE2] [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto"
               />
             </div>
 
             {/* Price Inputs */}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1">
-                <span className="text-[10px] text-gray-500">
-                  Min Price
-                </span>
+                <span className="text-[10px] text-gray-500">Min Price</span>
                 <input
                   type="number"
                   value={minPrice}
@@ -138,9 +136,7 @@ export default function FilterSidebar({
                 />
               </div>
               <div className="space-y-1">
-                <span className="text-[10px] text-gray-500">
-                  Max Price
-                </span>
+                <span className="text-[10px] text-gray-500">Max Price</span>
                 <input
                   type="number"
                   value={maxPrice}

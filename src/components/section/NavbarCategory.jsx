@@ -2,15 +2,31 @@
 import CommonWrapper from "@/components/layout/CommonWrapper";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import axios from "axios";
+import { API_ENDPOINTS } from "@/api/ApiEndPoint";
 
 export default function NavbarCategory() {
-  const parthName = usePathname();
+  const [allCategories, setAllCategories] = useState([]);
+  const pathName = usePathname();
   const [activeFilter, setActiveFilter] = useState(null);
   const scrollRef = useRef(null);
 
-  // স্ক্রল ফাংশন
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get(API_ENDPOINTS.CATEGORY_GET_ALL);
+        if (res.status === 200) {
+          setAllCategories(res.data.data || []);
+        }
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   const scroll = (direction) => {
     if (scrollRef.current) {
       const { scrollLeft, clientWidth } = scrollRef.current;
@@ -19,64 +35,6 @@ export default function NavbarCategory() {
       scrollRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
     }
   };
-
-  const categories = [
-    {
-      to: "/category/laptop",
-      label: "Laptop",
-      sub_category: ["Lenovo", "HP", "Dell", "Asus", "Acer"],
-    },
-    {
-      to: "/category/components",
-      label: "PC Components",
-      sub_category: ["Processor", "Motherboard", "RAM", "SSD", "Graphics Card"],
-    },
-    {
-      to: "/category/monitor",
-      label: "Monitor",
-      sub_category: ["Gaming Monitor", "4K Monitor", "Curved Monitor"],
-    },
-    {
-      to: "/category/casing",
-      label: "Casing",
-      sub_category: ["ATX Case", "Micro ATX", "Mini ITX"],
-    },
-    {
-      to: "/category/accessories",
-      label: "Accessories",
-      sub_category: ["Webcam", "USB Hub", "Cooling Pad"],
-    },
-    {
-      to: "/category/mouse",
-      label: "Mouse",
-      sub_category: ["Gaming Mouse", "Wireless Mouse"],
-    },
-    {
-      to: "/category/keyboard",
-      label: "Keyboard",
-      sub_category: ["Mechanical", "Wireless", "RGB Keyboard"],
-    },
-    {
-      to: "/category/headphone",
-      label: "Headphone",
-      sub_category: ["Gaming Headphone", "Bluetooth Headphone"],
-    },
-    {
-      to: "/category/speaker",
-      label: "Speaker",
-      sub_category: ["Bluetooth Speaker", "Soundbar"],
-    },
-    {
-      to: "/category/gaming",
-      label: "Gaming",
-      sub_category: ["Gaming Chair", "Gaming Desk"],
-    },
-    {
-      to: "/category/cctv",
-      label: "CCTV",
-      sub_category: ["IP Camera", "DVR", "NVR"],
-    },
-  ];
 
   return (
     <div
@@ -97,21 +55,21 @@ export default function NavbarCategory() {
             ref={scrollRef}
             className="flex items-center gap-4 md:gap-8 py-3 md:py-5 overflow-x-auto no-scrollbar scroll-smooth w-full px-6 md:px-0"
           >
-            {categories.map((item, index) => (
+            {allCategories.map((item, index) => (
               <div
-                key={index}
+                key={item.id}
                 className="relative flex items-center gap-6 md:gap-8 shrink-0"
                 onMouseEnter={() => setActiveFilter(index)}
               >
                 <Link
-                  href={item.to}
+                  href={`/products?category=${item.slug}`}
                   className={`md:text-lg font-medium whitespace-nowrap transition-colors ${
-                    parthName === item.to
+                    pathName === `/category/${item.slug}`
                       ? "text-primary font-semibold"
                       : "text-[#303030] hover:text-primary"
                   }`}
                 >
-                  {item.label}{" "}
+                  {item.name}{" "}
                   <span className="h-12 w-0 border ml-4 border-primary/20"></span>{" "}
                 </Link>
               </div>
@@ -128,25 +86,27 @@ export default function NavbarCategory() {
         </div>
       </CommonWrapper>
 
-      {activeFilter !== null && (
-        <div className="absolute top-full left-0 right-0 z-40 shadow-xl border-t border-[#BEE5F6]">
-          <div className="backdrop-blur-md bg-white/70 rounded-b-xl">
-            <CommonWrapper>
-              <div className="py-6 flex flex-col gap-2">
-                {categories[activeFilter].sub_category.map((sub, idx) => (
-                  <Link
-                    key={idx}
-                    href="#"
-                    className="md:text-base text-sm text-[#303030] hover:text-primary hover:font-medium transition-all"
-                  >
-                    {sub}
-                  </Link>
-                ))}
-              </div>
-            </CommonWrapper>
+      {/* Subcategory Dropdown */}
+      {activeFilter !== null &&
+        allCategories[activeFilter]?.subcategory?.length > 0 && (
+          <div className="absolute top-full left-0 right-0 z-40 shadow-xl border-t border-[#BEE5F6]">
+            <div className="backdrop-blur-md bg-white/70 rounded-b-xl">
+              <CommonWrapper>
+                <div className="py-6 flex flex-col gap-2">
+                  {allCategories[activeFilter].subcategory.map((sub) => (
+                    <Link
+                      key={sub.id}
+                      href={`/category/${allCategories[activeFilter].slug}/${sub.slug}`}
+                      className="md:text-base text-sm text-[#303030] hover:text-primary hover:font-medium transition-all"
+                    >
+                      {sub.name}
+                    </Link>
+                  ))}
+                </div>
+              </CommonWrapper>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       <style jsx>{`
         .no-scrollbar::-webkit-scrollbar {
