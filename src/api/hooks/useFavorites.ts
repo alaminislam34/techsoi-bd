@@ -13,9 +13,8 @@ interface FavoriteProduct {
 export const useGetFavorites = () => {
   return useQuery({
     queryKey: ["favorites"],
-    queryFn: () =>
-      apiClient.get<FavoriteProduct[]>(API_ENDPOINTS.FAV_LIST_GET),
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    queryFn: () => apiClient.get<FavoriteProduct[]>(API_ENDPOINTS.FAV_LIST_GET),
+    staleTime: 2 * 60 * 1000,
   });
 };
 

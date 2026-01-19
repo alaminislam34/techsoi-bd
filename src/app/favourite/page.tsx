@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   Trash2,
@@ -10,110 +10,75 @@ import {
   Loader2,
   HeartOff,
 } from "lucide-react";
-import Cookies from "js-cookie";
-
 import CommonWrapper from "@/components/layout/CommonWrapper";
 import WebFutures from "@/components/section/WebFutures";
 import BlogTitle from "@/components/layout/BlogTitle";
 import BlogCard from "@/components/parts/BlogCard";
 import { toast } from "react-toastify";
 
-// Define the type based on your API response
-type FavItem = {
-  id: number;
-  product_id: number;
-  product: {
-    id: number;
-    title: string;
-    price: number;
-    image: string;
-    stock_status?: string;
-  };
-  qty?: number; // Added locally for UI management
-};
-
-const BASE_URL = "your_base_url_here"; // Replace with your actual base URL
-
-// API Routes from your snippet
-const API_ROUTES = {
-  FAV_LIST_GET: `${BASE_URL}/fav-list`,
-  FAV_LIST_DELETE: (id: number | string) => `${BASE_URL}/fav-list/${id}`,
-};
+// Your favorite hooks
+import {
+  useGetFavorites,
+  useDeleteFromFavorites,
+  useAddToCart,
+} from "@/api/hooks"; // adjust path if needed
 
 export default function FavouritePage() {
-  const [favourites, setFavourites] = useState<FavItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const token = Cookies.get("token");
-
-  // --- Fetch Data ---
-  const fetchFavourites = async () => {
-    try {
-      const res = await fetch(API_ROUTES.FAV_LIST_GET, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      const result = await res.json();
-      if (res.ok) {
-        // Map quantity 1 by default if not provided by API
-        const itemsWithQty = (result.data || []).map((item: FavItem) => ({
-          ...item,
-          qty: 1,
-        }));
-        setFavourites(itemsWithQty);
-      }
-    } catch (error) {
-      console.error("Fetch error:", error);
-      toast.error("Failed to load favourites");
-    } finally {
-      setLoading(false);
-    }
+  const { data: favoritesResponse, isLoading, isError } = useGetFavorites();
+  const { mutate: deleteFromFavorites, isPending: isDeleting } =
+    useDeleteFromFavorites();
+  const { mutate: addToCart } = useAddToCart();
+  const handleAddToCart = (productId: number, quantity: number) => {
+    addToCart({ product_id: productId, quantity: 1 });
   };
+  // Local quantity state (kept as per your design)
+  const [quantities, setQuantities] = useState<Record<number, number>>({});
 
-  // --- Delete Item ---
-  const handleDelete = async (id: number) => {
-    try {
-      const res = await fetch(API_ROUTES.FAV_LIST_DELETE(id), {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  const favorites = favoritesResponse?.data || [];
 
-      if (res.ok) {
-        setFavourites((prev) => prev.filter((item) => item.id !== id));
-        toast.success("Item removed from favourites");
-      } else {
-        toast.error("Could not remove item");
-      }
-    } catch (error) {
-      toast.error("An error occurred");
-    }
-  };
-
+  // Initialize quantity to 1 for each favorite item
   useEffect(() => {
-    if (token) fetchFavourites();
-    else setLoading(false);
-  }, [token]);
+    if (favorites.length > 0) {
+      const initialQuantities: Record<number, number> = {};
+      favorites.forEach((fav) => {
+        initialQuantities[fav.id] = 1; // default qty
+      });
+      setQuantities(initialQuantities);
+    }
+  }, [favorites]);
 
-  // --- Local Quantity Logic ---
-  const updateQty = (id: number, delta: number) => {
-    setFavourites((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, qty: Math.max(1, (item.qty || 1) + delta) }
-          : item
-      )
-    );
+  const handleDelete = (favId: number) => {
+    deleteFromFavorites(favId, {
+      onSuccess: () => {
+        toast.success("Removed from favorites");
+      },
+      onError: () => {
+        toast.error("Failed to remove item");
+      },
+    });
   };
 
-  if (loading) {
+  const updateQty = (id: number, delta: number) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [id]: Math.max(1, (prev[id] || 1) + delta),
+    }));
+  };
+
+  if (isLoading) {
     return (
       <div className="h-[60vh] flex flex-col items-center justify-center text-primary gap-4">
         <Loader2 className="animate-spin" size={40} />
-        <p className="font-medium">Loading your list...</p>
+        <p className="font-medium">Loading your favourites...</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="h-[60vh] flex flex-col items-center justify-center text-red-500 gap-4">
+        <HeartOff size={48} />
+        <p>Failed to load favourites. Please try again later.</p>
       </div>
     );
   }
@@ -127,98 +92,136 @@ export default function FavouritePage() {
               My Favourite
             </h2>
 
-            {favourites.length === 0 ? (
+            {favorites.length === 0 ? (
               <div className="py-20 flex flex-col items-center justify-center text-gray-400">
                 <HeartOff size={48} className="mb-4 opacity-20" />
                 <p>Your favourite list is empty.</p>
               </div>
             ) : (
               <>
-                {/* Table Header */}
-                <div className="hidden md:grid grid-cols-12 text-gray-500 font-bold text-xs uppercase tracking-wider border-b pb-4 mb-4">
-                  <div className="col-span-1">Action</div>
-                  <div className="col-span-5">Product Details</div>
-                  <div className="col-span-2">Status</div>
-                  <div className="col-span-2">Quantity</div>
-                  <div className="col-span-2 text-right">Subtotal</div>
-                </div>
+                <>
+                  {/* Table Wrapper */}
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-175 text-left border-collapse">
+                      <thead className="hidden md:table-header-group">
+                        <tr className="text-gray-500 font-bold text-xs uppercase tracking-wider border-b border-b-gray-200 border-r-gray-200 pb-4 ">
+                          <th className="py-4">Action</th>
+                          <th className="py-4">Product Details</th>
+                          <th className="py-4 text-center">Status</th>
+                          <th className="py-4 text-center">Quantity</th>
+                          <th className="py-4 text-center">Price</th>
+                          <th className="py-4 text-center">Action</th>
+                        </tr>
+                      </thead>
 
-                {/* Items List */}
-                <div className="divide-y divide-gray-100">
-                  {favourites.map((item) => (
-                    <div
-                      key={item.id}
-                      className="grid md:grid-cols-12 grid-cols-1 gap-y-4 md:gap-y-0 items-center py-6"
-                    >
-                      {/* Delete Action */}
-                      <div className="md:col-span-1">
-                        <button
-                          onClick={() => handleDelete(item.id)}
-                          className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
-                        >
-                          <Trash2 size={20} />
-                        </button>
-                      </div>
+                      {/* Table Body */}
+                      <tbody className="divide-y divide-gray-100 ">
+                        {favorites.map((fav) => {
+                          const product = fav.product;
+                          const currentQty = quantities[fav.id] || 1;
+                          const price =
+                            product?.sale_price || product?.regular_price || 0;
+                          const subtotal = price * currentQty;
 
-                      {/* Product Details */}
-                      <div className="md:col-span-5 flex items-center gap-4">
-                        <div className="w-20 h-20 rounded-xl border border-gray-100 p-2 relative overflow-hidden bg-gray-50 shrink-0">
-                          <Image
-                            src={item.product?.image || "/placeholder.png"}
-                            alt={item.product?.title}
-                            fill
-                            className="object-contain p-1"
-                          />
-                        </div>
-                        <h3 className="font-semibold text-gray-800 text-sm md:text-base leading-tight">
-                          {item.product?.title}
-                        </h3>
-                      </div>
+                          return (
+                            <tr
+                              key={fav.id}
+                              className="group hover:bg-gray-50 transition-colors "
+                            >
+                              {/* Action - Delete */}
+                              <td className="py-2">
+                                <button
+                                  onClick={() => handleDelete(fav.id)}
+                                  disabled={isDeleting}
+                                  className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all disabled:opacity-50"
+                                >
+                                  <Trash2 size={20} />
+                                </button>
+                              </td>
 
-                      {/* Stock Status */}
-                      <div className="md:col-span-2">
-                        <span className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold">
-                          {item.product?.stock_status || "In Stock"}
-                        </span>
-                      </div>
+                              {/* Product Details */}
+                              <td className="py-2">
+                                <div className="flex items-center gap-4">
+                                  <div className="w-8 h-8 rounded-xl border border-gray-100 p-2 relative overflow-hidden bg-gray-50 shrink-0">
+                                    {product?.main_image ? (
+                                      <Image
+                                        src={
+                                          product?.main_image ||
+                                          "/images/monitor.png"
+                                        }
+                                        alt={product?.name || "Product"}
+                                        fill
+                                        className="object-contain p-1"
+                                      />
+                                    ) : (
+                                      <div className="w-full h-full "></div>
+                                    )}
+                                  </div>
+                                  <h3 className="font-semibold text-gray-800 text-sm md:text-base leading-tight">
+                                    {product?.name || "Product"}
+                                  </h3>
+                                </div>
+                              </td>
 
-                      {/* Quantity Controls */}
-                      <div className="md:col-span-2">
-                        <div className="flex items-center border border-gray-200 rounded-lg w-28 px-1 py-1">
-                          <button
-                            onClick={() => updateQty(item.id, -1)}
-                            className="p-1 text-gray-500 hover:text-primary"
-                          >
-                            <Minus size={14} />
-                          </button>
-                          <span className="flex-1 text-center font-bold text-sm">
-                            {item.qty?.toString().padStart(2, "0")}
-                          </span>
-                          <button
-                            onClick={() => updateQty(item.id, 1)}
-                            className="p-1 text-gray-500 hover:text-primary"
-                          >
-                            <Plus size={14} />
-                          </button>
-                        </div>
-                      </div>
+                              {/* Status */}
+                              <td className="py-2 text-center">
+                                <span className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold">
+                                  {product?.stock_status || "In Stock"}
+                                </span>
+                              </td>
 
-                      {/* Price & Add to Cart */}
-                      <div className="md:col-span-2 flex flex-col items-end gap-2">
-                        <p className="text-primary font-bold text-lg">
-                          ৳
-                          {(
-                            item.product?.price * (item.qty || 1)
-                          ).toLocaleString()}
-                        </p>
-                        <button className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-opacity-90 transition-all w-full md:w-auto">
-                          <ShoppingCart size={14} />
-                          Add to Cart
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                              {/* Quantity */}
+                              <td className="py-2">
+                                <div className="flex items-center justify-center">
+                                  <div className="flex items-center border border-gray-200 rounded-lg w-28 px-1 py-1">
+                                    <button
+                                      onClick={() => updateQty(fav.id, -1)}
+                                      className="p-1 text-gray-500 hover:text-primary"
+                                    >
+                                      <Minus size={14} />
+                                    </button>
+                                    <span className="flex-1 text-center font-bold text-sm">
+                                      {String(currentQty).padStart(2, "0")}
+                                    </span>
+                                    <button
+                                      onClick={() => updateQty(fav.id, 1)}
+                                      className="p-1 text-gray-500 hover:text-primary"
+                                    >
+                                      <Plus size={14} />
+                                    </button>
+                                  </div>
+                                </div>
+                              </td>
+
+                              {/* Price */}
+                              <td className="py-2 text-center font-bold text-primary">
+                                ৳{price.toLocaleString()}
+                              </td>
+
+                              {/* Add to Cart */}
+                              <td className="py-2">
+                                <data className="flex items-center justify-center">
+                                  <button
+                                    onClick={() =>
+                                      handleAddToCart(
+                                        fav.product_id,
+                                        currentQty,
+                                      )
+                                    }
+                                    className="flex items-center justify-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-opacity-90 transition-all w-full md:w-auto"
+                                  >
+                                    <ShoppingCart size={14} />
+                                    Add to Cart
+                                  </button>
+                                </data>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
               </>
             )}
           </div>
