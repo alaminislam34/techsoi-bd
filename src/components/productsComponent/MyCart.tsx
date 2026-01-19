@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Image, { StaticImageData } from "next/image";
+import { useState, useEffect, useMemo } from "react";
+import Image from "next/image";
 import { Trash2, Minus, Plus } from "lucide-react";
 import CommonWrapper from "../layout/CommonWrapper";
 import OrderForm from "./OrderForm";
 import { useGetCartProducts, useDeleteFromCart } from "@/api/hooks/useCart";
-import { useGetProduct } from "@/api/hooks/useProducts";
 
 type CartItemDisplay = {
   id: number;
@@ -21,20 +20,21 @@ type CartItemDisplay = {
 export default function MyCart() {
   const { data: cartResponse, isLoading, isError } = useGetCartProducts();
   const { mutate: deleteFromCart } = useDeleteFromCart();
+
   const [quantities, setQuantities] = useState<Record<number, number>>({});
 
   const cartItems = cartResponse?.data || [];
 
-  // Initialize quantities from cart items using useEffect
   useEffect(() => {
-    if (cartItems && cartItems.length > 0) {
+    if (cartItems?.length > 0) {
       const newQuantities: Record<number, number> = {};
       cartItems.forEach((item: any) => {
-        newQuantities[item.id] = item.quantity || 1;
+        const safeQty = Number(item.quantity) || 1;
+        newQuantities[item.id] = safeQty;
       });
       setQuantities(newQuantities);
     }
-  }, [cartItems.length]); // Only depend on length to avoid infinite loops
+  }, [cartItems]);
 
   const increase = (id: number) => {
     setQuantities((prev) => ({
@@ -46,13 +46,27 @@ export default function MyCart() {
   const decrease = (id: number) => {
     setQuantities((prev) => ({
       ...prev,
-      [id]: prev[id] > 1 ? prev[id] - 1 : 1,
+      [id]: Math.max(1, (prev[id] || 1) - 1),
     }));
   };
 
   const removeItem = (id: number) => {
     deleteFromCart(id);
+    // Also clean up local quantity state
+    setQuantities((prev) => {
+      const newQuantities = { ...prev };
+      delete newQuantities[id];
+      return newQuantities;
+    });
   };
+
+  // Calculate total amount for OrderForm (optional improvement)
+  const totalAmount = useMemo(() => {
+    return cartItems.reduce((sum: number, item: any) => {
+      const qty = quantities[item.id] ?? Number(item.quantity) ?? 1;
+      return sum + (item.amount || 0) * qty;
+    }, 0);
+  }, [cartItems, quantities]);
 
   if (isLoading) {
     return (
@@ -68,7 +82,7 @@ export default function MyCart() {
     return (
       <CommonWrapper>
         <section className="py-10 text-center text-red-500">
-          Error loading cart items
+          Error loading cart items. Please try again later.
         </section>
       </CommonWrapper>
     );
@@ -115,11 +129,11 @@ export default function MyCart() {
   return (
     <CommonWrapper>
       <section className="py-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* LEFT – CART */}
+        {/* LEFT – CART ITEMS */}
         <div className="lg:col-span-2 border border-blue-200 rounded-2xl p-6">
           <h2 className="text-xl font-semibold mb-6">My Cart</h2>
 
-          {/* Header */}
+          {/* Header - visible on desktop */}
           <div className="hidden md:grid grid-cols-12 text-sm text-gray-500 border-b pb-3 mb-4">
             <div className="col-span-1">Delete</div>
             <div className="col-span-6">Products</div>
@@ -127,82 +141,94 @@ export default function MyCart() {
             <div className="col-span-2 text-right">Unit Price</div>
           </div>
 
-          {/* Items */}
-          {cartItems.map((item: any) => (
-            <div
-              key={item.id}
-              className="grid md:grid-cols-12 gap-y-4 items-center py-6 border-b last:border-none"
-              style={{ borderColor: "#E6E6E6" }}
-            >
-              {/* Delete */}
-              <div className="md:col-span-1">
-                <button
-                  onClick={() => removeItem(item.id)}
-                  className="text-gray-400 hover:text-red-500 cursor-pointer"
-                >
-                  <Trash2 size={18} />
-                </button>
-              </div>
+          {/* Cart Items */}
+          {cartItems.map((item: any) => {
+            // Safe quantity fallback
+            const currentQty =
+              quantities[item.id] ?? Number(item.quantity) ?? 1;
 
-              {/* Product */}
-              <div className="md:col-span-6 flex items-center gap-4">
-                <div
-                  className="w-20 h-20 rounded-xl border overflow-hidden relative"
-                  style={{ borderColor: "#EAF7FC" }}
-                >
-                  <img
-                    src={item.product?.main_image || "/images/monitor.jpg"}
-                    alt={item.product?.name || "Product"}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src = "/images/monitor.jpg";
-                    }}
-                  />
-                </div>
-                <p className="font-medium text-gray-700">
-                  {item.product?.name || "Product"}
-                </p>
-              </div>
-
-              {/* Quantity */}
-              <div className="md:col-span-3 flex justify-center">
-                <div
-                  className="flex items-center border border-[#2CACE2] rounded-lg px-3 py-1 gap-4"
-                  style={{ color: "#808080" }}
-                >
-                  <button
-                    onClick={() => decrease(item.id)}
-                    className="cursor-pointer"
-                  >
-                    <Minus size={16} />
-                  </button>
-                  <span className="font-semibold">
-                    {(quantities[item.id] || item.quantity)
-                      .toString()
-                      .padStart(2, "0")}
-                  </span>
-                  <button
-                    onClick={() => increase(item.id)}
-                    className="cursor-pointer"
-                  >
-                    <Plus size={16} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Price */}
+            return (
               <div
-                className="md:col-span-2 text-right font-semibold"
-                style={{ color: "#2CACE2" }}
+                key={item.id}
+                className="grid md:grid-cols-12 gap-y-4 items-center py-6 border-b last:border-none"
+                style={{ borderColor: "#E6E6E6" }}
               >
-                ৳{(item.amount || 0).toLocaleString()}
+                {/* Delete Button */}
+                <div className="md:col-span-1">
+                  <button
+                    onClick={() => removeItem(item.id)}
+                    className="text-gray-400 hover:text-red-500 cursor-pointer"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+
+                {/* Product Info */}
+                <div className="md:col-span-6 flex items-center gap-4">
+                  <div
+                    className="w-20 h-20 rounded-xl border overflow-hidden relative"
+                    style={{ borderColor: "#EAF7FC" }}
+                  >
+                    <img
+                      src={item.product?.main_image || "/images/monitor.jpg"}
+                      alt={item.product?.name || "Product"}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/monitor.jpg";
+                      }}
+                    />
+                  </div>
+                  <p className="font-medium text-gray-700">
+                    {item.product?.name || "Product"}
+                  </p>
+                </div>
+
+                {/* Quantity Controls */}
+                <div className="md:col-span-3 flex justify-center">
+                  <div
+                    className="flex items-center border border-[#2CACE2] rounded-lg px-3 py-1 gap-4"
+                    style={{ color: "#808080" }}
+                  >
+                    <button
+                      onClick={() => decrease(item.id)}
+                      className="cursor-pointer"
+                      disabled={currentQty <= 1}
+                    >
+                      <Minus size={16} />
+                    </button>
+
+                    <span className="font-semibold min-w-[2ch] text-center">
+                      {String(currentQty).padStart(2, "0")}
+                    </span>
+
+                    <button
+                      onClick={() => increase(item.id)}
+                      className="cursor-pointer"
+                    >
+                      <Plus size={16} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Price */}
+                <div
+                  className="md:col-span-2 text-right font-semibold"
+                  style={{ color: "#2CACE2" }}
+                >
+                  ৳{(item.amount || 0).toLocaleString()}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        {/* RIGHT – ORDER FORM */}
-        <OrderForm cartItems={cartItems} quantities={quantities} />
+        {/* RIGHT – ORDER SUMMARY / FORM */}
+        <OrderForm
+          cartItems={cartItems}
+          quantities={quantities}
+          // Optional: pass totalAmount if OrderForm needs it
+          // totalAmount={totalAmount}
+        />
       </section>
     </CommonWrapper>
   );
