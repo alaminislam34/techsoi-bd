@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
@@ -6,43 +6,48 @@ import { Swiper as SwiperCore } from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
 import ProductCard from "./ProductCard";
-import { productList, ProductType } from "@/components/lib/dummyProd";
+import { useGetAllProducts } from "@/api/hooks/useProducts";
 import { StaticImageData } from "next/image";
 
 interface RelevantProductsProps {
-  currentProductId: string;
-  currentCategory: string;
+  currentProductId: number;
 }
 
 const RelevantProducts: React.FC<RelevantProductsProps> = ({
   currentProductId,
-  currentCategory,
 }) => {
   const navigationPrevRef = useRef<HTMLButtonElement>(null);
   const navigationNextRef = useRef<HTMLButtonElement>(null);
   const swiperRef = useRef<SwiperCore | null>(null);
 
+  // Fetch all products
+  const { data: productsResponse, isLoading } = useGetAllProducts();
+
   // Helper to get image URL
   const getImageSrc = (img: string | StaticImageData) =>
     typeof img === "string" ? img : img.src;
 
-  const relevantProducts = productList.filter(
-    (p) => p.category === currentCategory && p.id !== currentProductId
-  );
+  // Filter relevant products (exclude current product)
+  const relevantProducts = useMemo(() => {
+    const products = productsResponse?.data || [];
+    return products.filter((p: any) => p.id !== currentProductId).slice(0, 6); // Show up to 6 relevant products
+  }, [productsResponse, currentProductId]);
 
-  if (relevantProducts.length === 0) return null;
+  if (isLoading || relevantProducts.length === 0) return null;
 
   return (
     <section className="py-12">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8 ">
-        <h2 className="text-3xl font-bold text-cyan-600">Relevant Products</h2>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+        <h2 className="text-2xl sm:text-3xl font-bold text-cyan-600">
+          Relevant Products
+        </h2>
 
         <div className="flex space-x-2">
           <button
             ref={navigationPrevRef}
             aria-label="Previous slide"
-            className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 text-gray-500 hover:bg-gray-100 transition"
+            className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 text-gray-500 hover:bg-gray-100 transition shrink-0"
           >
             <ChevronLeft size={20} />
           </button>
@@ -50,7 +55,7 @@ const RelevantProducts: React.FC<RelevantProductsProps> = ({
           <button
             ref={navigationNextRef}
             aria-label="Next slide"
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-cyan-500 text-white hover:bg-cyan-600 transition"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-cyan-500 text-white hover:bg-cyan-600 transition shrink-0"
           >
             <ChevronRight size={20} />
           </button>
@@ -70,23 +75,26 @@ const RelevantProducts: React.FC<RelevantProductsProps> = ({
             swiper.params.navigation.nextEl = navigationNextRef.current;
           }
         }}
-        spaceBetween={24}
+        spaceBetween={16}
         breakpoints={{
-          0: { slidesPerView: 1, spaceBetween: 16 },
-          640: { slidesPerView: 2, spaceBetween: 24 },
-          1024: { slidesPerView: 4, spaceBetween: 24 },
+          0: { slidesPerView: 1.2, spaceBetween: 10 },
+          480: { slidesPerView: 1.8, spaceBetween: 12 },
+          640: { slidesPerView: 2, spaceBetween: 12 },
+          768: { slidesPerView: 3, spaceBetween: 14 },
+          1024: { slidesPerView: 4, spaceBetween: 16 },
         }}
+        className="h-full"
       >
-        {relevantProducts.map((product: ProductType) => (
-          <SwiperSlide key={product.id} className="p-2">
+        {relevantProducts.map((product: any) => (
+          <SwiperSlide key={product.id} className=" h-full px-2 py-4">
             <ProductCard
-              id={Number(product.id)}
+              id={product.id}
               name={product.name}
-              price={product.salePrice}
-              oldPrice={product.regularPrice}
-              rating={product.rating}
-              reviews={product.reviewCount}
-              imageSrc={getImageSrc(product.image)}
+              price={product.sale_price}
+              oldPrice={product.regular_price}
+              rating={4.5}
+              reviews={24}
+              imageSrc={product.main_image || "/images/monitor.jpg"}
             />
           </SwiperSlide>
         ))}

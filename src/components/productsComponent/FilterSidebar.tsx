@@ -5,6 +5,7 @@ import { ArrowDown, ArrowUp, X } from "lucide-react";
 
 interface Props {
   onCategoryChange: (selectedCategories: string[]) => void;
+  onPriceChange: (priceRange: [number, number]) => void;
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
 }
@@ -25,6 +26,7 @@ const BRANDS = ["MSI", "Gigabyte", "Razer", "Asus", "Samsung", "Corsair"];
 
 export default function FilterSidebar({
   onCategoryChange,
+  onPriceChange,
   sidebarOpen,
   setSidebarOpen,
 }: Props) {
@@ -46,6 +48,10 @@ export default function FilterSidebar({
 
     setSelectedCategories(updated);
     onCategoryChange(updated);
+  };
+
+  const handlePriceChange = () => {
+    onPriceChange([minPrice, maxPrice]);
   };
 
   const toggleBrand = (brand: string) => {
@@ -107,9 +113,11 @@ export default function FilterSidebar({
                 min={100}
                 max={120000}
                 value={minPrice}
-                onChange={(e) =>
-                  setMinPrice(Math.min(Number(e.target.value), maxPrice - 1000))
-                }
+                onChange={(e) => {
+                  const val = Math.min(Number(e.target.value), maxPrice - 1000);
+                  setMinPrice(val);
+                  onPriceChange([val, maxPrice]);
+                }}
                 className="absolute w-full -top-0.5 h-1 bg-transparent appearance-none pointer-events-none cursor-pointer accent-[#2CACE2] [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto"
               />
               <input
@@ -117,21 +125,26 @@ export default function FilterSidebar({
                 min={100}
                 max={120000}
                 value={maxPrice}
-                onChange={(e) =>
-                  setMaxPrice(Math.max(Number(e.target.value), minPrice + 1000))
-                }
+                onChange={(e) => {
+                  const val = Math.max(Number(e.target.value), minPrice + 1000);
+                  setMaxPrice(val);
+                  onPriceChange([minPrice, val]);
+                }}
                 className="absolute w-full -top-0.5 h-1 bg-transparent appearance-none pointer-events-none cursor-pointer accent-[#2CACE2] [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto"
               />
             </div>
 
-            {/* Price Inputs */}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1">
                 <span className="text-[10px] text-gray-500">Min Price</span>
                 <input
                   type="number"
                   value={minPrice}
-                  onChange={(e) => setMinPrice(Number(e.target.value))}
+                  onChange={(e) => {
+                    const val = Number(e.target.value);
+                    setMinPrice(val);
+                    onPriceChange([val, maxPrice]);
+                  }}
                   className="w-full border border-[#bee5f6] rounded-lg px-2 py-2 text-sm focus:outline-none focus:border-[#2CACE2]"
                 />
               </div>
@@ -140,7 +153,11 @@ export default function FilterSidebar({
                 <input
                   type="number"
                   value={maxPrice}
-                  onChange={(e) => setMaxPrice(Number(e.target.value))}
+                  onChange={(e) => {
+                    const val = Number(e.target.value);
+                    setMaxPrice(val);
+                    onPriceChange([minPrice, val]);
+                  }}
                   className="w-full border border-[#bee5f6] rounded-lg px-2 py-2 text-sm focus:outline-none focus:border-[#2CACE2]"
                 />
               </div>
