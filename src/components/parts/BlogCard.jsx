@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import { useEffect } from "react";
 
 export default function BlogCard({ limit }) {
   const blogList = [
