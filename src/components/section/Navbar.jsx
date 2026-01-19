@@ -9,7 +9,7 @@ import { FcGoogle } from "react-icons/fc";
 
 export default function Navbar() {
   const [openDropdown, setOpenDropdown] = useState(false);
-  const { user, logout, loginWithGoogle } = useAuth();
+  const { user, logout, loginWithGoogle, isLoggingOut } = useAuth();
 
   return (
     <>
@@ -223,9 +223,10 @@ export default function Navbar() {
                               logout();
                               setOpenDropdown(false);
                             }}
-                            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg border border-red-100 text-red-500 hover:bg-red-50 transition-all font-medium text-sm"
+                            disabled={isLoggingOut}
+                            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg border border-red-100 text-red-500 hover:bg-red-50 transition-all font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            <LogOut size={16} /> Logout
+                            <LogOut size={16} /> {isLoggingOut ? "Logging out..." : "Logout"}
                           </button>
                         </div>
                       ) : (

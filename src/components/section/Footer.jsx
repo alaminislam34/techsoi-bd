@@ -17,7 +17,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-[#eaf7fc] mt-12 md:mt-[120px]">
+    <footer className="bg-[#eaf7fc] mt-12 md:mt-30">
       <CommonWrapper>
         <div className="w-full flex flex-col md:flex-row justify-between items-center py-6 gap-4">
           <p className="text-sm md:text-base text-center md:text-left text-[#808080]">
@@ -38,7 +38,7 @@ export default function Footer() {
                   viewBox="0 0 185 40"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-40 md:w-[185px] h-auto"
+                  className="w-40 md:w-46.25 h-auto"
                 >
                   {/* ... SVG Paths remain exactly the same ... */}
                   <path

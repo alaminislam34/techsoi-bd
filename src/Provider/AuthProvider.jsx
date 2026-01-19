@@ -1,111 +1,115 @@
 "use client";
-import { createContext, useContext, useState, useEffect } from "react";
-import { toast } from "react-toastify";
-import { API_ENDPOINTS } from "@/api/ApiEndPoint";
 
-const AuthContext = createContext();
+import { createContext, useContext } from "react";
+import { createAuthClient } from "better-auth/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiClient } from "@/api/apiClient";
+import { API_ENDPOINTS } from "@/api/ApiEndPoint";
+import { toast } from "react-toastify";
+
+const client = createAuthClient();
+
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  // -------------------------------
-  // 1️⃣ Call backend login after Google login
-  // -------------------------------
-  const loginBackend = async (userData) => {
-    try {
-      // Call backend /login
-      const loginRes = await fetch(API_ENDPOINTS.USER_LOGIN, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: userData.name,
-          email: userData.email,
-          image: userData.image,
-        }),
-      });
+  // Fetch session and login with backend
+  const { data: user = null, isLoading: loading } = useQuery({
+    queryKey: ["auth:session"],
+    queryFn: async () => {
+      const session = await client.getSession();
+      const googleUser = session?.data.user;
 
-      const loginData = await loginRes.json();
+      if (googleUser) {
+        try {
+          const loginRes = await apiClient.post(API_ENDPOINTS.USER_LOGIN, {
+            name: googleUser.name,
+            email: googleUser.email,
+            image: googleUser.image,
+          });
 
-      if (loginRes.ok && loginData.token) {
-        // Store token in localStorage
-        localStorage.setItem("token", loginData.token);
+          if (loginRes.token) {
+            localStorage.setItem("token", loginRes.token);
+          }
 
-        // Fetch profile using the token
-        const profileRes = await fetch(API_ENDPOINTS.USER_PROFILE, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${loginData.token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
-
-        const profileData = await profileRes.json();
-
-        if (profileRes.ok && profileData.data) {
-          setUser(profileData.data);
-          localStorage.setItem("user", JSON.stringify(profileData.data));
-          toast.success("Logged in successfully");
-        } else {
-          toast.error("Profile fetch failed");
+          return loginRes.data || googleUser;
+        } catch (error) {
+          console.error("Backend login failed:", error);
+          return googleUser;
         }
-      } else {
-        toast.error("Backend login failed");
       }
-    } catch (err) {
-      console.error("Login Error:", err);
-      toast.error("Backend login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  // -------------------------------
-  // 2️⃣ Google login button
-  // -------------------------------
-  const loginWithGoogle = () => {
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
-    const redirectUri = `${appUrl}/api/auth/callback/google`;
-    const scope = encodeURIComponent("email profile openid");
+      return null;
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
-    const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
+  // Google sign-in mutation
+  const loginWithGoogle = useMutation({
+    mutationFn: async () => {
+      await client.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+    },
+    onError: (err) => {
+      console.error("Google login failed:", err);
+      toast.error("Google login failed");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["auth:session"] });
+    },
+  });
 
-    window.location.href = googleUrl;
-  };
+  // Logout mutation
+  const logout = useMutation({
+    mutationFn: async () => {
+      try {
+        // Call backend logout API (GET request)
+        await apiClient.get(API_ENDPOINTS.USER_LOGOUT);
+      } catch (error) {
+        // Continue logout even if backend call fails
+        console.error("Backend logout failed:", error);
+      }
 
-  // -------------------------------
-  // 3️⃣ Logout
-  // -------------------------------
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUser(null);
-    toast.success("Logged out successfully");
-    window.location.href = "/";
-  };
+      // Remove token from localStorage
+      localStorage.removeItem("token");
 
-  // -------------------------------
-  // 4️⃣ Initial Load: Check if user already logged in
-  // -------------------------------
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userData = localStorage.getItem("user");
-
-    if (token && userData) {
-      setUser(JSON.parse(userData));
-    }
-    setLoading(false);
-  }, []);
+      // Sign out from better-auth
+      await client.signIn.signOut();
+    },
+    onSuccess: () => {
+      queryClient.setQueryData(["auth:session"], null);
+      toast.success("Logged out successfully");
+    },
+    onError: (err) => {
+      console.error("Logout failed:", err);
+      toast.error("Logout failed");
+    },
+  });
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, loginWithGoogle, logout, loginBackend }}
+      value={{
+        user,
+        loading,
+        loginWithGoogle: loginWithGoogle.mutate,
+        logout: logout.mutate,
+        isLoggingOut: logout.isPending,
+        refreshSession: () =>
+          queryClient.invalidateQueries({ queryKey: ["auth:session"] }),
+      }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const ctx = useContext(AuthContext);
+  if (!ctx) {
+    throw new Error("useAuth must be used inside AuthProvider");
+  }
+  return ctx;
+};

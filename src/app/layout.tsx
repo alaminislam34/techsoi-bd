@@ -7,6 +7,7 @@ import Manubar from "@/components/section/Manubar";
 import NavbarCategory from "@/components/section/NavbarCategory";
 import Footer from "@/components/section/Footer";
 import { AuthProvider } from "@/Provider/AuthProvider";
+import QueryProvider from "@/Provider/QueryProvider";
 
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
@@ -29,24 +30,26 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <AuthProvider>
-        <body className={dmSans.className}>
-          {/* Global Navbar */}
-          {/* <NavbarTop /> */}
-          <Navbar />
-          <Manubar />
-          <NavbarCategory />
-          {/* Page Content */}
-          <main>{children}</main>
-          {/* Global Footer */}
-          <Footer />
-          <ToastContainer
-            position="top-center"
-            autoClose={2000}
-            hideProgressBar={false}
-          />{" "}
-        </body>
-      </AuthProvider>
+      <QueryProvider>
+        <AuthProvider>
+          <body className={dmSans.className}>
+            {/* Global Navbar */}
+            {/* <NavbarTop /> */}
+            <Navbar />
+            <Manubar />
+            <NavbarCategory />
+            {/* Page Content */}
+            <main>{children}</main>
+            {/* Global Footer */}
+            <Footer />
+            <ToastContainer
+              position="top-center"
+              autoClose={2000}
+              hideProgressBar={false}
+            />{" "}
+          </body>
+        </AuthProvider>
+      </QueryProvider>
     </html>
   );
 }

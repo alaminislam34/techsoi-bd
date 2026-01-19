@@ -1,135 +1,41 @@
 "use client";
 import Image from "next/image";
-import BlogImage from "@/assets/blog.png";
 import Link from "next/link";
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import { useEffect } from "react";
+import { useGetBlogsLimit } from "@/api/hooks/useBlogs";
 
-export default function BlogCard({ limit }) {
-  const blogList = [
-    {
-      name: "গেমিং ও কাজের জন্য সেরা ১০টি পিসি অ্যাকসেসরিজ",
-      slug: "best-10-pc-accessories-gaming-work",
-      image: BlogImage,
-      shortDescription:
-        "সঠিক পিসি অ্যাকসেসরিজ আপনার গেমিং ও প্রফেশনাল কাজের অভিজ্ঞতা বহুগুণ বাড়িয়ে দিতে পারে। কীবোর্ড, মাউস থেকে শুরু করে হেডসেট—সবকিছুর সঠিক নির্বাচন জরুরি।",
-      date: "20-Jun-2025",
-    },
-    {
-      name: "২০২৫ সালে কোন ল্যাপটপটি আপনার জন্য সেরা?",
-      slug: "best-laptop-2025-buying-guide",
-      image: BlogImage,
-      shortDescription:
-        "স্টুডেন্ট, অফিস কিংবা গেমিং—আপনার প্রয়োজন অনুযায়ী সঠিক ল্যাপটপ বেছে নিতে এই গাইড আপনাকে সাহায্য করবে। প্রসেসর, র‍্যাম ও ব্যাটারির দিকে নজর দিন।",
-      date: "18-Jun-2025",
-    },
-    {
-      name: "SSD না HDD? কোনটি আপনার জন্য উপযুক্ত",
-      slug: "ssd-vs-hdd-which-is-better",
-      image: BlogImage,
-      shortDescription:
-        "কম্পিউটার স্লো হচ্ছে? SSD আপগ্রেড করলে কী কী সুবিধা পাবেন এবং HDD কখন ব্যবহার করা উচিত—সব জানতে পড়ুন এই ব্লগে।",
-      date: "15-Jun-2025",
-    },
-    {
-      name: "গেমিং পিসি বানানোর আগে যা জানা দরকার",
-      slug: "gaming-pc-build-buying-tips",
-      image: BlogImage,
-      shortDescription:
-        "সঠিক গ্রাফিক্স কার্ড, পাওয়ার সাপ্লাই এবং কুলিং সিস্টেম বাছাই না করলে গেমিং পারফরম্যান্স কমে যেতে পারে।",
-      date: "12-Jun-2025",
-    },
-    {
-      name: "অফিস কাজের জন্য বেস্ট মনিটর সেটআপ",
-      slug: "best-monitor-for-office-work",
-      image: BlogImage,
-      shortDescription:
-        "লং টাইম কাজ করলে চোখের যত্ন নেওয়া জরুরি। রেজোলিউশন, রিফ্রেশ রেট ও স্ক্রিন সাইজ নিয়ে বিস্তারিত আলোচনা।",
-      date: "10-Jun-2025",
-    },
-    {
-      name: "মেকানিক্যাল কীবোর্ড কেন এত জনপ্রিয়?",
-      slug: "why-mechanical-keyboards-are-popular",
-      image: BlogImage,
-      shortDescription:
-        "টাইপিং স্পিড, ডিউরেবিলিটি ও গেমিং পারফরম্যান্স—সবকিছুর জন্যই মেকানিক্যাল কীবোর্ড আলাদা গুরুত্ব রাখে।",
-      date: "08-Jun-2025",
-    },
-    {
-      name: "ফ্রি সফটওয়্যারে পিসি সিকিউর রাখার উপায়",
-      slug: "free-software-to-secure-pc",
-      image: BlogImage,
-      shortDescription:
-        "অ্যান্টিভাইরাস ছাড়া পিসি ঝুঁকির মধ্যে থাকতে পারে। কিছু ফ্রি টুল ব্যবহার করে কীভাবে সিকিউরিটি বাড়াবেন জেনে নিন।",
-      date: "05-Jun-2025",
-    },
-    {
-      name: "ল্যাপটপ গরম হওয়ার কারণ ও সমাধান",
-      slug: "laptop-overheating-causes-solution",
-      image: BlogImage,
-      shortDescription:
-        "ল্যাপটপ অতিরিক্ত গরম হওয়া পারফরম্যান্স ও ব্যাটারি লাইফের জন্য ক্ষতিকর। কুলিং উন্নত করার কিছু সহজ উপায় জানুন।",
-      date: "02-Jun-2025",
-    },
-    {
-      name: "রিমোট কাজের জন্য প্রয়োজনীয় টেক গ্যাজেট",
-      slug: "essential-tech-for-remote-work",
-      image: BlogImage,
-      shortDescription:
-        "ওয়ার্ক ফ্রম হোম আরও প্রোডাকটিভ করতে প্রয়োজন হেডসেট, ওয়েবক্যাম ও স্টেবল ইন্টারনেট সেটআপ।",
-      date: "30-May-2025",
-    },
-    {
-      name: "স্টুডেন্টদের জন্য সেরা বাজেট ল্যাপটপ",
-      slug: "best-budget-laptop-for-students",
-      image: BlogImage,
-      shortDescription:
-        "কম বাজেটেও ভালো পারফরম্যান্স পাওয়া সম্ভব। অনলাইন ক্লাস ও প্রোজেক্টের জন্য উপযুক্ত ল্যাপটপ বেছে নিন।",
-      date: "28-May-2025",
-    },
-    {
-      name: "প্রিন্টার কেনার আগে যেসব বিষয় ভাবা জরুরি",
-      slug: "printer-buying-guide-bd",
-      image: BlogImage,
-      shortDescription:
-        "ইঙ্কজেট নাকি লেজার প্রিন্টার? হোম ও অফিস ব্যবহারের জন্য কোনটি সেরা তা বিস্তারিত জানুন।",
-      date: "25-May-2025",
-    },
-    {
-      name: "গেমিং চেয়ারের গুরুত্ব ও সঠিক নির্বাচন",
-      slug: "best-gaming-chair-guide",
-      image: BlogImage,
-      shortDescription:
-        "দীর্ঘ সময় বসে কাজ বা গেমিং করলে সঠিক চেয়ারের অভাবে ব্যাক পেইন হতে পারে। আরামদায়ক চেয়ারের গাইড।",
-      date: "22-May-2025",
-    },
-    {
-      name: "নতুন পিসির জন্য কোন অপারেটিং সিস্টেম ভালো?",
-      slug: "best-operating-system-for-new-pc",
-      image: BlogImage,
-      shortDescription:
-        "Windows, Linux নাকি অন্য কিছু? আপনার কাজের ধরন অনুযায়ী সেরা অপারেটিং সিস্টেম বেছে নিন।",
-      date: "20-May-2025",
-    },
-    {
-      name: "ডুয়াল মনিটর সেটআপ কি সত্যিই দরকারি?",
-      slug: "dual-monitor-setup-benefits",
-      image: BlogImage,
-      shortDescription:
-        "মাল্টিটাস্কিং ও প্রোডাকটিভিটির জন্য ডুয়াল মনিটর কতটা কার্যকর তা নিয়ে বিস্তারিত আলোচনা।",
-      date: "18-May-2025",
-    },
-    {
-      name: "২০২৫ সালের ট্রেন্ডিং টেক গ্যাজেট",
-      slug: "trending-tech-gadgets-2025",
-      image: BlogImage,
-      shortDescription:
-        "এই বছরে কোন কোন টেক গ্যাজেট সবচেয়ে বেশি জনপ্রিয় হচ্ছে এবং ভবিষ্যতে কোনগুলোর চাহিদা বাড়বে—জেনে নিন।",
-      date: "15-May-2025",
-    },
-  ];
+export default function BlogCard({ limit = 6 }) {
+  const { data: blogsResponse, isLoading, isError } = useGetBlogsLimit(limit);
+  const blogs = blogsResponse?.data || [];
+
+  // Format date helper
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="mt-6 md:mt-10 flex justify-center items-center h-96">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (isError || blogs.length === 0) {
+    return (
+      <div className="mt-6 md:mt-10 flex justify-center items-center h-96">
+        <p className="text-lg text-gray-500">No blogs available</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -151,18 +57,22 @@ export default function BlogCard({ limit }) {
             },
           }}
         >
-          {blogList.slice(0, limit).map((item, index) => (
-            <SwiperSlide key={index}>
+          {blogs.map((blog) => (
+            <SwiperSlide key={blog.id}>
               <Link
-                href={"#"}
-                key={index}
-                className="flex flex-col gap-2 md:gap-3 p-3 md:p-4 rounded-2xl border border-[#bee5f6] hover:border-[#2CACE2]"
+                href={`/blog/${blog.id}`}
+                className="flex flex-col gap-2 md:gap-3 p-3 md:p-4 rounded-2xl border border-[#bee5f6] hover:border-[#2CACE2] transition-all"
               >
-                <Image
-                  src={item.image}
-                  alt="Blog"
-                  className="w-full rounded-xl object-cover"
-                />
+                <div className="w-full h-48 md:h-56 rounded-xl overflow-hidden bg-gray-200">
+                  <img
+                    src={blog.image}
+                    alt={blog.title}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform"
+                    onError={(e) => {
+                      e.target.src = "/icons/logo.png";
+                    }}
+                  />
+                </div>
                 <div className="flex items-center gap-1 md:gap-1.5 rounded-lg">
                   <svg
                     width={24}
@@ -210,15 +120,15 @@ export default function BlogCard({ limit }) {
                     />
                   </svg>
                   <p className="text-[12px] md:text-lg text-left text-[#505050]">
-                    {item.date}
+                    {formatDate(blog.created_at)}
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 md:gap-3">
-                  <p className="text-[14px] md:text-xl font-medium text-left text-[#303030]">
-                    {item.name}
+                  <p className="text-[14px] md:text-xl font-medium text-left text-[#303030] line-clamp-2">
+                    {blog.title}
                   </p>
-                  <p className="text-[10px] md:text-base text-left text-[#505050]">
-                    {item.shortDescription}
+                  <p className="text-[10px] md:text-base text-left text-[#505050] line-clamp-2">
+                    {blog.short_description}
                   </p>
                   <div className="flex items-center gap-2">
                     <p className="text-[12px] md:text-lg text-left text-[#303030]">
