@@ -69,12 +69,12 @@ const ProfilePage = () => {
                 <SidebarItem
                   icon={<Heart size={18} />}
                   label="Favourite"
-                  href={"/favourite"} // Updated from /myorders to /favourite
+                  href={"/favourite"}
                 />
                 <SidebarItem
                   icon={<MapPin size={18} />}
                   label="Addresses"
-                  href={"/addresses"} // Added href
+                  href={"/addresses"}
                 />
 
                 <hr className="my-4 border-gray-100" />
@@ -95,7 +95,6 @@ const ProfilePage = () => {
                 <h3 className="font-bold text-gray-800 text-lg">
                   Personal Information
                 </h3>
-                {/* Link added to the Edit button */}
                 <Link
                   href="/profile/edit"
                   className="text-primary flex items-center gap-1 font-semibold text-sm hover:underline"
