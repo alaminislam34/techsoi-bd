@@ -13,10 +13,7 @@ type InputProps = {
 function Input({ label, placeholder, name, value, onChange }: InputProps) {
   return (
     <div className="space-y-1">
-      <label
-        className="text-sm block"
-        style={{ color: "#808080" }}
-      >
+      <label className="text-sm block" style={{ color: "#808080" }}>
         {label}
       </label>
 
@@ -84,7 +81,10 @@ export default function OrderForm({
       <h2 className="text-xl font-semibold mb-6">Your Order</h2>
 
       {/* Order Summary */}
-      <div className="space-y-3 mb-6 pb-6 border-b" style={{ borderColor: "#CFEAF8" }}>
+      <div
+        className="space-y-3 mb-6 pb-6 border-b"
+        style={{ borderColor: "#CFEAF8" }}
+      >
         <div className="flex justify-between text-sm">
           <span style={{ color: "#808080" }}>Subtotal</span>
           <span className="font-semibold" style={{ color: "#2CACE2" }}>
@@ -105,9 +105,7 @@ export default function OrderForm({
         </div>
         <div className="flex justify-between text-lg font-bold">
           <span>Total</span>
-          <span style={{ color: "#2CACE2" }}>
-            ৳{total.toLocaleString()}
-          </span>
+          <span style={{ color: "#2CACE2" }}>৳{total.toLocaleString()}</span>
         </div>
       </div>
 

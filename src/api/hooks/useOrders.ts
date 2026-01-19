@@ -29,22 +29,27 @@ export const useGetAllOrders = () => {
     queryKey: ["orders"],
     queryFn: async () => {
       try {
-        const response = await apiClient.get<Order[]>(API_ENDPOINTS.ORDER_GET_ALL);
+        const response = await apiClient.get<Order[]>(
+          API_ENDPOINTS.ORDER_GET_ALL,
+        );
         return response;
       } catch (error: any) {
         console.error("Failed to fetch orders:", error.message);
-        
-        if (error.message.includes("Unauthorized") || error.message.includes("login")) {
+
+        if (
+          error.message.includes("Unauthorized") ||
+          error.message.includes("login")
+        ) {
           console.warn("User not authenticated - showing empty orders list");
           return { status: true, message: "No orders", data: [] };
         }
-        
+
         throw error;
       }
     },
     staleTime: 2 * 60 * 1000,
-    retry: 2, 
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), 
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 };
 
