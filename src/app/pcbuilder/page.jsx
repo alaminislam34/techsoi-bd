@@ -1,7 +1,7 @@
 // components/pc-builder/PcBuilder.jsx
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react"; // useRef যুক্ত করা হয়েছে
 import { useQuery } from "@tanstack/react-query";
 import CommonWrapper from "@/components/layout/CommonWrapper";
 import { Trash2, Download, Loader2, Box } from "lucide-react";
@@ -11,7 +11,7 @@ import autoTable from "jspdf-autotable";
 import { apiClient } from "@/api/apiClient";
 import { API_ENDPOINTS } from "@/api/ApiEndPoint";
 
-// Category icons mapping - এখানে ফাইলের নামগুলো দেওয়া হয়েছে (যেমন: processor.png)
+// Category icons mapping
 const categoryIcons = {
   Processor: "processor.png",
   Motherboard: "motherboard.png",
@@ -47,6 +47,9 @@ const PcBuilder = () => {
   const [selectedProducts, setSelectedProducts] = useState({});
   const [viewMode, setViewMode] = useState("build");
 
+  // প্রোডাক্ট কন্টেইনারের জন্য রেফারেন্স
+  const productViewRef = useRef(null);
+
   const {
     data: rawProducts = [],
     isLoading,
@@ -80,6 +83,14 @@ const PcBuilder = () => {
   const handleChooseCategory = (category) => {
     setActiveCategory(category);
     setViewMode("list");
+
+    // স্ক্রল লজিক: ক্লিক করার সাথে সাথে কন্টেইনার ভিউতে নিয়ে যাবে
+    setTimeout(() => {
+      productViewRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 100);
   };
 
   const addToBuild = (product) => {
@@ -309,7 +320,10 @@ const PcBuilder = () => {
             </div>
           </div>
 
-          <div className="lg:col-span-3 bg-white rounded-2xl border border-gray-50 shadow-sm p-6 min-h-125">
+          <div
+            ref={productViewRef}
+            className="lg:col-span-3 bg-white rounded-2xl border border-gray-50 shadow-sm p-6 min-h-125 scroll-mt-6"
+          >
             {viewMode === "list" ? (
               <>
                 <div className="flex justify-between items-center mb-6 pb-4 border-b border-b-gray-200">
