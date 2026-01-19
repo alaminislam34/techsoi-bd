@@ -1,7 +1,8 @@
 "use client";
 
-import Image, { StaticImageData } from "next/image";
-import { useState, useMemo } from "react";
+import Image from "next/image";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import FilterSidebar from "@/components/productsComponent/FilterSidebar";
 import Link from "next/link";
 import { Menu, Heart, ShoppingCart } from "lucide-react";
@@ -13,11 +14,16 @@ import { useAuth } from "@/Provider/AuthProvider";
 import { toast } from "react-toastify";
 
 export default function ProductPage() {
+  const searchParams = useSearchParams();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [sortBy, setSortBy] = useState("newest");
   const [showPerPage, setShowPerPage] = useState(25);
+
+  // Track if user has interacted with filters manually
+  const [hasUserFiltered, setHasUserFiltered] = useState(false);
 
   const { data: productsResponse, isLoading, isError } = useGetAllProducts();
   const { mutate: addToCart } = useAddToCart();
@@ -26,18 +32,55 @@ export default function ProductPage() {
 
   const products = productsResponse?.data || [];
 
+  // Get initial filters from URL
+  const categoryFromUrl = searchParams.get("category");
+  const queryFromUrl = searchParams.get("query");
+
+  // Apply URL filters ONLY on first load (before user touches sidebar)
+  useEffect(() => {
+    if (!hasUserFiltered) {
+      // Apply category from URL
+      if (categoryFromUrl && !selectedCategories.includes(categoryFromUrl)) {
+        setSelectedCategories([categoryFromUrl]);
+      }
+    }
+  }, [categoryFromUrl, hasUserFiltered]);
+
+  // When user changes any filter → mark that user has taken control
+  useEffect(() => {
+    // This will run when any filter changes via sidebar
+    if (
+      selectedCategories.length > 0 ||
+      priceRange[0] !== 0 ||
+      priceRange[1] !== 100000 ||
+      sortBy !== "newest"
+    ) {
+      setHasUserFiltered(true);
+    }
+  }, [selectedCategories, priceRange, sortBy]);
+
   // Filtered and sorted products
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
 
-    // Category filter
+    // Category filter (sidebar takes priority after user interaction)
     if (selectedCategories.length > 0) {
       filtered = filtered.filter((p) =>
         selectedCategories.includes(String(p.category_id)),
       );
     }
+    // Only apply URL search query if user hasn't touched any filters yet
+    else if (!hasUserFiltered && queryFromUrl) {
+      const searchTerm = queryFromUrl.toLowerCase().trim();
+      filtered = filtered.filter(
+        (p) =>
+          p.name?.toLowerCase().includes(searchTerm) ||
+          p.short_description?.toLowerCase().includes(searchTerm) ||
+          p.category?.name?.toLowerCase().includes(searchTerm),
+      );
+    }
 
-    // Price range filter
+    // Price range filter (always applied if changed)
     filtered = filtered.filter(
       (p) => p.sale_price >= priceRange[0] && p.sale_price <= priceRange[1],
     );
@@ -52,13 +95,19 @@ export default function ProductPage() {
         break;
       case "newest":
       default:
-        // Assume newer products have higher IDs
         filtered.sort((a, b) => b.id - a.id);
         break;
     }
 
     return filtered;
-  }, [products, selectedCategories, priceRange, sortBy]);
+  }, [
+    products,
+    selectedCategories,
+    priceRange,
+    sortBy,
+    queryFromUrl,
+    hasUserFiltered,
+  ]);
 
   // Paginated products
   const paginatedProducts = useMemo(() => {
@@ -89,7 +138,7 @@ export default function ProductPage() {
     return (
       <CommonWrapper>
         <div className="text-center py-20 text-red-500">
-          Error loading products
+          Error loading products. Please try again later.
         </div>
       </CommonWrapper>
     );
@@ -97,18 +146,18 @@ export default function ProductPage() {
 
   return (
     <CommonWrapper>
-      <div className="w-full py-10 ">
-        {/* Small Screen Sidebar Button */}
-        <div className="md:hidden fixed top-140 left-0 z-50">
+      <div className="w-full py-10">
+        {/* Mobile filter button */}
+        <div className="md:hidden fixed top-32 left-4 z-50">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-1 cursor-pointer backdrop:backdrop-blur-3xl rounded-lg bg-[#2cabe291] text-white shadow-md"
+            className="p-1 cursor-pointer backdrop-blur-3xl rounded-lg bg-[#2cabe291] text-white shadow-md"
           >
             <Menu size={22} />
           </button>
         </div>
 
-        <div className="flex ">
+        <div className="flex">
           {/* Sidebar */}
           <FilterSidebar
             onCategoryChange={handleCategoryFilter}
@@ -117,14 +166,23 @@ export default function ProductPage() {
             setSidebarOpen={setSidebarOpen}
           />
 
-          {/* Product Section */}
+          {/* Main content */}
           <div className="flex-1">
-            {/* TOP INFO BAR */}
+            {/* Top bar */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6 px-2">
               <p className="text-sm text-gray-600">
                 Showing 1–{paginatedProducts.length} of{" "}
                 {filteredProducts.length} result
                 {filteredProducts.length !== 1 ? "s" : ""}
+                {!hasUserFiltered && (categoryFromUrl || queryFromUrl) && (
+                  <span className="ml-1">
+                    for "
+                    <span className="font-medium">
+                      {queryFromUrl || categoryFromUrl}
+                    </span>
+                    "
+                  </span>
+                )}
               </p>
 
               <div className="flex items-center gap-3">
@@ -157,17 +215,21 @@ export default function ProductPage() {
               </div>
             </div>
 
-            {/* Product Grid */}
+            {/* Product grid */}
             {isLoading ? (
               <div className="flex justify-center items-center h-96">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
               </div>
             ) : paginatedProducts.length === 0 ? (
               <div className="text-center py-20 text-gray-500">
-                No products found matching your criteria
+                {hasUserFiltered
+                  ? "No products match your current filters"
+                  : categoryFromUrl || queryFromUrl
+                    ? `No products found for "${queryFromUrl || categoryFromUrl}"`
+                    : "No products found matching your criteria"}
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols3 gap-x-4 md:gap-x-6 gap-y-4 md:gap-y-10 mt-5 pl-2">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-4 md:gap-x-6 gap-y-4 md:gap-y-10 mt-5 pl-2">
                 {paginatedProducts.map((p) => (
                   <div className="h-full" key={p.id}>
                     <div className="flex flex-col gap-2 justify-between md:gap-5 p-1.5 md:p-4 rounded-xl md:rounded-[20px] bg-white border border-[#bee5f6] hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_2px_10px_#72C7EC] hover:border-[#72C7EC] h-full">
@@ -205,7 +267,6 @@ export default function ProductPage() {
                                 viewBox="0 0 17 16"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
-                                preserveAspectRatio="none"
                               >
                                 <path
                                   d="M7.69447 0.414678C7.87408 -0.138109 8.65613 -0.138109 8.83574 0.414678L10.3755 5.15369C10.4559 5.4009 10.6862 5.56828 10.9462 5.56828H15.9291C16.5103 5.56828 16.752 6.31205 16.2817 6.65369L12.2505 9.58256C12.0402 9.73534 11.9522 10.0062 12.0325 10.2534L13.5723 14.9924C13.7519 15.5452 13.1192 16.0048 12.649 15.6632L8.61778 12.7343C8.40749 12.5816 8.12273 12.5816 7.91243 12.7343L3.88119 15.6632C3.41096 16.0048 2.77828 15.5452 2.95789 14.9924L4.49768 10.2534C4.57801 10.0062 4.49001 9.73534 4.27972 9.58256L0.24848 6.65369C-0.221748 6.31205 0.0199172 5.56828 0.601151 5.56828H5.58404C5.84398 5.56828 6.07435 5.4009 6.15467 5.15369L7.69447 0.414678Z"
@@ -224,7 +285,6 @@ export default function ProductPage() {
                         </div>
 
                         <div className="flex justify-between items-center">
-                          {/* Buy Now */}
                           <Link
                             href={`/products/${p.id}`}
                             className="flex items-center gap-1 xl:gap-2.5 px-1.5 xl:px-3 py-1.5 xl:py-2 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-primary group"
@@ -254,7 +314,6 @@ export default function ProductPage() {
                             </p>
                           </Link>
 
-                          {/* Cart + Wishlist */}
                           <div className="flex items-center gap-1 xl:gap-3">
                             <button
                               onClick={() => handleAddToCart(p.id)}
