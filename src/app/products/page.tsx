@@ -170,8 +170,7 @@ export default function ProductPage() {
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols3 gap-x-4 md:gap-x-6 gap-y-4 md:gap-y-10 mt-5 pl-2">
                 {paginatedProducts.map((p) => (
                   <div className="h-full" key={p.id}>
-                    <div className="flex flex-col gap-2 justify-between md:gap-5 p-1.5 md:p-4 rounded-xl md:rounded-[20px] bg-white border border-[#bee5f6] hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_3px_15px_#72C7EC] hover:border-[#72C7EC] h-full">
-                      {/* Image */}
+                    <div className="flex flex-col gap-2 justify-between md:gap-5 p-1.5 md:p-4 rounded-xl md:rounded-[20px] bg-white border border-[#bee5f6] hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_2px_10px_#72C7EC] hover:border-[#72C7EC] h-full">
                       <div className="relative w-full h-48 md:h-56 rounded-lg md:rounded-4.5 overflow-hidden bg-gray-100">
                         <img
                           src={p.main_image || "/images/monitor.jpg"}
@@ -251,7 +250,7 @@ export default function ProductPage() {
                             </svg>
 
                             <p className="flex gap-1 text-[12px] xl:text-lg text-[#303030] group-hover:text-white">
-                              View
+                              Buy Now
                             </p>
                           </Link>
 

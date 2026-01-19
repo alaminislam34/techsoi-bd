@@ -1,65 +1,116 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image, { StaticImageData } from "next/image";
 import { Trash2, Minus, Plus } from "lucide-react";
-
-import CamImg from "@/assets/reviewImg/fav1.jpg";
 import CommonWrapper from "../layout/CommonWrapper";
 import OrderForm from "./OrderForm";
+import { useGetCartProducts, useDeleteFromCart } from "@/api/hooks/useCart";
+import { useGetProduct } from "@/api/hooks/useProducts";
 
-type CartItem = {
+type CartItemDisplay = {
   id: number;
+  product_id: number;
   name: string;
   price: number;
-  img: StaticImageData;
+  img: string;
   qty: number;
+  amount: number;
 };
 
-const initialCart: CartItem[] = [
-  {
-    id: 1,
-    name: "A donut dressed up as a Smart Assistant",
-    price: 3600,
-    img: CamImg,
-    qty: 1,
-  },
-  {
-    id: 2,
-    name: "A donut dressed up as a Smart Assistant",
-    price: 3600,
-    img: CamImg,
-    qty: 1,
-  },
-  {
-    id: 3,
-    name: "A donut dressed up as a Smart Assistant",
-    price: 3600,
-    img: CamImg,
-    qty: 1,
-  },
-];
-
 export default function MyCart() {
-  const [cart, setCart] = useState<CartItem[]>(initialCart);
+  const { data: cartResponse, isLoading, isError } = useGetCartProducts();
+  const { mutate: deleteFromCart } = useDeleteFromCart();
+  const [quantities, setQuantities] = useState<Record<number, number>>({});
+
+  const cartItems = cartResponse?.data || [];
+
+  // Initialize quantities from cart items using useEffect
+  useEffect(() => {
+    if (cartItems && cartItems.length > 0) {
+      const newQuantities: Record<number, number> = {};
+      cartItems.forEach((item: any) => {
+        newQuantities[item.id] = item.quantity || 1;
+      });
+      setQuantities(newQuantities);
+    }
+  }, [cartItems.length]); // Only depend on length to avoid infinite loops
 
   const increase = (id: number) => {
-    setCart((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, qty: i.qty + 1 } : i))
-    );
+    setQuantities((prev) => ({
+      ...prev,
+      [id]: (prev[id] || 1) + 1,
+    }));
   };
 
   const decrease = (id: number) => {
-    setCart((prev) =>
-      prev.map((i) =>
-        i.id === id && i.qty > 1 ? { ...i, qty: i.qty - 1 } : i
-      )
-    );
+    setQuantities((prev) => ({
+      ...prev,
+      [id]: prev[id] > 1 ? prev[id] - 1 : 1,
+    }));
   };
 
   const removeItem = (id: number) => {
-    setCart((prev) => prev.filter((i) => i.id !== id));
+    deleteFromCart(id);
   };
+
+  if (isLoading) {
+    return (
+      <CommonWrapper>
+        <section className="py-10 flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        </section>
+      </CommonWrapper>
+    );
+  }
+
+  if (isError) {
+    return (
+      <CommonWrapper>
+        <section className="py-10 text-center text-red-500">
+          Error loading cart items
+        </section>
+      </CommonWrapper>
+    );
+  }
+
+  if (cartItems.length === 0) {
+    return (
+      <CommonWrapper>
+        <section className="py-10">
+          <div className="text-center py-20">
+            <div className="flex justify-center mb-4">
+              <svg
+                className="w-16 h-16 text-gray-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                />
+              </svg>
+            </div>
+            <p className="text-gray-600 font-semibold mb-2">
+              Your Cart is Empty
+            </p>
+            <p className="text-gray-500 mb-6">
+              Start shopping to add products to your cart
+            </p>
+            <a
+              href="/products"
+              className="inline-block px-6 py-2.5 bg-[#2CACE2] text-white font-semibold rounded-lg hover:bg-[#1b9bd1] transition"
+            >
+              Continue Shopping
+            </a>
+          </div>
+        </section>
+      </CommonWrapper>
+    );
+  }
 
   return (
     <CommonWrapper>
@@ -77,11 +128,11 @@ export default function MyCart() {
           </div>
 
           {/* Items */}
-          {cart.map((item) => (
+          {cartItems.map((item: any) => (
             <div
               key={item.id}
               className="grid md:grid-cols-12 gap-y-4 items-center py-6 border-b last:border-none"
-              style={{ borderColor: "#E6E6E6" }} // ✅ divider color
+              style={{ borderColor: "#E6E6E6" }}
             >
               {/* Delete */}
               <div className="md:col-span-1">
@@ -97,23 +148,27 @@ export default function MyCart() {
               <div className="md:col-span-6 flex items-center gap-4">
                 <div
                   className="w-20 h-20 rounded-xl border overflow-hidden relative"
-                  style={{ borderColor: "#EAF7FC" }} // ✅ image border color
+                  style={{ borderColor: "#EAF7FC" }}
                 >
-                  <Image
-                    src={item.img}
-                    alt={item.name}
-                    fill
-                    className="object-cover"
+                  <img
+                    src={item.product?.main_image || "/images/monitor.jpg"}
+                    alt={item.product?.name || "Product"}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/monitor.jpg";
+                    }}
                   />
                 </div>
-                <p className="font-medium text-gray-700">{item.name}</p>
+                <p className="font-medium text-gray-700">
+                  {item.product?.name || "Product"}
+                </p>
               </div>
 
               {/* Quantity */}
               <div className="md:col-span-3 flex justify-center">
                 <div
                   className="flex items-center border border-[#2CACE2] rounded-lg px-3 py-1 gap-4"
-                  style={{ color: "#808080" }} // ✅ qty color
+                  style={{ color: "#808080" }}
                 >
                   <button
                     onClick={() => decrease(item.id)}
@@ -122,7 +177,9 @@ export default function MyCart() {
                     <Minus size={16} />
                   </button>
                   <span className="font-semibold">
-                    {item.qty.toString().padStart(2, "0")}
+                    {(quantities[item.id] || item.quantity)
+                      .toString()
+                      .padStart(2, "0")}
                   </span>
                   <button
                     onClick={() => increase(item.id)}
@@ -136,16 +193,16 @@ export default function MyCart() {
               {/* Price */}
               <div
                 className="md:col-span-2 text-right font-semibold"
-                style={{ color: "#2CACE2" }} // ✅ unit price color
+                style={{ color: "#2CACE2" }}
               >
-                ৳{item.price * item.qty}
+                ৳{(item.amount || 0).toLocaleString()}
               </div>
             </div>
           ))}
         </div>
 
         {/* RIGHT – ORDER FORM */}
-        <OrderForm />
+        <OrderForm cartItems={cartItems} quantities={quantities} />
       </section>
     </CommonWrapper>
   );
