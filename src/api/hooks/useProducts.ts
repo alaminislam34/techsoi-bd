@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 
 // Types
 interface Product {
+  category?: any;
   id: number;
   name: string;
   slug: string;
@@ -46,7 +47,8 @@ export const useGetProductsLimit = (limit: number) => {
 export const useGetProductsPaginated = (page: number) => {
   return useQuery({
     queryKey: ["products", "paginated", page],
-    queryFn: () => apiClient.get<Product[]>(API_ENDPOINTS.PRODUCT_PAGINATE(page)),
+    queryFn: () =>
+      apiClient.get<Product[]>(API_ENDPOINTS.PRODUCT_PAGINATE(page)),
     staleTime: 5 * 60 * 1000,
   });
 };
@@ -55,7 +57,8 @@ export const useGetProductsPaginated = (page: number) => {
 export const useSearchProducts = (query: string) => {
   return useQuery({
     queryKey: ["products", "search", query],
-    queryFn: () => apiClient.get<Product[]>(API_ENDPOINTS.PRODUCT_SEARCH(query)),
+    queryFn: () =>
+      apiClient.get<Product[]>(API_ENDPOINTS.PRODUCT_SEARCH(query)),
     enabled: query.length > 0,
     staleTime: 5 * 60 * 1000,
   });
@@ -74,7 +77,8 @@ export const useGetProduct = (id: number) => {
 export const useGetProductBySlug = (slug: string) => {
   return useQuery({
     queryKey: ["product", slug],
-    queryFn: () => apiClient.get<Product>(API_ENDPOINTS.PRODUCT_DETAILS_BY_SLUG(slug)),
+    queryFn: () =>
+      apiClient.get<Product>(API_ENDPOINTS.PRODUCT_DETAILS_BY_SLUG(slug)),
     enabled: !!slug,
     staleTime: 5 * 60 * 1000,
   });
@@ -150,7 +154,7 @@ export const useUpdateProductDetails = (id: number) => {
     mutationFn: (data: ProductDetails) =>
       apiClient.put<ProductDetails>(
         API_ENDPOINTS.PRODUCT_DETAILS_UPDATE(id),
-        data
+        data,
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["product", "details", id] });

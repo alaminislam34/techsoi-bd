@@ -1,53 +1,60 @@
 "use client";
 
-import Image, { StaticImageData } from "next/image";
-import { Eye, Download } from "lucide-react";
+import Image from "next/image";
+import { Eye, Download, Loader2 } from "lucide-react";
 import { useState } from "react";
 import CommonWrapper from "@/components/layout/CommonWrapper";
 import ReviewModal from "@/components/ui/ReviewModal";
-import { useGetAllOrders } from "@/api/hooks/useOrders";
+import { useGetAllOrders } from "@/api/hooks/useOrders"; // your hook
 
-type OrderItem = {
-  id: number;
-  name: string;
-  img: StaticImageData | string;
-  date: string;
-  qty: number;
-  price: number;
-  status: "On Progress" | "Completed" | "Cancelled";
-};
-
-const statusStyles = {
-  "On Progress": "bg-yellow-100 text-yellow-700",
-  Completed: "bg-green-100 text-green-700",
-  Cancelled: "bg-red-100 text-red-600",
-};
-
-const mapApiStatusToDisplay = (
-  status: number,
-): "On Progress" | "Completed" | "Cancelled" => {
-  if (status === 1) return "Completed";
-  if (status === 2) return "Cancelled";
-  return "On Progress";
+// Map API status numbers to display text & style
+const mapApiStatusToDisplay = (status: number) => {
+  switch (status) {
+    case 1:
+      return { text: "Completed", className: "bg-green-100 text-green-700" };
+    case 2:
+      return { text: "Cancelled", className: "bg-red-100 text-red-600" };
+    default:
+      return {
+        text: "On Progress",
+        className: "bg-yellow-100 text-yellow-700",
+      };
+  }
 };
 
 export default function MyOrdersPage() {
   const [openReview, setOpenReview] = useState(false);
+
   const { data: ordersResponse, isLoading, isError, error } = useGetAllOrders();
 
-  const orders = (ordersResponse?.data || []).map((order: any) => ({
-    id: order.id,
-    name: order.name,
-    img: "/images/monitor.jpg",
-    date: new Date(order.created_at || Date.now()).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }),
-    qty: 1,
-    price: order.total_amount || 0,
-    status: mapApiStatusToDisplay(order.status),
-  }));
+  const orders = (ordersResponse?.data || []).map((order: any) => {
+    const { text: statusText, className: statusClass } = mapApiStatusToDisplay(
+      order.status || 0,
+    );
+
+    return {
+      id: order.id,
+      name: order.name || "Order #" + order.id,
+      date: new Date(order.created_at || Date.now()).toLocaleDateString(
+        "en-US",
+        {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        },
+      ),
+      qty:
+        order.order_details?.reduce(
+          (sum: number, d: any) => sum + (d.quantity || 0),
+          0,
+        ) || 1,
+      price: order.total_amount || 0,
+      status: statusText,
+      statusClass,
+      img:
+        order.order_details?.[0]?.product?.main_image || "/images/monitor.jpg",
+    };
+  });
 
   return (
     <CommonWrapper>
@@ -57,7 +64,7 @@ export default function MyOrdersPage() {
 
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+              <Loader2 className="animate-spin h-12 w-12 text-primary" />
             </div>
           ) : isError ? (
             <div className="text-center py-20">
@@ -76,12 +83,16 @@ export default function MyOrdersPage() {
                   />
                 </svg>
               </div>
-              <p className="text-red-600 font-semibold mb-2">Error Loading Orders</p>
+              <p className="text-red-600 font-semibold mb-2">
+                Error Loading Orders
+              </p>
               <p className="text-gray-600 mb-4">
-                {error?.message || "Something went wrong while loading your orders."}
+                {error?.message ||
+                  "Something went wrong while loading your orders."}
               </p>
               <p className="text-gray-500 text-sm mb-6">
-                Please check your internet connection and try again. If the problem persists, please contact support.
+                Please check your internet connection and try again. If the
+                problem persists, contact support.
               </p>
               <button
                 onClick={() => window.location.reload()}
@@ -108,7 +119,10 @@ export default function MyOrdersPage() {
                 </svg>
               </div>
               <p className="text-gray-600 font-semibold mb-2">No Orders Yet</p>
-              <p className="text-gray-500 mb-6">You haven't placed any orders. Start shopping to see your orders here!</p>
+              <p className="text-gray-500 mb-6">
+                You haven't placed any orders. Start shopping to see your orders
+                here!
+              </p>
               <a
                 href="/products"
                 className="inline-block px-6 py-2.5 bg-[#2CACE2] text-white font-semibold rounded-lg hover:bg-[#1b9bd1] transition"
@@ -118,7 +132,7 @@ export default function MyOrdersPage() {
             </div>
           ) : (
             <div className="w-full overflow-x-auto">
-              <table className="w-full min-w-225 border-collapse">
+              <table className="w-full min-w-175 border-collapse">
                 <thead>
                   <tr className="text-gray-500 text-sm font-medium border-b">
                     <th className="text-left py-4">Products</th>
@@ -135,20 +149,19 @@ export default function MyOrdersPage() {
                   {orders.map((order) => (
                     <tr
                       key={order.id}
-                      className="border-b"
+                      className="border-b hover:bg-gray-50 transition-colors"
                       style={{ borderColor: "#E6E6E6" }}
                     >
                       {/* Product */}
                       <td className="py-6">
                         <div className="flex items-center gap-4">
                           <div className="w-20 h-20 rounded-xl border border-gray-200 overflow-hidden relative shrink-0">
-                            <img
+                            <Image
                               src={order.img}
                               alt={order.name}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                e.currentTarget.src = "/images/monitor.jpg";
-                              }}
+                              width={80}
+                              height={80}
+                              className="object-cover"
                             />
                           </div>
                           <p className="text-sm sm:text-base font-medium text-gray-700">
@@ -178,7 +191,7 @@ export default function MyOrdersPage() {
                       {/* Status */}
                       <td className="py-6">
                         <span
-                          className={`px-4 py-1 rounded-full text-sm font-medium ${statusStyles[order.status]}`}
+                          className={`px-4 py-1 rounded-full text-sm font-medium ${order.statusClass}`}
                         >
                           {order.status}
                         </span>
@@ -200,10 +213,7 @@ export default function MyOrdersPage() {
                           <button aria-label="View invoice">
                             <Eye size={18} />
                           </button>
-                          <button
-                            aria-label="Download invoice"
-                            className="text-[#2CACE2]"
-                          >
+                          <button aria-label="Download invoice">
                             <Download size={18} />
                           </button>
                         </div>
