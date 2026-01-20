@@ -40,6 +40,7 @@ export const API_ENDPOINTS = {
   ORDER_UPDATE: (id) => `${BASE_URL}/order/${id}`, // Body: { "pay_status": "1", "status": "1" }
   ORDER_DELETE: (id) => `${BASE_URL}/order/${id}`, // Body: { "cancel_message": "" }
 
+  USER_ORDER: `${BASE_URL}/user-order/`,
   // --- Order Details Management ---
   ORDER_DETAILS_UPDATE: (id) => `${BASE_URL}/order-details/${id}`, // Body: { "pay_status": "1", "status": "1" }
   ORDER_DETAILS_DELETE: (id) => `${BASE_URL}/order-details/${id}`, // Body: { "cancel_message": "" }

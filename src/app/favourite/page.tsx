@@ -40,7 +40,7 @@ export default function FavouritePage() {
   useEffect(() => {
     if (favorites.length > 0) {
       const initialQuantities: Record<number, number> = {};
-      favorites.forEach((fav) => {
+      favorites.forEach((fav: any) => {
         initialQuantities[fav.id] = 1; // default qty
       });
       setQuantities(initialQuantities);
@@ -116,7 +116,7 @@ export default function FavouritePage() {
 
                       {/* Table Body */}
                       <tbody className="divide-y divide-gray-100 ">
-                        {favorites.map((fav) => {
+                        {favorites.map((fav: any) => {
                           const product = fav.product;
                           const currentQty = quantities[fav.id] || 1;
                           const price =

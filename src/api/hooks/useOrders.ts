@@ -52,6 +52,32 @@ export const useGetAllOrders = () => {
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 };
+export const useGetUserOrders = () => {
+  return useQuery({
+    queryKey: ["orders"],
+    queryFn: async () => {
+      try {
+        const response = await apiClient.get<Order[]>(API_ENDPOINTS.USER_ORDER);
+        return response;
+      } catch (error: any) {
+        console.error("Failed to fetch orders:", error.message);
+
+        if (
+          error.message.includes("Unauthorized") ||
+          error.message.includes("login")
+        ) {
+          console.warn("User not authenticated - showing empty orders list");
+          return { status: true, message: "No orders", data: [] };
+        }
+
+        throw error;
+      }
+    },
+    staleTime: 2 * 60 * 1000,
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+  });
+};
 
 export const useGetOrder = (id: number) => {
   return useQuery({

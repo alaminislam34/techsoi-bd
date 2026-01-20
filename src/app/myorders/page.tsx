@@ -5,7 +5,7 @@ import { Eye, Download, Loader2 } from "lucide-react";
 import { useState } from "react";
 import CommonWrapper from "@/components/layout/CommonWrapper";
 import ReviewModal from "@/components/ui/ReviewModal";
-import { useGetAllOrders } from "@/api/hooks/useOrders"; // your hook
+import { useGetUserOrders } from "@/api/hooks/useOrders"; // your hook
 
 // Map API status numbers to display text & style
 const mapApiStatusToDisplay = (status: number) => {
@@ -25,7 +25,12 @@ const mapApiStatusToDisplay = (status: number) => {
 export default function MyOrdersPage() {
   const [openReview, setOpenReview] = useState(false);
 
-  const { data: ordersResponse, isLoading, isError, error } = useGetAllOrders();
+  const {
+    data: ordersResponse,
+    isLoading,
+    isError,
+    error,
+  } = useGetUserOrders();
 
   const orders = (ordersResponse?.data || []).map((order: any) => {
     const { text: statusText, className: statusClass } = mapApiStatusToDisplay(

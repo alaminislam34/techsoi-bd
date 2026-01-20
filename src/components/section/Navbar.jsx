@@ -19,13 +19,17 @@ export default function Navbar() {
             {/* ---------- LOGO ---------- */}
             <Link href={"/"}>
               <div className="sm:block md:block mr-1 py-2">
-                <Image
+                {/* <Image
                   src={"/icons/logo.png"}
                   height={400}
                   width={800}
                   alt="Website logo"
                   className="h-10 md:h-14 w-auto object-contain"
-                />
+                /> */}
+                <h1 className="text-xl md:text-2xl font-semibold text-primary">
+                  {" "}
+                  Technology Hat
+                </h1>
               </div>
             </Link>
 
@@ -226,7 +230,8 @@ export default function Navbar() {
                             disabled={isLoggingOut}
                             className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg border border-red-100 text-red-500 hover:bg-red-50 transition-all font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            <LogOut size={16} /> {isLoggingOut ? "Logging out..." : "Logout"}
+                            <LogOut size={16} />{" "}
+                            {isLoggingOut ? "Logging out..." : "Logout"}
                           </button>
                         </div>
                       ) : (
