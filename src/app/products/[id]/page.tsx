@@ -22,20 +22,24 @@ export default function ProductDetails({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  
+
   // Call all hooks at the top level
-  const { data: productResponse, isLoading, isError } = useGetProduct(Number(id));
+  const {
+    data: productResponse,
+    isLoading,
+    isError,
+  } = useGetProduct(Number(id));
   const { mutate: addToCart } = useAddToCart();
   const { mutate: addToFavorites } = useAddToFavorites();
   const { user } = useAuth();
-  
+
   // Initialize state hooks before any conditional returns
   const [activeImg, setActiveImg] = useState("");
   const [qty, setQty] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const product = productResponse?.data;
-
+  console.log(product);
   // Update activeImg when product loads
   if (product && !activeImg) {
     setActiveImg(product.main_image || "/images/monitor.jpg");
@@ -93,7 +97,9 @@ export default function ProductDetails({
               {/* Variant Images - Show main image and extra images */}
               <div className="flex gap-4 mt-4">
                 <button
-                  onClick={() => setActiveImg(product.main_image || "/images/monitor.jpg")}
+                  onClick={() =>
+                    setActiveImg(product.main_image || "/images/monitor.jpg")
+                  }
                   className={`w-20 h-20 p-1 rounded-xl border transition-all duration-200 ${
                     activeImg === product.main_image
                       ? "border-primary ring-1 ring-primary"
@@ -213,6 +219,14 @@ export default function ProductDetails({
                 >
                   ♥ Wishlist
                 </button>
+              </div>
+
+              {/* Product Metadata - show all product data as JSON for debugging/visibility */}
+              <div className="mt-8 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <h2 className="text-lg font-semibold mb-2">Product Metadata</h2>
+                <pre className="text-sm overflow-auto max-h-64 bg-white p-3 rounded-md border">
+                  {JSON.stringify(product, null, 2)}
+                </pre>
               </div>
             </div>
           </div>

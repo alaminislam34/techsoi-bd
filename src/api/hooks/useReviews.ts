@@ -16,8 +16,7 @@ interface Review {
 export const useGetProductReviews = (productId: number) => {
   return useQuery({
     queryKey: ["reviews", productId],
-    queryFn: () =>
-      apiClient.get<Review[]>(API_ENDPOINTS.REVIEW_GET_ALL),
+    queryFn: () => apiClient.get<Review[]>(API_ENDPOINTS.REVIEW_GET_ALL),
     enabled: !!productId,
     staleTime: 5 * 60 * 1000,
   });
