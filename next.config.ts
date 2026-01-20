@@ -19,8 +19,12 @@ const nextConfig: NextConfig = {
         hostname: "ui-avatars.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "api.techsoibd.com",
+        port: "",
+        pathname: "/images/special_brand/**",
+      },
     ],
   },
 };
-
-export default nextConfig;

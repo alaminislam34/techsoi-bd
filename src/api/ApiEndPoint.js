@@ -101,6 +101,7 @@ export const API_ENDPOINTS = {
   BRAND_LIMIT: (limit) => `${BASE_URL}/brand-limit/${limit}`,
   BRAND_GET_SINGLE: (id) => `${BASE_URL}/brand/${id}`,
   BRAND_SPECIAL: `${BASE_URL}/brand-special`,
+  SPECIAL_BRAND: `${BASE_URL}/special-brand`,
   BRAND_STORE: `${BASE_URL}/brand`, // Body: { "name": "", "image": "", "special": 1 }
   BRAND_UPDATE: (id) => `${BASE_URL}/brand/${id}`, // Body: { "name": "", "image": "", "special": 0 }
   BRAND_DELETE: (id) => `${BASE_URL}/brand/${id}`,

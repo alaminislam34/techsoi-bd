@@ -1,13 +1,51 @@
 "use client";
+
 import CommonWrapper from "@/components/layout/CommonWrapper";
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { apiClient } from "@/api/apiClient";
+import { API_ENDPOINTS } from "@/api/ApiEndPoint";
 
 export default function AllBrands() {
-  const brands = [1, 2, 3, 4];
-  const duplicatedBrands = [...brands, ...brands, ...brands];
+  const [allBrands, setAllBrands] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const res = await apiClient.get(API_ENDPOINTS.SPECIAL_BRAND);
+
+        if (res.status) {
+          setAllBrands(res.data);
+          console.log("Brands set successfully:", res.data);
+        } else {
+          console.log("Failed to fetch special brands");
+        }
+      } catch (error) {
+        console.error("Failed to fetch special brands:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBrands();
+  }, []);
+
+  // For infinite smooth marquee (fixes loop warning)
+  const duplicatedBrands = [...allBrands, ...allBrands, ...allBrands];
+
+  if (loading) {
+    return (
+      <div className="py-10">
+        <CommonWrapper>
+          <p className="text-center text-[#808080]">Loading brands...</p>
+        </CommonWrapper>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -54,16 +92,17 @@ export default function AllBrands() {
               >
                 {duplicatedBrands.map((item, index) => (
                   <SwiperSlide
-                    key={index}
+                    key={`${item.id}-${index}`}
                     className="flex justify-center items-center"
                   >
                     <div className="grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer py-4">
                       <Image
-                        src={`/brandslogo/brand${item}.png`}
+                        src={item?.image || "/brandslogo/brand1.png"}
+                        unoptimized
                         height={80}
                         width={200}
-                        alt={`Brand ${item}`}
-                        className="object-contain h-8 sm:h-12 md:h-16 w-full md:py-1"
+                        alt={`Brand ${item?.id || index + 1}`}
+                        className="object-contain h-8 sm:h-12 md:h-16 w-full min-w-20 md:py-1"
                       />
                     </div>
                   </SwiperSlide>

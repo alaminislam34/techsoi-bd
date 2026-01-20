@@ -29,7 +29,7 @@ export default function Home() {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(`${API_ENDPOINTS.PRODUCT_LIMIT(8)}`);
-        console.log("response:", response.data.data);
+
         if (response.data?.status) {
           setFeatures(response.data.data);
         }
@@ -47,7 +47,7 @@ export default function Home() {
     const fetchProducts = async () => {
       try {
         const res: AxiosResponse<any> = await axios.get(
-          `${API_ENDPOINTS.PRODUCT_GET_ALL}`
+          `${API_ENDPOINTS.PRODUCT_GET_ALL}`,
         );
         if (res.data?.status) {
           setAllProducts(res.data.data);
