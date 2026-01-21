@@ -227,14 +227,16 @@ function ProductListContent() {
               <div className="h-full" key={p.id}>
                 <div className="flex flex-col gap-2 justify-between md:gap-5 p-1.5 md:p-4 rounded-xl md:rounded-[20px] bg-white border border-[#bee5f6] hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_2px_10px_#72C7EC] hover:border-[#72C7EC] h-full">
                   <div className="relative w-full h-48 md:h-56 rounded-lg md:rounded-4.5 overflow-hidden bg-gray-100">
-                    <img
-                      src={p.main_image || "/images/monitor.jpg"}
-                      alt={p.name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = "/images/monitor.jpg";
-                      }}
-                    />
+                    <Link href={`/products/${p.id}`}>
+                      <img
+                        src={p.main_image || "/images/monitor.jpg"}
+                        alt={p.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/monitor.jpg";
+                        }}
+                      />
+                    </Link>
                   </div>
 
                   <div className="flex flex-col justify-between gap-2 md:gap-4">
