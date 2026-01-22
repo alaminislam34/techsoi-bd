@@ -1,31 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import { useGetCategories, useGetSubCategories, useGetBrands } from "@/api/hooks";
 import { ArrowDown, ArrowUp, X } from "lucide-react";
 
 interface Props {
   onCategoryChange: (selectedCategories: string[]) => void;
+  onSubCategoryChange?: (selectedSubCategories: string[]) => void;
+  onBrandChange?: (selectedBrands: string[]) => void;
   onPriceChange: (priceRange: [number, number]) => void;
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
 }
 
-const CATEGORIES = [
-  "Keyboard",
-  "Mouse",
-  "Laptop",
-  "Casing",
-  "Monitor",
-  "Speaker",
-  "SSD",
-  "HDD",
-  "RAM",
-];
-
-const BRANDS = ["MSI", "Gigabyte", "Razer", "Asus", "Samsung", "Corsair"];
+// fetched categories/brands via hooks
 
 export default function FilterSidebar({
   onCategoryChange,
+  onSubCategoryChange,
+  onBrandChange,
   onPriceChange,
   sidebarOpen,
   setSidebarOpen,
@@ -35,11 +28,32 @@ export default function FilterSidebar({
   const [openBrands, setOpenBrands] = useState(true);
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+
+  const { data: categoriesResponse } = useGetCategories();
+  const categories = categoriesResponse?.data || [];
+
+  const { data: subCategoriesResponse } = useGetSubCategories();
+  const subCategories = subCategoriesResponse?.data || [];
+
+  const { data: brandsResponse } = useGetBrands();
+  const brands = brandsResponse?.data || [];
 
   // Price States
   const [minPrice, setMinPrice] = useState(100);
-  const [maxPrice, setMaxPrice] = useState(120000);
+  const [maxPrice, setMaxPrice] = useState(300000);
+  const MIN_PRICE = 100;
+  const MAX_PRICE = 300000;
+  const MIN_GAP = 1000;
+
+  // Compute range bar percentages (guarded 0-100)
+  const leftPct = Math.max(0, Math.min(100, (minPrice / MAX_PRICE) * 100));
+  const rightPct = Math.max(
+    0,
+    Math.min(100, 100 - (maxPrice / MAX_PRICE) * 100),
+  );
+  const rangeStyle = { left: `${leftPct}%`, right: `${rightPct}%` };
 
   const toggleCategory = (cat: string) => {
     const updated = selectedCategories.includes(cat)
@@ -60,6 +74,16 @@ export default function FilterSidebar({
       : [...selectedBrands, brand];
 
     setSelectedBrands(updated);
+    if (typeof onBrandChange === "function") onBrandChange(updated);
+  };
+
+  const toggleSubCategory = (sub: string) => {
+    const updated = selectedSubCategories.includes(sub)
+      ? selectedSubCategories.filter((s) => s !== sub)
+      : [...selectedSubCategories, sub];
+
+    setSelectedSubCategories(updated);
+    if (typeof onSubCategoryChange === "function") onSubCategoryChange(updated);
   };
 
   return (
@@ -103,18 +127,17 @@ export default function FilterSidebar({
               {/* This div creates the colored bar between handles */}
               <div
                 className="absolute h-full bg-[#2CACE2] rounded-lg"
-                style={{
-                  left: `${(minPrice / 120000) * 100}%`,
-                  right: `${100 - (maxPrice / 120000) * 100}%`,
-                }}
+                style={rangeStyle}
               />
               <input
                 type="range"
                 min={100}
-                max={120000}
+                max={300000}
                 value={minPrice}
                 onChange={(e) => {
-                  const val = Math.min(Number(e.target.value), maxPrice - 1000);
+                  let val = Number(e.target.value);
+                  if (isNaN(val)) val = MIN_PRICE;
+                  val = Math.max(MIN_PRICE, Math.min(val, maxPrice - MIN_GAP));
                   setMinPrice(val);
                   onPriceChange([val, maxPrice]);
                 }}
@@ -123,10 +146,12 @@ export default function FilterSidebar({
               <input
                 type="range"
                 min={100}
-                max={120000}
+                max={300000}
                 value={maxPrice}
                 onChange={(e) => {
-                  const val = Math.max(Number(e.target.value), minPrice + 1000);
+                  let val = Number(e.target.value);
+                  if (isNaN(val)) val = MAX_PRICE;
+                  val = Math.min(MAX_PRICE, Math.max(val, minPrice + MIN_GAP));
                   setMaxPrice(val);
                   onPriceChange([minPrice, val]);
                 }}
@@ -141,7 +166,13 @@ export default function FilterSidebar({
                   type="number"
                   value={minPrice}
                   onChange={(e) => {
-                    const val = Number(e.target.value);
+                    let val = Number(e.target.value);
+                    if (isNaN(val)) val = MIN_PRICE;
+                    // Clamp and ensure gap
+                    val = Math.max(
+                      MIN_PRICE,
+                      Math.min(val, maxPrice - MIN_GAP),
+                    );
                     setMinPrice(val);
                     onPriceChange([val, maxPrice]);
                   }}
@@ -154,7 +185,13 @@ export default function FilterSidebar({
                   type="number"
                   value={maxPrice}
                   onChange={(e) => {
-                    const val = Number(e.target.value);
+                    let val = Number(e.target.value);
+                    if (isNaN(val)) val = MAX_PRICE;
+                    // Clamp and ensure gap
+                    val = Math.min(
+                      MAX_PRICE,
+                      Math.max(val, minPrice + MIN_GAP),
+                    );
                     setMaxPrice(val);
                     onPriceChange([minPrice, val]);
                   }}
@@ -164,7 +201,12 @@ export default function FilterSidebar({
             </div>
 
             <button
-              onClick={() => onCategoryChange(selectedCategories)}
+              onClick={() => {
+                onCategoryChange(selectedCategories);
+                if (typeof onSubCategoryChange === "function") onSubCategoryChange(selectedSubCategories);
+                if (typeof onBrandChange === "function") onBrandChange(selectedBrands);
+                onPriceChange([minPrice, maxPrice]);
+              }}
               className="w-full py-2.5 rounded-xl bg-[#2CACE2] text-white text-sm font-semibold hover:bg-[#1b9bd1] shadow-sm transition active:scale-95"
             >
               Apply Filter
@@ -189,24 +231,42 @@ export default function FilterSidebar({
 
         {openCategory && (
           <div className="mt-3 space-y-2 max-h-60 pr-2 custom-scrollbar">
-            {CATEGORIES.map((cat) => (
+            {categories.map((cat: any) => (
               <label
-                key={cat}
+                key={cat.id}
                 className="flex items-center gap-3 cursor-pointer group"
               >
                 <input
                   type="checkbox"
-                  checked={selectedCategories.includes(cat)}
-                  onChange={() => toggleCategory(cat)}
+                  checked={selectedCategories.includes(String(cat.id))}
+                  onChange={() => toggleCategory(String(cat.id))}
                   className="w-4 h-4 rounded border-gray-300 text-[#2CACE2] focus:ring-[#2CACE2] accent-[#2CACE2]"
                 />
                 <span className="text-sm text-gray-600 group-hover:text-[#2CACE2] transition">
-                  {cat}
+                  {cat.name}
                 </span>
               </label>
             ))}
           </div>
         )}
+      </div>
+
+      {/* Sub-Categories */}
+      <div className="bg-white border border-[#bee5f6] p-4 rounded-2xl hover:-translate-y-1 hover:shadow-[0_3px_15px_#72C7EC] hover:border-[#72C7EC] transition duration-300">
+        <h3 className="font-semibold text-lg text-[#303030] mb-2">Sub-Categories</h3>
+        <div className="space-y-2 max-h-48 overflow-auto pr-2">
+          {subCategories.map((s: any) => (
+            <label key={s.id} className="flex items-center gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={selectedSubCategories.includes(String(s.id))}
+                onChange={() => toggleSubCategory(String(s.id))}
+                className="w-4 h-4 rounded border-gray-300 text-[#2CACE2] focus:ring-[#2CACE2] accent-[#2CACE2]"
+              />
+              <span className="text-sm text-gray-600 group-hover:text-[#2CACE2] transition">{s.name}</span>
+            </label>
+          ))}
+        </div>
       </div>
 
       {/* Brands */}
@@ -223,20 +283,15 @@ export default function FilterSidebar({
 
         {openBrands && (
           <div className="mt-3 space-y-2">
-            {BRANDS.map((brand) => (
-              <label
-                key={brand}
-                className="flex items-center gap-3 cursor-pointer group"
-              >
+            {brands.map((brand: any) => (
+              <label key={brand.id} className="flex items-center gap-3 cursor-pointer group">
                 <input
                   type="checkbox"
-                  checked={selectedBrands.includes(brand)}
-                  onChange={() => toggleBrand(brand)}
+                  checked={selectedBrands.includes(String(brand.id))}
+                  onChange={() => toggleBrand(String(brand.id))}
                   className="w-4 h-4 rounded border-gray-300 text-[#2CACE2] focus:ring-[#2CACE2] accent-[#2CACE2]"
                 />
-                <span className="text-sm text-gray-600 group-hover:text-[#2CACE2] transition">
-                  {brand}
-                </span>
+                <span className="text-sm text-gray-600 group-hover:text-[#2CACE2] transition">{brand.name}</span>
               </label>
             ))}
           </div>

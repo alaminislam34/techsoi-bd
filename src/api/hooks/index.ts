@@ -6,6 +6,7 @@ export {
   useGetProductsLimit,
   useGetProductsPaginated,
   useSearchProducts,
+  useFilterProducts,
   useGetProduct,
   useGetProductBySlug,
   useGetProductDetails,
@@ -57,6 +58,12 @@ export {
   useUpdateCategory,
   useDeleteCategory,
 } from "./useCategories";
+
+// Sub-categories
+export { useGetSubCategories, useGetSubCategory } from "./useSubCategories";
+
+// Brands
+export { useGetBrands, useGetBrandsLimit } from "./useBrands";
 
 // Blogs
 export {

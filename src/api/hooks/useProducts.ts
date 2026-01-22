@@ -64,6 +64,60 @@ export const useSearchProducts = (query: string) => {
   });
 };
 
+// Server-side filtering using PRODUCT_FILTER endpoint
+export const useFilterProducts = (opts: {
+  query?: string;
+  categories?: string[];
+  subCategories?: string[];
+  brands?: string[];
+  priceRange?: [number, number];
+  sort?: string;
+}) => {
+  const {
+    query = "",
+    categories = [],
+    subCategories = [],
+    brands = [],
+    priceRange,
+    sort = "",
+  } = opts || {};
+
+  const params = new URLSearchParams();
+  if (query) params.append("filter[name]", query);
+  if (categories && categories.length) {
+    categories.forEach((c) => params.append("filter[category_id]", String(c)));
+  }
+  if (subCategories && subCategories.length) {
+    subCategories.forEach((s) => params.append("filter[sub_category_id]", String(s)));
+  }
+  if (brands && brands.length) {
+    brands.forEach((b) => params.append("filter[brand_id]", String(b)));
+  }
+  if (priceRange) {
+    params.append("filter[price_min]", String(priceRange[0]));
+    params.append("filter[price_max]", String(priceRange[1]));
+  }
+  if (sort) params.append("sort", sort);
+
+  const url = `${API_ENDPOINTS.PRODUCT_FILTER}${params.toString() ? `?${params.toString()}` : ""}`;
+
+  const enabledFlag =
+    Boolean(query) ||
+    (categories && categories.length > 0) ||
+    (subCategories && subCategories.length > 0) ||
+    (brands && brands.length > 0) ||
+    Boolean(priceRange) ||
+    Boolean(sort);
+
+  return useQuery({
+    queryKey: ["products", "filter", query, categories, subCategories, brands, priceRange, sort],
+    queryFn: () => apiClient.get<Product[]>(url),
+    // only run when there's at least one filter or query
+    enabled: enabledFlag,
+    staleTime: 2 * 60 * 1000,
+  });
+};
+
 // Get single product
 export const useGetProduct = (id: number) => {
   return useQuery({

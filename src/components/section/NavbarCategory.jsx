@@ -63,7 +63,7 @@ export default function NavbarCategory() {
   const handleSubCategoryClick = (e, subCategoryName) => {
     e.preventDefault();
     // You can also use sub.slug if your backend supports it better
-    router.push(`/products?query=${encodeURIComponent(subCategoryName)}`);
+    router.push(`/products?sub-category=${encodeURIComponent(subCategoryName)}`);
   };
 
   if (isLoading) {
