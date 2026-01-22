@@ -48,7 +48,7 @@ export default function ReviewsSection() {
   ];
 
   return (
-    <div className="p-8 rounded-xl bg-white mt-10">
+    <div className="p-6 rounded-xl bg-white">
       {/* -------- TABS CONTENT -------- */}
       <h2 className="text-xl font-semibold mb-6">Customer Review</h2>
 
@@ -60,7 +60,7 @@ export default function ReviewsSection() {
               key={rev.id}
               className="flex gap-4 border-b border-[#BEE5F6] pb-6"
             >
-              <div className="w-[55px] h-[55px] rounded-full overflow-hidden">
+              <div className="w-14 h-14 rounded-full overflow-hidden">
                 <Image
                   src={rev.img}
                   alt={rev.name}
