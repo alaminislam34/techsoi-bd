@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
 
 // import NavbarTop from "@/components/section/NavbarTop";
 import Navbar from "@/components/section/Navbar";
@@ -11,12 +10,6 @@ import QueryProvider from "@/Provider/QueryProvider";
 
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-dm-sans",
-});
 
 export const metadata: Metadata = {
   title: "Techsoi BD",
@@ -32,7 +25,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <QueryProvider>
         <AuthProvider>
-          <body className={dmSans.className}>
+          <body>
             {/* Global Navbar */}
             {/* <NavbarTop /> */}
             <Navbar />

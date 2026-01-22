@@ -82,7 +82,13 @@ function ProductListContent() {
     ) {
       setHasUserFiltered(true);
     }
-  }, [selectedCategories, selectedSubCategories, selectedBrands, priceRange, sortBy]);
+  }, [
+    selectedCategories,
+    selectedSubCategories,
+    selectedBrands,
+    priceRange,
+    sortBy,
+  ]);
 
   const filteredProducts = useMemo(() => {
     // If server returned filtered data (when filters present), prefer it

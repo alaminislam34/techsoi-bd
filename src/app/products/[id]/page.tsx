@@ -40,7 +40,6 @@ export default function ProductDetails({
 
   const product = productResponse?.data;
   console.log(product);
-  // Update activeImg when product loads
   if (product && !activeImg) {
     setActiveImg(product.main_image || "/images/monitor.jpg");
   }
@@ -138,10 +137,10 @@ export default function ProductDetails({
                 {/* Price section */}
                 <div className="pr-8">
                   <p className="line-through text-gray-400 text-lg">
-                    ৳{totalRegularPrice.toLocaleString()}
+                    ৳{product.regular_price.toLocaleString()}
                   </p>
                   <p className="text-3xl font-bold text-primary">
-                    ৳{totalSalePrice.toLocaleString()}
+                    ৳{product.sale_price.toLocaleString()}
                   </p>
                 </div>
 
@@ -171,7 +170,7 @@ export default function ProductDetails({
 
                     {/* mth text */}
                     <span className="text-gray-500 text-xl font-medium">
-                      mth
+                      month
                     </span>
                   </div>
                 </div>
