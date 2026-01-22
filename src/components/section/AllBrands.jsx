@@ -20,7 +20,6 @@ export default function AllBrands() {
 
         if (res.status) {
           setAllBrands(res.data);
-          console.log("Brands set successfully:", res.data);
         } else {
           console.log("Failed to fetch special brands");
         }

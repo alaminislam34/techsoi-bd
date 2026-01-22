@@ -13,7 +13,7 @@ export const API_ENDPOINTS = {
   FAV_LIST_GET: `${BASE_URL}/fav-list`,
   FAV_LIST_ADD: `${BASE_URL}/fav-list`, // Body: { "product_id": "" }
   FAV_LIST_DELETE: (id) => `${BASE_URL}/fav-list/${id}`,
-
+  HERO_IMAGE: `${BASE_URL}/hero-image`,
   // --- Cart Product Requests ---
   CART_PRODUCT_GET: `${BASE_URL}/cart-product`,
   CART_PRODUCT_ADD: `${BASE_URL}/cart-product`, // Body: { "product_id": "" }

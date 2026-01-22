@@ -6,12 +6,12 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "placehold.co",
+        hostname: "api.techsoibd.com",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "api.techsoibd.com",
+        hostname: "placehold.co",
         pathname: "/**",
       },
       {
@@ -19,12 +19,8 @@ const nextConfig: NextConfig = {
         hostname: "ui-avatars.com",
         pathname: "/**",
       },
-      {
-        protocol: "https",
-        hostname: "api.techsoibd.com",
-        port: "",
-        pathname: "/images/special_brand/**",
-      },
     ],
   },
 };
+
+export default nextConfig;

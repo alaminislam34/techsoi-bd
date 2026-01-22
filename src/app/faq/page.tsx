@@ -52,7 +52,7 @@ export default function FaqPage() {
   return (
     <>
     <CommonWrapper>
-      <div className="">
+      <div className="mt-6">
       {/* Title */}
       <h1 className="text-3xl md:text-4xl font-semibold text-center text-sky-500 mb-10">
         Frequently Asked Questions

@@ -83,7 +83,7 @@ export default function ProductDetails({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* LEFT IMAGES */}
             <div>
-              <div className="w-full h-95 md:h-105 relative border border-[#BEE5F6] rounded-2xl p-4 bg-gray-50">
+              <div className="w-full h-95 md:h-105 relative border border-[#BEE5F6] rounded-2xl p-4">
                 <img
                   src={activeImg || "/images/monitor.jpg"}
                   alt={product.name}
@@ -207,26 +207,6 @@ export default function ProductDetails({
                 >
                   Add to Cart
                 </button>
-                <button
-                  onClick={() => {
-                    if (!user) {
-                      toast.error("Please login first");
-                      return;
-                    }
-                    addToFavorites({ product_id: Number(id) });
-                  }}
-                  className="px-8 py-3 rounded-xl border border-gray-300 text-gray-700 font-semibold text-lg hover:bg-gray-50 transition"
-                >
-                  ♥ Wishlist
-                </button>
-              </div>
-
-              {/* Product Metadata - show all product data as JSON for debugging/visibility */}
-              <div className="mt-8 bg-gray-50 p-4 rounded-lg border border-gray-200">
-                <h2 className="text-lg font-semibold mb-2">Product Metadata</h2>
-                <pre className="text-sm overflow-auto max-h-64 bg-white p-3 rounded-md border">
-                  {JSON.stringify(product, null, 2)}
-                </pre>
               </div>
             </div>
           </div>
@@ -248,7 +228,6 @@ export default function ProductDetails({
         <BlogCard limit={3} />
       </CommonWrapper>
 
-      {/* BUY NOW MODAL */}
       <BuyNowModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );

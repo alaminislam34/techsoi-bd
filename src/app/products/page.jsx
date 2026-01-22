@@ -8,7 +8,7 @@ import FilterSidebar from "@/components/productsComponent/FilterSidebar";
 import Link from "next/link";
 import { Menu, Heart, ShoppingCart } from "lucide-react";
 import CommonWrapper from "@/components/layout/CommonWrapper";
-import { useGetAllProducts } from "@/api/hooks/useProducts";
+import { useGetAllProducts, useFilterProducts } from "@/api/hooks/useProducts";
 import { useAddToCart } from "@/api/hooks/useCart";
 import { useAddToFavorites } from "@/api/hooks/useFavorites";
 import { useAuth } from "@/Provider/AuthProvider";
@@ -29,7 +29,9 @@ function ProductListContent() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [priceRange, setPriceRange] = useState([0, 100000]);
+  const [selectedSubCategories, setSelectedSubCategories] = useState([]);
+  const [selectedBrands, setSelectedBrands] = useState([]);
+  const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [sortBy, setSortBy] = useState("newest");
   const [showPerPage, setShowPerPage] = useState(25);
 
@@ -45,6 +47,20 @@ function ProductListContent() {
   const categoryFromUrl = searchParams.get("category");
   const queryFromUrl = searchParams.get("query");
 
+  // Call server-side filter when user has filters or a query is present
+  const {
+    data: filteredResponse,
+    isLoading: isFiltering,
+    isError: isFilterError,
+  } = useFilterProducts({
+    query: hasUserFiltered ? undefined : queryFromUrl || "",
+    categories: selectedCategories,
+    subCategories: selectedSubCategories,
+    brands: selectedBrands,
+    priceRange,
+    sort: sortBy,
+  });
+
   useEffect(() => {
     if (
       !hasUserFiltered &&
@@ -58,15 +74,23 @@ function ProductListContent() {
   useEffect(() => {
     if (
       selectedCategories.length > 0 ||
+      selectedSubCategories.length > 0 ||
+      selectedBrands.length > 0 ||
       priceRange[0] !== 0 ||
-      priceRange[1] !== 100000 ||
+      priceRange[1] !== 1000000 ||
       sortBy !== "newest"
     ) {
       setHasUserFiltered(true);
     }
-  }, [selectedCategories, priceRange, sortBy]);
+  }, [selectedCategories, selectedSubCategories, selectedBrands, priceRange, sortBy]);
 
   const filteredProducts = useMemo(() => {
+    // If server returned filtered data (when filters present), prefer it
+    if ((hasUserFiltered || queryFromUrl) && filteredResponse?.data) {
+      return filteredResponse.data;
+    }
+
+    // otherwise fall back to client-side filtering of all products
     let filtered = [...products];
 
     if (selectedCategories.length > 0) {
@@ -107,6 +131,7 @@ function ProductListContent() {
     sortBy,
     queryFromUrl,
     hasUserFiltered,
+    filteredResponse,
   ]);
 
   const paginatedProducts = useMemo(() => {
@@ -115,6 +140,14 @@ function ProductListContent() {
 
   const handleCategoryFilter = (categories) => {
     setSelectedCategories(categories);
+  };
+
+  const handleSubCategoryFilter = (subCategories) => {
+    setSelectedSubCategories(subCategories);
+  };
+
+  const handleBrandFilter = (brands) => {
+    setSelectedBrands(brands);
   };
 
   const handleAddToCart = (productId) => {
@@ -146,6 +179,8 @@ function ProductListContent() {
       {/* Sidebar */}
       <FilterSidebar
         onCategoryChange={handleCategoryFilter}
+        onSubCategoryChange={handleSubCategoryFilter}
+        onBrandChange={handleBrandFilter}
         onPriceChange={(range) => setPriceRange(range)}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
@@ -226,15 +261,17 @@ function ProductListContent() {
             {paginatedProducts.map((p) => (
               <div className="h-full" key={p.id}>
                 <div className="flex flex-col gap-2 justify-between md:gap-5 p-1.5 md:p-4 rounded-xl md:rounded-[20px] bg-white border border-[#bee5f6] hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_2px_10px_#72C7EC] hover:border-[#72C7EC] h-full">
-                  <div className="relative w-full h-48 md:h-56 rounded-lg md:rounded-4.5 overflow-hidden bg-gray-100">
-                    <img
-                      src={p.main_image || "/images/monitor.jpg"}
-                      alt={p.name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = "/images/monitor.jpg";
-                      }}
-                    />
+                  <div className="relative w-full h-56 md:h-62 rounded-lg md:rounded-4.5 overflow-hidden">
+                    <Link href={`/products/${p.id}`}>
+                      <img
+                        src={p.main_image || "/images/monitor.jpg"}
+                        alt={p.name}
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/monitor.jpg";
+                        }}
+                      />
+                    </Link>
                   </div>
 
                   <div className="flex flex-col justify-between gap-2 md:gap-4">

@@ -4,12 +4,30 @@ import { useAuth } from "@/Provider/AuthProvider";
 import { User, LogOut, Handbag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
+import { useRouter } from "next/navigation";
+import { useSearchProducts } from "@/api/hooks";
 
 export default function Navbar() {
   const [openDropdown, setOpenDropdown] = useState(false);
   const { user, logout, loginWithGoogle, isLoggingOut } = useAuth();
+  const router = useRouter();
+
+  // Search state
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedTerm, setDebouncedTerm] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  // Debounce input
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedTerm(searchTerm.trim()), 300);
+    return () => clearTimeout(t);
+  }, [searchTerm]);
+
+  const { data: searchResponse, isLoading: isSearching } =
+    useSearchProducts(debouncedTerm);
+  const suggestions = searchResponse?.data || [];
 
   return (
     <>
@@ -34,11 +52,62 @@ export default function Navbar() {
             </Link>
 
             {/* ---------- SEARCH ---------- */}
-            <div className="hidden px-2 md:flex justify-between items-center w-xs sm:w-xs md:w-xs lg:w-xl relative mx-4 sm:mx-0 lg:mx-3 md:mx-4 py-3 rounded-xl bg-white border border-[#bee5f6]">
-              <input
-                className="text-lg w-full focus:outline-none"
-                placeholder="Search products.."
-              />
+            <div className="hidden px-2 md:flex justify-between items-center md:w-xs lg:w-2xl relative mx-4 sm:mx-0 lg:mx-3 md:mx-4 py-2 rounded-xl bg-white border border-[#bee5f6]">
+              <div className="relative flex-1">
+                <input
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setShowSuggestions(true);
+                  }}
+                  onFocus={() => setShowSuggestions(true)}
+                  onBlur={() =>
+                    setTimeout(() => setShowSuggestions(false), 150)
+                  }
+                  className="lg:text-lg w-full focus:outline-none"
+                  placeholder="Search products.."
+                />
+
+                {showSuggestions && (suggestions.length > 0 || isSearching) && (
+                  <div className="absolute left-0 right-0 mt-2 bg-white border border-[#e6f6fd] rounded-lg shadow-lg z-50 max-h-60 overflow-auto max-w-xl">
+                    {isSearching ? (
+                      <div className="p-3 text-sm text-gray-500">
+                        Searching...
+                      </div>
+                    ) : (
+                      suggestions.map((s) => (
+                        <div
+                          key={s.id}
+                          onMouseDown={() => {
+                            // navigate to product page (by id)
+                            router.push(`/products/${s.id}`);
+                            setSearchTerm("");
+                            setShowSuggestions(false);
+                          }}
+                          className="p-3 hover:bg-[#f5fbff] cursor-pointer flex items-center gap-3"
+                        >
+                          <img
+                            src={s.main_image || "/images/monitor.jpg"}
+                            alt={s.name}
+                            className="w-10 h-10 object-contain"
+                            onError={(e) =>
+                              (e.currentTarget.src = "/images/monitor.jpg")
+                            }
+                          />
+                          <div className="flex-1">
+                            <div className="text-sm font-medium text-gray-800 truncate">
+                              {s.name}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              ৳{s.sale_price?.toLocaleString()}
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
               <button className="flex items-center relative gap-2.5 pl-3 border-l border-[#9ed9f2] cursor-pointer">
                 <svg
                   width={24}
