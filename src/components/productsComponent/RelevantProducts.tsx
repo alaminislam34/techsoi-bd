@@ -89,6 +89,7 @@ const RelevantProducts: React.FC<RelevantProductsProps> = ({
           <SwiperSlide key={product.id} className=" h-full px-2 py-4">
             <ProductCard
               id={product.id}
+              slug={product.slug}
               name={product.name}
               price={product.sale_price}
               oldPrice={product.regular_price}

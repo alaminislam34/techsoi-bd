@@ -79,8 +79,8 @@ export default function Navbar() {
                         <div
                           key={s.id}
                           onMouseDown={() => {
-                            // navigate to product page (by id)
-                            router.push(`/products/${s.id}`);
+                            // navigate to product page (by slug)
+                            router.push(`/products/${s.slug}`);
                             setSearchTerm("");
                             setShowSuggestions(false);
                           }}

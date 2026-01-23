@@ -6,6 +6,7 @@ import Link from "next/link";
 
 interface ProductCardProps {
   id: number;
+  slug?: string;
   name: string;
   price: number;
   oldPrice: number;
@@ -17,6 +18,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({
   id,
+  slug,
   name,
   price,
   oldPrice,
@@ -84,7 +86,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <div className="flex justify-between items-center">
             {/* Buy Now */}
             <Link
-              href={`/products/${id}`}
+              href={`/products/${slug ?? id}`}
               className="flex items-center gap-1 xl:gap-2.5 px-1.5 xl:px-3 py-1.5 xl:py-2 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-primary group"
             >
               <svg

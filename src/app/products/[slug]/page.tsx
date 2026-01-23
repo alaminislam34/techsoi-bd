@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import { use, useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useGetProduct } from "@/api/hooks/useProducts";
+import { useParams } from "next/navigation";
+import { useGetProductBySlug } from "@/api/hooks/useProducts";
 import ProductTabs from "@/components/productsComponent/ProductTabs";
 import RelevantProducts from "@/components/productsComponent/RelevantProducts";
 import CommonWrapper from "@/components/layout/CommonWrapper";
@@ -16,20 +17,22 @@ import { useAddToFavorites } from "@/api/hooks/useFavorites";
 import { useAuth } from "@/Provider/AuthProvider";
 import { toast } from "react-toastify";
 
-export default function ProductDetails({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
+export default function ProductDetails() {
+  const routeParams = useParams() as { slug?: string };
+  const slug = routeParams?.slug ?? "";
 
-  // Call all hooks at the top level
+  // Call hook to fetch product by slug
   const {
     data: productResponse,
     isLoading,
     isError,
-  } = useGetProduct(Number(id));
+    error,
+  } = useGetProductBySlug(slug);
+  console.log("slug product ", productResponse, "error:", error);
   const { mutate: addToCart } = useAddToCart();
+
+  // Note: React Query returns `error` separately when requests fail.
+  const apiError = error as any;
   const { mutate: addToFavorites } = useAddToFavorites();
   const { user } = useAuth();
 
@@ -39,12 +42,34 @@ export default function ProductDetails({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const product = productResponse?.data;
-  console.log(product);
-  if (product && !activeImg) {
-    setActiveImg(product.main_image || "/images/monitor.jpg");
+
+  // Set initial active image when the product is loaded
+  useEffect(() => {
+    if (product && !activeImg) {
+      setActiveImg(product.main_image || "/images/monitor.jpg");
+    }
+  }, [product, activeImg]);
+
+  // Parse product details (specifications may be a JSON string)
+  const details = product?.details;
+  let specifications: Array<{ name: string; value: string }> = [];
+  try {
+    if (details?.specifications) {
+      specifications =
+        typeof details.specifications === "string"
+          ? JSON.parse(details.specifications)
+          : details.specifications;
+    }
+  } catch (err) {
+    specifications = [];
   }
 
-  if (isLoading) {
+  const extraImages: string[] = details?.extra_images || [];
+  const isInStock = Number(product?.stock) > 0;
+  const maxQty = Number(product?.stock) || 1;
+
+  // If slug isn't ready yet (client component hydration) or the query is loading, show loader
+  if (isLoading || !slug) {
     return (
       <CommonWrapper>
         <div className="py-20 flex justify-center items-center h-96">
@@ -54,12 +79,14 @@ export default function ProductDetails({
     );
   }
 
+  // If the request errored, show a helpful message; otherwise show a not-found message
   if (isError || !product) {
+    const message = isError
+      ? `Error: ${apiError?.message ?? "Failed to load product"}`
+      : "Product not found";
     return (
       <CommonWrapper>
-        <div className="p-10 text-xl text-red-500">
-          Product not found or error loading product
-        </div>
+        <div className="p-10 text-xl text-red-500">{message}</div>
       </CommonWrapper>
     );
   }
@@ -72,7 +99,11 @@ export default function ProductDetails({
       toast.error("Please login first");
       return;
     }
-    addToCart({ product_id: Number(id), quantity: qty });
+    if (!isInStock) {
+      toast.error("Product is out of stock");
+      return;
+    }
+    addToCart({ product_id: Number(product.id), quantity: qty });
   };
 
   return (
@@ -95,25 +126,30 @@ export default function ProductDetails({
 
               {/* Variant Images - Show main image and extra images */}
               <div className="flex gap-4 mt-4">
-                <button
-                  onClick={() =>
-                    setActiveImg(product.main_image || "/images/monitor.jpg")
-                  }
-                  className={`w-20 h-20 p-1 rounded-xl border transition-all duration-200 ${
-                    activeImg === product.main_image
-                      ? "border-primary ring-1 ring-primary"
-                      : "border-gray-300"
-                  }`}
-                >
-                  <img
-                    src={product.main_image || "/images/monitor.jpg"}
-                    alt="main"
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.currentTarget.src = "/images/monitor.jpg";
-                    }}
-                  />
-                </button>
+                {(
+                  ([product.main_image, ...extraImages].filter(
+                    Boolean,
+                  ) as string[]) || []
+                ).map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveImg(img)}
+                    className={`w-20 h-20 p-1 rounded-xl border transition-all duration-200 ${
+                      activeImg === img
+                        ? "border-primary ring-1 ring-primary"
+                        : "border-gray-300"
+                    }`}
+                  >
+                    <img
+                      src={img || "/images/monitor.jpg"}
+                      alt={`variant-${idx}`}
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/monitor.jpg";
+                      }}
+                    />
+                  </button>
+                ))}
               </div>
             </div>
 
@@ -121,15 +157,33 @@ export default function ProductDetails({
             <div>
               <h1 className="text-3xl font-bold">{product.name}</h1>
               <p className="text-gray-600 mt-3">{product.short_description}</p>
+
               <p className="flex items-center gap-2 mt-4">
-                ⭐ 4.5
-                <span className="text-gray-500">(24 reviews)</span>
+                ⭐ {product.rating ?? "4.5"}
+                <span className="text-gray-500">
+                  ({product.review_count || 0} reviews)
+                </span>
+                <span className="text-gray-500">
+                  • Sold {product.sale_count || 0}
+                </span>
               </p>
+
               <p className="mt-2">
                 <span className="font-semibold">Availability:</span>{" "}
-                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-lg text-sm font-medium">
-                  In Stock
-                </span>
+                {isInStock ? (
+                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-lg text-sm font-medium">
+                    In Stock
+                  </span>
+                ) : (
+                  <span className="bg-red-100 text-red-700 px-3 py-1 rounded-lg text-sm font-medium">
+                    Out of Stock
+                  </span>
+                )}
+                {(product.stock ?? 0) > 0 && (
+                  <span className="ml-3 text-sm text-gray-500">
+                    Only {product.stock} left
+                  </span>
+                )}
               </p>
 
               {/* Prices dynamically based on quantity */}
@@ -137,10 +191,10 @@ export default function ProductDetails({
                 {/* Price section */}
                 <div className="pr-8">
                   <p className="line-through text-gray-400 text-lg">
-                    ৳{product.regular_price.toLocaleString()}
+                    ৳{(product.regular_price ?? 0).toLocaleString()}
                   </p>
                   <p className="text-3xl font-bold text-primary">
-                    ৳{product.sale_price.toLocaleString()}
+                    ৳{(product.sale_price ?? 0).toLocaleString()}
                   </p>
                 </div>
 
@@ -156,22 +210,21 @@ export default function ProductDetails({
 
                   {/* Price row */}
                   <div className="flex items-center gap-2">
-                    {/* Selected double circle icon */}
                     <div className="relative -translate-y-0.5">
                       <div className="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
                         <div className="w-3 h-3 rounded-full bg-primary"></div>
                       </div>
                     </div>
 
-                    {/* Amount */}
-                    <span className="text-primary text-2xl font-bold leading-none">
-                      ৳1200
-                    </span>
-
-                    {/* mth text */}
-                    <span className="text-gray-500 text-xl font-medium">
-                      month
-                    </span>
+                    {product.emi_status ? (
+                      <span className="text-primary text-lg font-bold leading-none">
+                        EMI Available
+                      </span>
+                    ) : (
+                      <span className="text-gray-500 text-lg">
+                        Not Available
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -182,11 +235,16 @@ export default function ProductDetails({
                   <button
                     className="px-3 py-2"
                     onClick={() => qty > 1 && setQty(qty - 1)}
+                    disabled={!isInStock}
                   >
                     -
                   </button>
                   <span className="px-4">{qty}</span>
-                  <button className="px-3 py-2" onClick={() => setQty(qty + 1)}>
+                  <button
+                    className="px-3 py-2"
+                    onClick={() => isInStock && qty < maxQty && setQty(qty + 1)}
+                    disabled={!isInStock}
+                  >
                     +
                   </button>
                 </div>
@@ -195,14 +253,16 @@ export default function ProductDetails({
               {/* Action Buttons */}
               <div className="mt-8 flex gap-4 flex-wrap md:flex-nowrap">
                 <button
-                  className="px-8 cursor-pointer py-3 rounded-xl bg-primary text-white font-semibold text-lg hover:bg-blue-600 transition"
+                  className={`px-8 cursor-pointer py-3 rounded-xl bg-primary text-white font-semibold text-lg hover:bg-blue-600 transition ${!isInStock ? "opacity-50 cursor-not-allowed" : ""}`}
                   onClick={() => setIsModalOpen(true)}
+                  disabled={!isInStock}
                 >
                   Buy Now
                 </button>
                 <button
                   onClick={handleAddToCart}
-                  className="px-8 py-3 rounded-xl border border-primary text-primary font-semibold text-lg hover:bg-blue-50 transition"
+                  disabled={!isInStock}
+                  className={`px-8 py-3 rounded-xl border border-primary text-primary font-semibold text-lg hover:bg-blue-50 transition ${!isInStock ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   Add to Cart
                 </button>
@@ -210,8 +270,15 @@ export default function ProductDetails({
             </div>
           </div>
 
-          <ProductTabs />
-          <RelevantProducts currentProductId={Number(id)} />
+          <ProductTabs
+            fullDescription={details?.full_description}
+            specifications={specifications}
+            reviews={product.reviews || []}
+            averageRating={product.rating}
+            reviewCount={product.review_count}
+          />
+
+          <RelevantProducts currentProductId={Number(product.id)} />
         </div>
       </CommonWrapper>
 

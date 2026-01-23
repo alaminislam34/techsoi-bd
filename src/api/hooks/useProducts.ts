@@ -9,20 +9,30 @@ interface Product {
   id: number;
   name: string;
   slug: string;
-  sku: string;
-  regular_price: number;
-  sale_price: number;
-  main_image: string;
-  category_id: number;
-  brand_id: number;
-  short_description: string;
-}
+  sku?: string;
+  regular_price?: number;
+  sale_price?: number;
+  main_image?: string;
+  category_id?: number;
+  brand_id?: number;
+  short_description?: string;
+
+  // Additional optional fields returned by the API
+  rating?: number; // average rating
+  review_count?: number;
+  reviews?: Array<any>;
+  sale_count?: number;
+  stock?: number;
+  emi_status?: boolean;
+  details?: ProductDetails | any;
+} 
 
 interface ProductDetails {
-  product_id: number;
-  full_description: string;
-  specifications: string[];
-  extra_images: string[];
+  product_id?: number;
+  full_description?: string;
+  // can be a JSON string or an array of spec objects
+  specifications?: string | Array<{ name: string; value: string }>;
+  extra_images?: string[];
 }
 
 // Fetch all products
