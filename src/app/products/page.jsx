@@ -1,7 +1,6 @@
 "use client";
 
 import { Suspense } from "react";
-import Image from "next/image";
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import FilterSidebar from "@/components/productsComponent/FilterSidebar";

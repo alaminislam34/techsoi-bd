@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
 import CommonWrapper from "@/components/layout/CommonWrapper";

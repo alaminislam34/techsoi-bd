@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import ImgA from "@/assets/reviewImg/0bd7b336ee0f46c2c76b65c477da259f0e5150e8.png";
 import ImgB from "@/assets/reviewImg/3dfd7536813e08be8c37daddad937a682336646a.png";
 import ImgC from "@/assets/reviewImg/59dd59bf65ddedbc29d142fbac28b6b94972e288.png";
@@ -61,8 +61,9 @@ export default function ReviewsSection() {
               className="flex gap-4 border-b border-[#BEE5F6] pb-6"
             >
               <div className="w-14 h-14 rounded-full overflow-hidden">
-                <Image
+                <SafeImage
                   src={rev.img}
+                  fallbackSrc={ImgA}
                   alt={rev.name}
                   width={55}
                   height={55}

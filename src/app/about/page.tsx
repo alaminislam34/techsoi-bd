@@ -1,4 +1,4 @@
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import TeamImg from "@/assets/reviewImg/aboutImg.jpg";
 import { Check } from "lucide-react";
 import CommonWrapper from "@/components/layout/CommonWrapper";
@@ -13,8 +13,9 @@ export default function AboutPage() {
       <main className=" py-10">
         {/* Hero Image */}
         <div className="relative w-full h-[380px] rounded-2xl overflow-hidden">
-          <Image
+          <SafeImage
             src={TeamImg}
+            fallbackSrc={TeamImg}
             alt="Techsoi Team"
             fill
             priority

@@ -1,5 +1,5 @@
 "use client";
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import CustomerImage from "@/assets/customer.png";
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -76,8 +76,8 @@ export default function CustomerSays() {
   return (
     <>
       <div className="relative overflow-hidden">
-        <div className="hidden md:block absolute top-0 left-0 w-[200px] h-full bg-linear-to-l from-white/0 to-white z-10 -ml-[67px]"></div>
-        <div className="hidden md:block absolute top-0 right-0 w-[200px] h-full bg-linear-to-r from-white/0 to-white z-10 -mr-[67px]"></div>
+        <div className="hidden md:block absolute top-0 left-0 w-50 h-full bg-linear-to-l from-white/0 to-white z-10 -ml-16.75"></div>
+        <div className="hidden md:block absolute top-0 right-0 w-50 h-full bg-linear-to-r from-white/0 to-white z-10 -mr-16.75"></div>
         <Swiper
           className="mt-12"
           modules={[Autoplay]}
@@ -104,13 +104,13 @@ export default function CustomerSays() {
         >
           <SwiperSlide>
             <div
-              className="flex flex-col overflow-hidden px-4 md:px-[27px] py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
+              className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
               style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
             >
               <div className="flex flex-col relative gap-8">
                 <div className="flex justify-between">
                   <div className="flex items-center relative gap-2.5">
-                    <Image src={CustomerImage} alt="customer" className="" />
+                    <SafeImage src={CustomerImage} fallbackSrc={CustomerImage} alt="customer" className="" />
                     <div className="flex flex-col">
                       <p className="text-[22px] md:text-[32px] font-medium text-[#303030]">
                         Nusrat Ahmed
@@ -150,13 +150,13 @@ export default function CustomerSays() {
           </SwiperSlide>
           <SwiperSlide>
             <div
-              className="flex flex-col overflow-hidden px-4 md:px-[27px] py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
+              className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
               style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
             >
               <div className="flex flex-col relative gap-8">
                 <div className="flex justify-between">
                   <div className="flex items-center relative gap-2.5">
-                    <Image src={CustomerImage} alt="customer" className="" />
+                    <SafeImage src={CustomerImage} fallbackSrc={CustomerImage} alt="customer" className="" />
                     <div className="flex flex-col">
                       <p className="text-[22px] md:text-[32px] font-medium text-[#303030]">
                         Nusrat Ahmed
@@ -196,13 +196,13 @@ export default function CustomerSays() {
           </SwiperSlide>
           <SwiperSlide>
             <div
-              className="flex flex-col overflow-hidden px-4 md:px-[27px] py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
+              className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
               style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
             >
               <div className="flex flex-col relative gap-8">
                 <div className="flex justify-between">
                   <div className="flex items-center relative gap-2.5">
-                    <Image src={CustomerImage} alt="customer" className="" />
+                    <SafeImage src={CustomerImage} fallbackSrc={CustomerImage} alt="customer" className="" />
                     <div className="flex flex-col">
                       <p className="text-[22px] md:text-[32px] font-medium text-[#303030]">
                         Nusrat Ahmed
@@ -242,13 +242,13 @@ export default function CustomerSays() {
           </SwiperSlide>
           <SwiperSlide>
             <div
-              className="flex flex-col overflow-hidden px-4 md:px-[27px] py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
+              className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
               style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
             >
               <div className="flex flex-col relative gap-8">
                 <div className="flex justify-between">
                   <div className="flex items-center relative gap-2.5">
-                    <Image src={CustomerImage} alt="customer" className="" />
+                    <SafeImage src={CustomerImage} fallbackSrc={CustomerImage} alt="customer" className="" />
                     <div className="flex flex-col">
                       <p className="text-[22px] md:text-[32px] font-medium text-[#303030]">
                         Nusrat Ahmed
@@ -288,13 +288,13 @@ export default function CustomerSays() {
           </SwiperSlide>
           <SwiperSlide>
             <div
-              className="flex flex-col overflow-hidden px-4 md:px-[27px] py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
+              className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
               style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
             >
               <div className="flex flex-col relative gap-8">
                 <div className="flex justify-between">
                   <div className="flex items-center relative gap-2.5">
-                    <Image src={CustomerImage} alt="customer" className="" />
+                    <SafeImage src={CustomerImage} fallbackSrc={CustomerImage} alt="customer" className="" />
                     <div className="flex flex-col">
                       <p className="text-[22px] md:text-[32px] font-medium text-[#303030]">
                         Nusrat Ahmed
@@ -334,13 +334,13 @@ export default function CustomerSays() {
           </SwiperSlide>
           <SwiperSlide>
             <div
-              className="flex flex-col overflow-hidden px-4 md:px-[27px] py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
+              className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
               style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
             >
               <div className="flex flex-col relative gap-8">
                 <div className="flex justify-between">
                   <div className="flex items-center relative gap-2.5">
-                    <Image src={CustomerImage} alt="customer" className="" />
+                    <SafeImage src={CustomerImage} fallbackSrc={CustomerImage} alt="customer" className="" />
                     <div className="flex flex-col">
                       <p className="text-[22px] md:text-[32px] font-medium text-[#303030]">
                         Nusrat Ahmed
@@ -380,13 +380,13 @@ export default function CustomerSays() {
           </SwiperSlide>
           <SwiperSlide>
             <div
-              className="flex flex-col overflow-hidden px-4 md:px-[27px] py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
+              className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
               style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
             >
               <div className="flex flex-col relative gap-8">
                 <div className="flex justify-between">
                   <div className="flex items-center relative gap-2.5">
-                    <Image src={CustomerImage} alt="customer" className="" />
+                    <SafeImage src={CustomerImage} fallbackSrc={CustomerImage} alt="customer" className="" />
                     <div className="flex flex-col">
                       <p className="text-[22px] md:text-[32px] font-medium text-[#303030]">
                         Nusrat Ahmed
@@ -426,13 +426,13 @@ export default function CustomerSays() {
           </SwiperSlide>
           <SwiperSlide>
             <div
-              className="flex flex-col overflow-hidden px-4 md:px-[27px] py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
+              className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
               style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
             >
               <div className="flex flex-col relative gap-8">
                 <div className="flex justify-between">
                   <div className="flex items-center relative gap-2.5">
-                    <Image src={CustomerImage} alt="customer" className="" />
+                    <SafeImage src={CustomerImage} fallbackSrc={CustomerImage} alt="customer" className="" />
                     <div className="flex flex-col">
                       <p className="text-[22px] md:text-[32px] font-medium text-[#303030]">
                         Nusrat Ahmed
@@ -498,13 +498,13 @@ export default function CustomerSays() {
         >
           <SwiperSlide>
             <div
-              className="flex flex-col overflow-hidden px-4 md:px-[27px] py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
+              className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
               style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
             >
               <div className="flex flex-col relative gap-8">
                 <div className="flex justify-between">
                   <div className="flex items-center relative gap-2.5">
-                    <Image src={CustomerImage} alt="customer" className="" />
+                    <SafeImage src={CustomerImage} fallbackSrc={CustomerImage} alt="customer" className="" />
                     <div className="flex flex-col">
                       <p className="text-[22px] md:text-[32px] font-medium text-[#303030]">
                         Nusrat Ahmed
@@ -544,13 +544,13 @@ export default function CustomerSays() {
           </SwiperSlide>
           <SwiperSlide>
             <div
-              className="flex flex-col overflow-hidden px-4 md:px-[27px] py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
+              className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
               style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
             >
               <div className="flex flex-col relative gap-8">
                 <div className="flex justify-between">
                   <div className="flex items-center relative gap-2.5">
-                    <Image src={CustomerImage} alt="customer" className="" />
+                    <SafeImage src={CustomerImage} fallbackSrc={CustomerImage} alt="customer" className="" />
                     <div className="flex flex-col">
                       <p className="text-[22px] md:text-[32px] font-medium text-[#303030]">
                         Nusrat Ahmed
@@ -590,13 +590,13 @@ export default function CustomerSays() {
           </SwiperSlide>
           <SwiperSlide>
             <div
-              className="flex flex-col overflow-hidden px-4 md:px-[27px] py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
+              className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
               style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
             >
               <div className="flex flex-col relative gap-8">
                 <div className="flex justify-between">
                   <div className="flex items-center relative gap-2.5">
-                    <Image src={CustomerImage} alt="customer" className="" />
+                    <SafeImage src={CustomerImage} fallbackSrc={CustomerImage} alt="customer" className="" />
                     <div className="flex flex-col">
                       <p className="text-[22px] md:text-[32px] font-medium text-[#303030]">
                         Nusrat Ahmed
@@ -636,13 +636,13 @@ export default function CustomerSays() {
           </SwiperSlide>
           <SwiperSlide>
             <div
-              className="flex flex-col overflow-hidden px-4 md:px-[27px] py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
+              className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
               style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
             >
               <div className="flex flex-col relative gap-8">
                 <div className="flex justify-between">
                   <div className="flex items-center relative gap-2.5">
-                    <Image src={CustomerImage} alt="customer" className="" />
+                    <SafeImage src={CustomerImage} fallbackSrc={CustomerImage} alt="customer" className="" />
                     <div className="flex flex-col">
                       <p className="text-[22px] md:text-[32px] font-medium text-[#303030]">
                         Nusrat Ahmed
@@ -682,13 +682,13 @@ export default function CustomerSays() {
           </SwiperSlide>
           <SwiperSlide>
             <div
-              className="flex flex-col overflow-hidden px-4 md:px-[27px] py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
+              className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
               style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
             >
               <div className="flex flex-col relative gap-8">
                 <div className="flex justify-between">
                   <div className="flex items-center relative gap-2.5">
-                    <Image src={CustomerImage} alt="customer" className="" />
+                    <SafeImage src={CustomerImage} fallbackSrc={CustomerImage} alt="customer" className="" />
                     <div className="flex flex-col">
                       <p className="text-[22px] md:text-[32px] font-medium text-[#303030]">
                         Nusrat Ahmed
@@ -728,13 +728,13 @@ export default function CustomerSays() {
           </SwiperSlide>
           <SwiperSlide>
             <div
-              className="flex flex-col overflow-hidden px-4 md:px-[27px] py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
+              className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
               style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
             >
               <div className="flex flex-col relative gap-8">
                 <div className="flex justify-between">
                   <div className="flex items-center relative gap-2.5">
-                    <Image src={CustomerImage} alt="customer" className="" />
+                    <SafeImage src={CustomerImage} fallbackSrc={CustomerImage} alt="customer" className="" />
                     <div className="flex flex-col">
                       <p className="text-[22px] md:text-[32px] font-medium text-[#303030]">
                         Nusrat Ahmed
@@ -774,13 +774,13 @@ export default function CustomerSays() {
           </SwiperSlide>
           <SwiperSlide>
             <div
-              className="flex flex-col overflow-hidden px-4 md:px-[27px] py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
+              className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
               style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
             >
               <div className="flex flex-col relative gap-8">
                 <div className="flex justify-between">
                   <div className="flex items-center relative gap-2.5">
-                    <Image src={CustomerImage} alt="customer" className="" />
+                    <SafeImage src={CustomerImage} fallbackSrc={CustomerImage} alt="customer" className="" />
                     <div className="flex flex-col">
                       <p className="text-[22px] md:text-[32px] font-medium text-[#303030]">
                         Nusrat Ahmed
@@ -820,13 +820,13 @@ export default function CustomerSays() {
           </SwiperSlide>
           <SwiperSlide>
             <div
-              className="flex flex-col overflow-hidden px-4 md:px-[27px] py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
+              className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
               style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
             >
               <div className="flex flex-col relative gap-8">
                 <div className="flex justify-between">
                   <div className="flex items-center relative gap-2.5">
-                    <Image src={CustomerImage} alt="customer" className="" />
+                    <SafeImage src={CustomerImage} fallbackSrc={CustomerImage} alt="customer" className="" />
                     <div className="flex flex-col">
                       <p className="text-[22px] md:text-[32px] font-medium text-[#303030]">
                         Nusrat Ahmed

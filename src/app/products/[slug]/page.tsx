@@ -2,7 +2,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useGetProductBySlug } from "@/api/hooks/useProducts";
 import ProductTabs from "@/components/productsComponent/ProductTabs";

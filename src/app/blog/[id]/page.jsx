@@ -5,7 +5,6 @@ import CommonWrapper from "@/components/layout/CommonWrapper";
 import BlogCard from "@/components/parts/BlogCard";
 import { useGetBlog } from "@/api/hooks/useBlogs";
 import { CalendarDays } from "lucide-react";
-import Image from "next/image";
 import { useParams } from "next/navigation";
 
 export default function BlogPage() {

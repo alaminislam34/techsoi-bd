@@ -1,5 +1,5 @@
 "use client";
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import Link from "next/link";
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -64,13 +64,13 @@ export default function BlogCard({ limit = 6 }) {
                 className="flex flex-col gap-2 md:gap-3 p-3 md:p-4 rounded-2xl border border-[#bee5f6] hover:border-[#2CACE2] transition-all"
               >
                 <div className="w-full h-48 md:h-56 rounded-xl overflow-hidden bg-gray-200">
-                  <img
+                  <SafeImage
                     src={blog.image}
+                    fallbackSrc="/icons/logo.png"
                     alt={blog.title}
+                    width={400}
+                    height={224}
                     className="w-full h-full object-cover hover:scale-105 transition-transform"
-                    onError={(e) => {
-                      e.target.src = "/icons/logo.png";
-                    }}
                   />
                 </div>
                 <div className="flex items-center gap-1 md:gap-1.5 rounded-lg">

@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import { Eye, Download, Loader2 } from "lucide-react";
 import { useState } from "react";
 import CommonWrapper from "@/components/layout/CommonWrapper";
@@ -161,8 +161,9 @@ export default function MyOrdersPage() {
                       <td className="py-6">
                         <div className="flex items-center gap-4">
                           <div className="w-20 h-20 rounded-xl border border-gray-200 overflow-hidden relative shrink-0">
-                            <Image
+                            <SafeImage
                               src={order.img}
+                              fallbackSrc="/images/monitor.jpg"
                               alt={order.name}
                               width={80}
                               height={80}

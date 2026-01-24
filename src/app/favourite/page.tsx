@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import {
   Trash2,
   Minus,
@@ -144,11 +144,9 @@ export default function FavouritePage() {
                                 <div className="flex items-center gap-4">
                                   <div className="w-8 h-8 rounded-xl border border-gray-100 p-2 relative overflow-hidden bg-gray-50 shrink-0">
                                     {product?.main_image ? (
-                                      <Image
-                                        src={
-                                          product?.main_image ||
-                                          "/images/monitor.png"
-                                        }
+                                      <SafeImage
+                                        src={product?.main_image}
+                                        fallbackSrc="/images/monitor.png"
                                         alt={product?.name || "Product"}
                                         fill
                                         className="object-contain p-1"

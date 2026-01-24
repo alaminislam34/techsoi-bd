@@ -1,7 +1,7 @@
 "use client";
 
 import CommonWrapper from "@/components/layout/CommonWrapper";
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import HeroImage from "@/assets/Hero-Banner.png";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -11,6 +11,7 @@ import { ArrowRight } from "lucide-react";
 
 export default function Hero() {
   const [heroImages, setHeroImages] = useState([]);
+
   useEffect(() => {
     const fetchImages = async () => {
       try {
@@ -26,17 +27,20 @@ export default function Hero() {
     };
     fetchImages();
   }, []);
+
   return (
     <>
       <div className="my-3 md:my-8">
         <CommonWrapper>
           <div className="bg-gray-50 rounded-2xl w-full h-full relative flex justify-end items-center">
-            <Image
+            <SafeImage
               width={1200}
               height={600}
               className="h-90 sm:h-120 md:h-150 lg:h-170 w-auto object-cover rounded-xl"
-              src={heroImages[1]?.image || HeroImage}
+              src={heroImages[1]?.image}
+              fallbackSrc={HeroImage}
               alt="hero"
+              priority
             />
             <div className="absolute left-[6%] bottom-[15%] backdrop-blur-lg p-6">
               <div className="flex items-center justify-start pb-8 md:pb-12">

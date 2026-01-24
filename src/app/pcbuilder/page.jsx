@@ -5,7 +5,7 @@ import { useState, useMemo, useRef } from "react"; // useRef যুক্ত ক
 import { useQuery } from "@tanstack/react-query";
 import CommonWrapper from "@/components/layout/CommonWrapper";
 import { Trash2, Download, Loader2, Box } from "lucide-react";
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { apiClient } from "@/api/apiClient";
@@ -237,8 +237,9 @@ const PcBuilder = () => {
           <div className="flex items-center gap-4">
             <div className=" bg-blue-50 rounded-lg flex items-center justify-center w-12 h-12 relative overflow-hidden">
               {iconImage ? (
-                <Image
+                <SafeImage
                   src={`/icons/${iconImage}`}
+                  fallbackSrc="/icons/logo.png"
                   alt={name}
                   width={100}
                   height={100}
@@ -361,8 +362,9 @@ const PcBuilder = () => {
                         className="border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all bg-gray-50/70"
                       >
                         <div className="aspect-square relative mb-3 bg-white rounded-lg overflow-hidden border border-gray-100">
-                          <Image
+                          <SafeImage
                             src={item.image}
+                            fallbackSrc="/images/monitor.jpg"
                             alt={item.name}
                             fill
                             className="object-contain p-3"

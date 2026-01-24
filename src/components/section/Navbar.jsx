@@ -2,7 +2,7 @@
 import CommonWrapper from "@/components/layout/CommonWrapper";
 import { useAuth } from "@/Provider/AuthProvider";
 import { User, LogOut, Handbag } from "lucide-react";
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
@@ -140,8 +140,9 @@ export default function Navbar() {
                     className="hidden md:flex items-center relative gap-2"
                   >
                     <div className="w-10 h-10 flex items-center justify-center relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
-                      <Image
-                        src={"/icons/heart.png"}
+                      <SafeImage
+                        src="/icons/heart.png"
+                        fallbackSrc="/icons/heart.png"
                         height={500}
                         width={500}
                         alt="Favourite icon"
@@ -166,8 +167,9 @@ export default function Navbar() {
                     className="hidden md:flex items-center relative gap-2"
                   >
                     <div className="w-10 h-10 flex items-center justify-center relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
-                      <Image
-                        src={"/icons/cart.png"}
+                      <SafeImage
+                        src="/icons/cart.png"
+                        fallbackSrc="/icons/cart.png"
                         height={500}
                         width={500}
                         alt="Cart icon"

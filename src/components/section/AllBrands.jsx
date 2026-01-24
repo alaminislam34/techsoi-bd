@@ -4,7 +4,7 @@ import CommonWrapper from "@/components/layout/CommonWrapper";
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/api/apiClient";
 import { API_ENDPOINTS } from "@/api/ApiEndPoint";
@@ -57,7 +57,7 @@ export default function AllBrands() {
 
       <div className="py-10">
         <CommonWrapper>
-          <div className="flex flex-col md:flex-row items-center relative gap-3 md:gap-12 mx-5 xl:mx-[100px]">
+          <div className="flex flex-col md:flex-row items-center relative gap-3 md:gap-12 mx-5 xl:mx-25">
             <div className="flex flex-col justify-center grow-0 shrink-0 relative gap-1 md:pr-10 md:border-r border-[#bee5f6] z-20 bg-white">
               <p className="text-[18px] md:text-2xl lg:text-3xl xl:text-[40px] text-center md:text-left font-semibold text-primary">
                 All Brands
@@ -68,8 +68,8 @@ export default function AllBrands() {
             </div>
 
             <div className="relative overflow-hidden w-full">
-              <div className="absolute top-0 left-0 w-10 lg:w-[100px] h-full bg-linear-to-r from-white to-transparent z-10 pointer-events-none"></div>
-              <div className="absolute top-0 right-0 w-10 lg:w-[100px] h-full bg-linear-to-l from-white to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute top-0 left-0 w-10 lg:w-25 h-full bg-linear-to-r from-white to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute top-0 right-0 w-10 lg:w-25 h-full bg-linear-to-l from-white to-transparent z-10 pointer-events-none"></div>
 
               <Swiper
                 modules={[Autoplay]}
@@ -95,8 +95,9 @@ export default function AllBrands() {
                     className="flex justify-center items-center"
                   >
                     <div className="grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer py-4">
-                      <Image
-                        src={item?.image || "/brandslogo/brand1.png"}
+                      <SafeImage
+                        src={item?.image}
+                        fallbackSrc="/brandslogo/brand1.png"
                         unoptimized
                         height={80}
                         width={200}

@@ -1,7 +1,7 @@
 // components/ProductCard.tsx
 
 import React from "react";
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import Link from "next/link";
 
 interface ProductCardProps {
@@ -30,15 +30,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div className="h-full" key={id}>
       <div className="flex flex-col gap-2 justify-between md:gap-5 p-1.5 md:p-4 rounded-xl md:rounded-[20px] bg-white border border-[#bee5f6] hover:-translate-y-1 duration-100 ease-linear hover:shadow-[0_1px_10px_#72C7EC] hover:border-[#72C7EC] h-full">
-        <Image
-          src={imageSrc}
-          alt={name}
-          width={400}
-          height={400}
-          unoptimized
-          className="w-full rounded-lg md:rounded-4.5 object-cover"
-        />
-
+        <Link href={`/products/${slug ?? id}`}>
+          <SafeImage
+            src={imageSrc}
+            alt={name}
+            width={400}
+            height={400}
+            unoptimized
+            className="w-full rounded-lg md:rounded-4.5 object-cover"
+          />
+        </Link>
         <div className="flex flex-col justify-between gap-2 md:gap-4">
           <div className="flex flex-col gap-2 md:gap-6 overflow-hidden">
             <p className="w-full text-[14px] md:text-[16px] lg:text-4.5 font-medium text-[#303030]">

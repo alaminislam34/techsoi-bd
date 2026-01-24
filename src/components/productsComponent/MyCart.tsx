@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import { Trash2, Minus, Plus } from "lucide-react";
 import CommonWrapper from "../layout/CommonWrapper";
 import OrderForm from "./OrderForm";
@@ -169,13 +169,13 @@ export default function MyCart() {
                     className="w-20 h-20 rounded-xl border overflow-hidden relative"
                     style={{ borderColor: "#EAF7FC" }}
                   >
-                    <img
-                      src={item.product?.main_image || "/images/monitor.jpg"}
+                    <SafeImage
+                      src={item.product?.main_image}
+                      fallbackSrc="/images/monitor.jpg"
                       alt={item.product?.name || "Product"}
+                      width={80}
+                      height={80}
                       className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = "/images/monitor.jpg";
-                      }}
                     />
                   </div>
                   <p className="font-medium text-gray-700">
