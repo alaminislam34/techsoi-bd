@@ -57,7 +57,7 @@ export default function MyOrdersPage() {
       status: statusText,
       statusClass,
       img:
-        order.order_details?.[0]?.product?.main_image || "/images/monitor.jpg",
+        order.order_details?.[0]?.product?.main_image || "/images/fallback-image.png"
     };
   });
 

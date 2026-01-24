@@ -93,21 +93,34 @@ export const useFilterProducts = (opts: {
   } = opts || {};
 
   const params = new URLSearchParams();
-  if (query) params.append("filter[name]", query);
-  if (categories && categories.length) {
-    categories.forEach((c) => params.append("filter[category_id]", String(c)));
+  // name/query
+  if (query && query.trim().length > 0) params.append("filter[name]", query.trim());
+  // categories/brands/sub-categories as repeated params (per API sample)
+  (categories || []).forEach((c) => {
+    if (c !== undefined && c !== null && String(c).length > 0) {
+      params.append("filter[category_id]", String(c));
+    }
+  });
+  (subCategories || []).forEach((s) => {
+    if (s !== undefined && s !== null && String(s).length > 0) {
+      params.append("filter[sub_category_id]", String(s));
+    }
+  });
+  (brands || []).forEach((b) => {
+    if (b !== undefined && b !== null && String(b).length > 0) {
+      params.append("filter[brand_id]", String(b));
+    }
+  });
+  // price range (only if valid)
+  if (priceRange && typeof priceRange[0] === "number" && typeof priceRange[1] === "number") {
+    const [minP, maxP] = priceRange;
+    if (minP >= 0 && maxP > 0 && maxP >= minP) {
+      params.append("filter[price_min]", String(minP));
+      params.append("filter[price_max]", String(maxP));
+    }
   }
-  if (subCategories && subCategories.length) {
-    subCategories.forEach((s) => params.append("filter[sub_category_id]", String(s)));
-  }
-  if (brands && brands.length) {
-    brands.forEach((b) => params.append("filter[brand_id]", String(b)));
-  }
-  if (priceRange) {
-    params.append("filter[price_min]", String(priceRange[0]));
-    params.append("filter[price_max]", String(priceRange[1]));
-  }
-  if (sort) params.append("sort", sort);
+  // sort: pass through as provided (API supports `sort=` per docs)
+  if (sort && sort.trim().length > 0) params.append("sort", sort.trim());
 
   const url = `${API_ENDPOINTS.PRODUCT_FILTER}${params.toString() ? `?${params.toString()}` : ""}`;
 

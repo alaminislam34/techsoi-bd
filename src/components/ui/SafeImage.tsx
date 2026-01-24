@@ -3,14 +3,14 @@
 import Image, { ImageProps, StaticImageData } from "next/image";
 import { useState } from "react";
 
-interface SafeImageProps extends Omit<ImageProps, 'onError' | 'src'> {
+interface SafeImageProps extends Omit<ImageProps, "onError" | "src"> {
   src?: string | StaticImageData | null;
   fallbackSrc?: string | StaticImageData;
 }
 
 export default function SafeImage({
   src,
-  fallbackSrc = "/images/monitor.jpg",
+  fallbackSrc = "/images/fallback-image.png",
   alt,
   ...props
 }: SafeImageProps) {
@@ -32,11 +32,11 @@ export default function SafeImage({
   }
 
   // Check if src is an SVG or external placeholder URL that might be SVG
-  const isSvgUrl = typeof imgSrc === "string" && (
-    imgSrc.includes(".svg") || 
-    imgSrc.includes("placehold.co") ||
-    imgSrc.includes("via.placeholder")
-  );
+  const isSvgUrl =
+    typeof imgSrc === "string" &&
+    (imgSrc.includes(".svg") ||
+      imgSrc.includes("placehold.co") ||
+      imgSrc.includes("via.placeholder"));
 
   return (
     <Image

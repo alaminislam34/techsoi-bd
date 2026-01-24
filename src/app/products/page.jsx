@@ -98,11 +98,29 @@ function ProductListContent() {
     // otherwise fall back to client-side filtering of all products
     let filtered = [...products];
 
+    // Filter by category
     if (selectedCategories.length > 0) {
       filtered = filtered.filter((p) =>
         selectedCategories.includes(String(p.category_id)),
       );
-    } else if (!hasUserFiltered && queryFromUrl) {
+    } 
+    
+    // Filter by subcategory
+    if (selectedSubCategories.length > 0) {
+      filtered = filtered.filter((p) =>
+        selectedSubCategories.includes(String(p.subcategory_id)),
+      );
+    }
+    
+    // Filter by brand
+    if (selectedBrands.length > 0) {
+      filtered = filtered.filter((p) =>
+        selectedBrands.includes(String(p.brand_id)),
+      );
+    }
+
+    // Filter by query (only if no user filters)
+    if (!hasUserFiltered && queryFromUrl && selectedCategories.length === 0 && selectedSubCategories.length === 0 && selectedBrands.length === 0) {
       const searchTerm = queryFromUrl.toLowerCase().trim();
       filtered = filtered.filter(
         (p) =>
@@ -111,10 +129,12 @@ function ProductListContent() {
       );
     }
 
+    // Filter by price
     filtered = filtered.filter(
       (p) => p.sale_price >= priceRange[0] && p.sale_price <= priceRange[1],
     );
 
+    // Sort
     switch (sortBy) {
       case "price-low":
         filtered.sort((a, b) => a.sale_price - b.sale_price);
@@ -132,6 +152,8 @@ function ProductListContent() {
   }, [
     products,
     selectedCategories,
+    selectedSubCategories,
+    selectedBrands,
     priceRange,
     sortBy,
     queryFromUrl,

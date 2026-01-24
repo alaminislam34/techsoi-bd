@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useGetCategories, useGetSubCategories, useGetBrands } from "@/api/hooks";
+import {
+  useGetCategories,
+  useGetSubCategories,
+  useGetBrands,
+} from "@/api/hooks";
 import { ArrowDown, ArrowUp, X } from "lucide-react";
 
 interface Props {
@@ -28,7 +32,9 @@ export default function FilterSidebar({
   const [openBrands, setOpenBrands] = useState(true);
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>([]);
+  const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>(
+    [],
+  );
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
 
   const { data: categoriesResponse } = useGetCategories();
@@ -74,7 +80,9 @@ export default function FilterSidebar({
       : [...selectedBrands, brand];
 
     setSelectedBrands(updated);
-    if (typeof onBrandChange === "function") onBrandChange(updated);
+    if (onBrandChange) {
+      onBrandChange(updated);
+    }
   };
 
   const toggleSubCategory = (sub: string) => {
@@ -83,19 +91,21 @@ export default function FilterSidebar({
       : [...selectedSubCategories, sub];
 
     setSelectedSubCategories(updated);
-    if (typeof onSubCategoryChange === "function") onSubCategoryChange(updated);
+    if (onSubCategoryChange) {
+      onSubCategoryChange(updated);
+    }
   };
 
   return (
     <aside
       className={`
         fixed md:sticky top-16 left-0
-        w-64 bg-white rounded-xl p-4 space-y-6
+        w-[88vw] sm:w-[320px] md:w-64 p-4 space-y-6
         transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} 
         md:translate-x-0
         transition-transform duration-300 ease-in-out
         z-30
-        h-full overflow-y-auto md:h-auto md:overflow-visible
+        max-h-[85vh] md:max-h-none overflow-y-auto
       `}
     >
       {/* Close button (mobile only) */}
@@ -203,8 +213,10 @@ export default function FilterSidebar({
             <button
               onClick={() => {
                 onCategoryChange(selectedCategories);
-                if (typeof onSubCategoryChange === "function") onSubCategoryChange(selectedSubCategories);
-                if (typeof onBrandChange === "function") onBrandChange(selectedBrands);
+                if (typeof onSubCategoryChange === "function")
+                  onSubCategoryChange(selectedSubCategories);
+                if (typeof onBrandChange === "function")
+                  onBrandChange(selectedBrands);
                 onPriceChange([minPrice, maxPrice]);
               }}
               className="w-full py-2.5 rounded-xl bg-[#2CACE2] text-white text-sm font-semibold hover:bg-[#1b9bd1] shadow-sm transition active:scale-95"
@@ -230,7 +242,7 @@ export default function FilterSidebar({
         </button>
 
         {openCategory && (
-          <div className="mt-3 space-y-2 max-h-60 pr-2 custom-scrollbar">
+          <div className="mt-3 space-y-2 max-h-60 overflow-auto pr-2 custom-scrollbar">
             {categories.map((cat: any) => (
               <label
                 key={cat.id}
@@ -242,7 +254,7 @@ export default function FilterSidebar({
                   onChange={() => toggleCategory(String(cat.id))}
                   className="w-4 h-4 rounded border-gray-300 text-[#2CACE2] focus:ring-[#2CACE2] accent-[#2CACE2]"
                 />
-                <span className="text-sm text-gray-600 group-hover:text-[#2CACE2] transition">
+                <span className="text-sm text-gray-600 group-hover:text-[#2CACE2] transition wrap-break-word">
                   {cat.name}
                 </span>
               </label>
@@ -253,17 +265,24 @@ export default function FilterSidebar({
 
       {/* Sub-Categories */}
       <div className="bg-white border border-[#bee5f6] p-4 rounded-2xl hover:-translate-y-1 hover:shadow-[0_3px_15px_#72C7EC] hover:border-[#72C7EC] transition duration-300">
-        <h3 className="font-semibold text-lg text-[#303030] mb-2">Sub-Categories</h3>
+        <h3 className="font-semibold text-lg text-[#303030] mb-2">
+          Sub-Categories
+        </h3>
         <div className="space-y-2 max-h-48 overflow-auto pr-2">
           {subCategories.map((s: any) => (
-            <label key={s.id} className="flex items-center gap-3 cursor-pointer group">
+            <label
+              key={s.id}
+              className="flex items-center gap-3 cursor-pointer group"
+            >
               <input
                 type="checkbox"
                 checked={selectedSubCategories.includes(String(s.id))}
                 onChange={() => toggleSubCategory(String(s.id))}
                 className="w-4 h-4 rounded border-gray-300 text-[#2CACE2] focus:ring-[#2CACE2] accent-[#2CACE2]"
               />
-              <span className="text-sm text-gray-600 group-hover:text-[#2CACE2] transition">{s.name}</span>
+              <span className="text-sm text-gray-600 group-hover:text-[#2CACE2] transition wrap-break-word">
+                {s.name}
+              </span>
             </label>
           ))}
         </div>
@@ -282,16 +301,21 @@ export default function FilterSidebar({
         </button>
 
         {openBrands && (
-          <div className="mt-3 space-y-2">
+          <div className="mt-3 space-y-2 max-h-48 overflow-auto pr-2">
             {brands.map((brand: any) => (
-              <label key={brand.id} className="flex items-center gap-3 cursor-pointer group">
+              <label
+                key={brand.id}
+                className="flex items-center gap-3 cursor-pointer group"
+              >
                 <input
                   type="checkbox"
                   checked={selectedBrands.includes(String(brand.id))}
                   onChange={() => toggleBrand(String(brand.id))}
                   className="w-4 h-4 rounded border-gray-300 text-[#2CACE2] focus:ring-[#2CACE2] accent-[#2CACE2]"
                 />
-                <span className="text-sm text-gray-600 group-hover:text-[#2CACE2] transition">{brand.name}</span>
+                <span className="text-sm text-gray-600 group-hover:text-[#2CACE2] transition wrap-break-word">
+                  {brand.name}
+                </span>
               </label>
             ))}
           </div>
