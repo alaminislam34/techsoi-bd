@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useSslcommerzPayment } from "@/api/hooks/useSslcommerzPayment";
+import { toast } from "react-toastify";
 
 type InputProps = {
   label: string;
@@ -67,9 +69,56 @@ export default function OrderForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Order submission logic will be added here
-    console.log("Order submitted:", formData);
+    // Build products payload from cart items
+    const products = (cartItems || [])
+      .map((item: any) => {
+        const qty = quantities[item.id] ?? Number(item.quantity) ?? 1;
+        const pid = Number(item.product_id ?? item.product?.id);
+        const amt = Number(item.amount) || 0;
+        return {
+          product_id: pid,
+          quantity: qty,
+          amount: amt,
+        };
+      })
+      .filter((p) => Number.isFinite(p.product_id) && p.product_id > 0 && p.quantity > 0);
+
+    if (products.length === 0) {
+      toast.error("Your cart is empty or invalid.");
+      return;
+    }
+
+    const payload = {
+      name: formData.fullName.trim(),
+      phone: formData.phone.trim(),
+      email: formData.email.trim(),
+      address: formData.address.trim(),
+      city: formData.city.trim(),
+      postcode: formData.postcode.trim(),
+      products,
+    };
+
+    if (!payload.name || !payload.phone || !payload.address || !payload.city || !payload.postcode) {
+      toast.error("Please fill all required fields.");
+      return;
+    }
+
+    // Call payment API
+    mutate(payload, {
+      onSuccess: (data: any) => {
+        toast.success("Redirecting to payment...");
+        const redirectUrl =
+          data?.redirect_url || data?.url || data?.GatewayPageURL || data?.payment_url;
+        if (redirectUrl && typeof window !== "undefined") {
+          window.location.href = redirectUrl;
+        }
+      },
+      onError: (err: any) => {
+        toast.error(err?.message || "Payment initialization failed.");
+      },
+    });
   };
+  const { mutate, isPending } = useSslcommerzPayment();
   return (
     <div
       className="rounded-2xl p-6"
@@ -155,9 +204,10 @@ export default function OrderForm({
 
         <button
           type="submit"
-          className="w-full mt-6 bg-[#2CACE2] cursor-pointer text-white py-4 rounded-xl font-semibold hover:bg-sky-600 transition"
+          className={`w-full mt-6 bg-[#2CACE2] cursor-pointer text-white py-4 rounded-xl font-semibold hover:bg-sky-600 transition ${isPending ? "opacity-60 cursor-not-allowed" : ""}`}
+          disabled={isPending}
         >
-          Place Order
+          {isPending ? "Processing..." : "Place Order"}
         </button>
       </form>
     </div>

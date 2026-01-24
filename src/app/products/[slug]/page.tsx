@@ -275,6 +275,7 @@ export default function ProductDetails() {
             reviews={product.reviews || []}
             averageRating={product.rating}
             reviewCount={product.review_count}
+            productId={Number(product.id)}
           />
 
           <RelevantProducts currentProductId={Number(product.id)} />

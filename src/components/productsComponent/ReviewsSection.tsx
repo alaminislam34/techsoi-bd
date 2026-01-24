@@ -7,6 +7,10 @@ import ImgC from "@/assets/reviewImg/59dd59bf65ddedbc29d142fbac28b6b94972e288.pn
 import { FaStar } from "react-icons/fa";
 import { Star } from "lucide-react";
 import { useState } from "react";
+import { useCreateReview } from "@/api/hooks/useReviews";
+import { useAuth } from "@/Provider/AuthProvider";
+import { toast } from "react-toastify";
+import { useGetProductReviews } from "@/api/hooks/useReviews";
 const summary = [
   { stars: 5, count: 22 },
   { stars: 4, count: 75 },
@@ -15,37 +19,53 @@ const summary = [
   { stars: 1, count: 7 },
 ];
 
-export default function ReviewsSection() {
+type ReviewsSectionProps = {
+  productId?: number;
+};
+
+export default function ReviewsSection({ productId }: ReviewsSectionProps) {
   const [rating, setRating] = useState(3);
-  const reviews = [
-    {
-      id: 1,
-      name: "Zayed Khan",
-      rating: 5,
-      daysAgo: "3 Days ago",
-      comment:
-        "TechSoi থেকে আমি প্রথমবারের মতো নিজেকে সিপি বিল কিনলাম। ওরা আমাকে পার্টস বাছাইয়ে দারুণভাবে সাহায্য করেছে। সত্যি কথা বলতে, এখন থেকে আমার ফেভারিট শপ।",
-      img: ImgC,
-    },
-    {
-      id: 2,
-      name: "Puja Cherry",
-      rating: 5,
-      daysAgo: "3 Days ago",
-      comment:
-        "আমি TechSoi থেকে একটা গেইমিং ল্যাপটপ নিয়েছি। দারুণ একটা জাস্টিফায়েড, প্রোডাক্ট একদম অরিজিনাল আর প্যাকেজিংও সেফ ছিল। সার্ভিসটা সত্যিই ভালো লেগেছে!",
-      img: ImgA,
-    },
-    {
-      id: 3,
-      name: "Nusrat Faria",
-      rating: 5,
-      daysAgo: "3 Days ago",
-      comment:
-        "কম্পিউটার এক্সেসরিজ কেনার জন্য TechSoi অসাধারণ জায়গা। আমি এখান থেকে মেকানিক্যাল কিবোর্ড নিয়েছি, সাউন্ড ও বিল্ড কোয়ালিটি দুটোই দারুণ!",
-      img: ImgB,
-    },
-  ];
+  const [comment, setComment] = useState("");
+  const { mutate: createReview, isPending } = useCreateReview();
+  const { user } = useAuth();
+  const {
+    data: reviewResponse,
+    isLoading,
+    isError,
+  } = useGetProductReviews(productId || 0);
+
+  const reviews = reviewResponse?.data ?? [];
+
+  const average = reviews.length
+    ? reviews.reduce((sum, r) => sum + (Number(r.star) || 0), 0) / reviews.length
+    : 0;
+
+  const distribution = [5, 4, 3, 2, 1].map((star) => {
+    const count = reviews.filter((r) => Number(r.star) === star).length;
+    const pct = reviews.length ? Math.round((count / reviews.length) * 100) : 0;
+    return { star, count, pct };
+  });
+
+  const SkeletonRow = () => (
+    <div className="flex gap-4 border-b border-[#BEE5F6] pb-6 animate-pulse">
+      <div className="w-14 h-14 rounded-full bg-gray-200" />
+      <div className="flex-1 space-y-2">
+        <div className="h-4 bg-gray-200 rounded w-1/3" />
+        <div className="h-3 bg-gray-200 rounded w-1/4" />
+        <div className="h-3 bg-gray-200 rounded w-3/4" />
+        <div className="h-3 bg-gray-200 rounded w-2/4" />
+      </div>
+    </div>
+  );
+
+  if (!productId) {
+    return (
+      <div className="p-6 rounded-xl bg-white">
+        <h2 className="text-xl font-semibold mb-6">Customer Review</h2>
+        <p className="text-gray-600">Product not found.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 rounded-xl bg-white">
@@ -55,73 +75,103 @@ export default function ReviewsSection() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-10">
         {/* ---------- LEFT: REVIEW LIST ----------- */}
         <div className="lg:col-span-2 space-y-8">
-          {reviews.map((rev) => (
-            <div
-              key={rev.id}
-              className="flex gap-4 border-b border-[#BEE5F6] pb-6"
-            >
-              <div className="w-14 h-14 rounded-full overflow-hidden">
-                <SafeImage
-                  src={rev.img}
-                  fallbackSrc={ImgA}
-                  alt={rev.name}
-                  width={55}
-                  height={55}
-                  className="object-cover w-full h-full"
-                />
-              </div>
+          {isLoading && (
+            <div className="space-y-6">
+              <SkeletonRow />
+              <SkeletonRow />
+              <SkeletonRow />
+            </div>
+          )}
 
-              <div className="flex-1">
-                <div className="flex justify-between">
-                  <div>
-                    <h3 className="font-semibold text-lg">{rev.name}</h3>
-                    <p className="text-yellow-400">⭐ {rev.rating}.0</p>
-                  </div>
+          {isError && <p className="text-red-500">Failed to load reviews.</p>}
 
-                  <p className="text-gray-400 text-sm">{rev.daysAgo}</p>
+          {!isLoading && !isError && reviews.length === 0 && (
+            <p className="text-gray-600">No reviews yet. Be the first to review.</p>
+          )}
+
+          {!isLoading && !isError &&
+            reviews.map((rev) => (
+              <div
+                key={rev.id}
+                className="flex gap-4 border-b border-[#BEE5F6] pb-6"
+              >
+                <div className="w-14 h-14 rounded-full overflow-hidden">
+                  <SafeImage
+                    src={rev.user_name ? undefined : ImgB}
+                    fallbackSrc={ImgA}
+                    alt={rev.user_name || "User"}
+                    width={55}
+                    height={55}
+                    className="object-cover w-full h-full"
+                  />
                 </div>
 
-                <p className="mt-2 text-gray-700 leading-relaxed">
-                  {rev.comment}
-                </p>
+                <div className="flex-1">
+                  <div className="flex justify-between">
+                    <div>
+                      <h3 className="font-semibold text-lg">{rev.user_name || "User"}</h3>
+                      <p className="text-yellow-400">⭐ {rev.star}.0</p>
+                    </div>
+
+                    <p className="text-gray-400 text-sm">
+                      {new Date(rev.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+
+                  <p className="mt-2 text-gray-700 leading-relaxed">
+                    {rev.message}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
         <div>
           {/* ----------- SUMMARY / LEFT ----------- */}
           <div className="flex-1 flex flex-col justify-between">
             <div className="space-y-4 md:space-y-6 h-full">
               <h2 className="text-xl font-semibold text-center md:text-left">
-                Based on those reviews
+                Based on reviews
               </h2>
 
               <div className="rounded-xl border border-[#BEE5F6] p-4 md:p-6 flex flex-col justify-center">
-                <p className="text-4xl md:text-5xl font-bold text-blue-500 text-center">
-                  4.3
-                </p>
-                <p className="text-center text-gray-600 mt-1">
-                  Average reviews
-                </p>
-
-                <div className="mt-4 md:mt-6 space-y-2">
-                  {summary.map((s) => (
-                    <div key={s.stars} className="flex items-center gap-3">
-                      <span className="text-sm text-gray-700 w-12">
-                        {s.stars} ⭐
-                      </span>
-
-                      <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-blue-400"
-                          style={{ width: `${s.count}%` }}
-                        />
-                      </div>
-
-                      <span className="w-8 text-right text-sm">{s.count}</span>
+                {isLoading ? (
+                  <div className="space-y-4 animate-pulse">
+                    <div className="h-10 bg-gray-200 rounded w-24 mx-auto" />
+                    <div className="space-y-2">
+                      {[...Array(5)].map((_, idx) => (
+                        <div key={idx} className="h-3 bg-gray-200 rounded" />
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-4xl md:text-5xl font-bold text-blue-500 text-center">
+                      {average.toFixed(1)}
+                    </p>
+                    <p className="text-center text-gray-600 mt-1">
+                      Average rating
+                    </p>
+
+                    <div className="mt-4 md:mt-6 space-y-2">
+                      {distribution.map((s) => (
+                        <div key={s.star} className="flex items-center gap-3">
+                          <span className="text-sm text-gray-700 w-12">
+                            {s.star} ⭐
+                          </span>
+
+                          <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-blue-400"
+                              style={{ width: `${s.pct}%` }}
+                            />
+                          </div>
+
+                          <span className="w-8 text-right text-sm">{s.count}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -156,11 +206,39 @@ export default function ReviewsSection() {
               <textarea
                 rows={5}
                 placeholder="Write your comment"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
                 className="w-full mt-1 px-4 py-2 border border-[#9ED9F2] rounded-lg outline-none focus:ring-2 focus:ring-[#9ED9F2]"
               />
 
-              <button className="mt-3 w-full py-3 bg-[#2CACE2] cursor-pointer text-white rounded-xl font-medium">
-                Add Review
+              <button
+                disabled={isPending}
+                onClick={() => {
+                  if (!productId) {
+                    toast.error("Product not found.");
+                    return;
+                  }
+                  if (!user) {
+                    toast.error("Please login to add a review.");
+                    return;
+                  }
+                  if (!comment.trim()) {
+                    toast.error("Please write a comment.");
+                    return;
+                  }
+                  createReview(
+                    { product_id: Number(productId), star: rating, message: comment.trim() },
+                    {
+                      onSuccess: () => {
+                        setComment("");
+                        setRating(3);
+                      },
+                    },
+                  );
+                }}
+                className={`mt-3 w-full py-3 bg-[#2CACE2] cursor-pointer text-white rounded-xl font-medium ${isPending ? "opacity-60 cursor-not-allowed" : ""}`}
+              >
+                {isPending ? "Posting..." : "Add Review"}
               </button>
             </div>
           </div>

@@ -8,6 +8,7 @@ interface ProductTabsProps {
   reviews?: Array<any>;
   averageRating?: number;
   reviewCount?: number;
+  productId?: number;
 }
 
 export default function ProductTabs({
@@ -16,6 +17,7 @@ export default function ProductTabs({
   reviews,
   averageRating,
   reviewCount,
+  productId,
 }: ProductTabsProps) {
   const [activeTab, setActiveTab] = useState("description");
 
@@ -83,7 +85,7 @@ export default function ProductTabs({
           </div>
         )}
 
-        {activeTab === "reviews" && <ReviewsSection />}
+        {activeTab === "reviews" && <ReviewsSection productId={productId} />}
       </div>
     </div>
   );

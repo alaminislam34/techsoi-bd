@@ -3,20 +3,22 @@ import { apiClient } from "../apiClient";
 import { API_ENDPOINTS } from "../ApiEndPoint";
 import { toast } from "react-toastify";
 
-interface Review {
+export interface Review {
   id: number;
   product_id: number;
   user_id: number;
   star: number;
   message: string;
   created_at: string;
+  user_name?: string;
 }
 
 // Get all reviews for a product
 export const useGetProductReviews = (productId: number) => {
   return useQuery({
     queryKey: ["reviews", productId],
-    queryFn: () => apiClient.get<Review[]>(API_ENDPOINTS.REVIEW_GET_ALL),
+    queryFn: () =>
+      apiClient.get<Review[]>(`${API_ENDPOINTS.REVIEW_GET_ALL}?product_id=${productId}`),
     enabled: !!productId,
     staleTime: 5 * 60 * 1000,
   });
@@ -39,8 +41,8 @@ export const useCreateReview = () => {
   return useMutation({
     mutationFn: (data: { product_id: number; star: number; message: string }) =>
       apiClient.post<Review>(API_ENDPOINTS.REVIEW_STORE, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["reviews", variables.product_id] });
       toast.success("Review added successfully");
     },
     onError: (error: any) => {
