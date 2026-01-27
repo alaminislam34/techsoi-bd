@@ -106,11 +106,12 @@ export default function OrderForm({
     // Call payment API
     mutate(payload, {
       onSuccess: (data: any) => {
-        toast.success("Redirecting to payment...");
-        const redirectUrl =
-          data?.redirect_url || data?.url || data?.GatewayPageURL || data?.payment_url;
+        toast.success("Redirecting to payment gateway...");
+        const redirectUrl = data?.redirectUrl || data?.redirect_url || data?.url || data?.GatewayPageURL || data?.payment_url;
         if (redirectUrl && typeof window !== "undefined") {
           window.location.href = redirectUrl;
+        } else {
+          toast.error("No payment gateway URL found in response");
         }
       },
       onError: (err: any) => {

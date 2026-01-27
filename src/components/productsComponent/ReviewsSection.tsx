@@ -83,7 +83,7 @@ export default function ReviewsSection({ productId }: ReviewsSectionProps) {
             </div>
           )}
 
-          {isError && <p className="text-red-500">Failed to load reviews.</p>}
+          {isError && <p className="text-gray-500">No Reviews.</p>}
 
           {!isLoading && !isError && reviews.length === 0 && (
             <p className="text-gray-600">No reviews yet. Be the first to review.</p>

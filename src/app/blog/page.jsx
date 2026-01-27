@@ -54,7 +54,7 @@ function OurBlogs() {
           {blogs.map((blog) => (
             <article
               key={blog.id}
-              className="bg-white rounded-2xl border   my-2 border-[#bee5f6] p-2 hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_3px_15px_#72C7EC] hover:border-[#72C7EC]"
+              className="bg-white rounded-2xl border my-2 border-[#bee5f6] p-4 hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_3px_15px_#72C7EC] hover:border-[#72C7EC]"
             >
               <Link href={`/blog/${blog.id}`}>
                 <div className="rounded-xl overflow-hidden h-48 bg-gray-200">

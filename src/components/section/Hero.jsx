@@ -42,7 +42,7 @@ export default function Hero() {
               alt="hero"
               priority
             />
-            <div className="absolute left-[6%] bottom-[15%] backdrop-blur-lg p-6">
+            {/* <div className="absolute left-[6%] bottom-[15%] backdrop-blur-lg p-6">
               <div className="flex items-center justify-start pb-8 md:pb-12">
                 <p className="px-4 py-2 rounded-2xl bg-white text-primary shadow-md">
                   New Released
@@ -62,7 +62,7 @@ export default function Hero() {
                   Discover Devices <ArrowRight className="-rotate-45" />
                 </Link>
               </div>
-            </div>
+            </div> */}
           </div>
         </CommonWrapper>
       </div>

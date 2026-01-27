@@ -57,7 +57,8 @@ export default function MyOrdersPage() {
       status: statusText,
       statusClass,
       img:
-        order.order_details?.[0]?.product?.main_image || "/images/fallback-image.png"
+        order.order_details?.[0]?.product?.main_image ||
+        "/images/fallback-image.png",
     };
   });
 
@@ -163,11 +164,10 @@ export default function MyOrdersPage() {
                           <div className="w-20 h-20 rounded-xl border border-gray-200 overflow-hidden relative shrink-0">
                             <SafeImage
                               src={order.img}
-                              fallbackSrc="/images/monitor.jpg"
                               alt={order.name}
                               width={80}
                               height={80}
-                              className="object-cover"
+                              className="object-cover border border-black"
                             />
                           </div>
                           <p className="text-sm sm:text-base font-medium text-gray-700">

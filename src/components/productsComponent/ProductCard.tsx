@@ -3,6 +3,10 @@
 import React from "react";
 import SafeImage from "@/components/ui/SafeImage";
 import Link from "next/link";
+import { useAddToCart } from "@/api/hooks/useCart";
+import { useAddToFavorites } from "@/api/hooks/useFavorites";
+import { useAuth } from "@/Provider/AuthProvider";
+import { toast } from "react-toastify";
 
 interface ProductCardProps {
   id: number;
@@ -27,6 +31,26 @@ const ProductCard: React.FC<ProductCardProps> = ({
   imageSrc,
   // saveAmount,
 }) => {
+  const { mutate: addToCart } = useAddToCart();
+  const { mutate: addToFavorites } = useAddToFavorites();
+  const { user } = useAuth();
+
+  const handleAddToCart = () => {
+    if (!user) {
+      toast.error("Please login first to add items to cart");
+      return;
+    }
+    addToCart({ product_id: id, quantity: 1 });
+  };
+
+  const handleAddToFavorites = () => {
+    if (!user) {
+      toast.error("Please login first to add to favorites");
+      return;
+    }
+    addToFavorites({ product_id: id });
+  };
+
   return (
     <div className="h-full" key={id}>
       <div className="flex flex-col gap-2 justify-between md:gap-5 p-1.5 md:p-4 rounded-xl md:rounded-[20px] bg-white border border-[#bee5f6] hover:-translate-y-1 duration-100 ease-linear hover:shadow-[0_1px_10px_#72C7EC] hover:border-[#72C7EC] h-full">
@@ -118,7 +142,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
             {/* Cart + Wishlist */}
             <div className="flex items-center gap-1 xl:gap-3">
               {/* Add to cart */}
-              <button className="flex justify-center items-center w-8 xl:w-12 h-8 xl:h-12 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-primary group">
+              <button
+                onClick={handleAddToCart}
+                className="flex justify-center items-center w-8 xl:w-12 h-8 xl:h-12 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-primary group transition-all"
+                title={user ? "Add to cart" : "Login to add to cart"}
+              >
                 <svg
                   width={24}
                   height={24}
@@ -137,7 +165,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
               </button>
 
               {/* Wishlist */}
-              <button className="flex justify-center items-center w-8 xl:w-12 h-8 xl:h-12 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-primary group">
+              <button
+                onClick={handleAddToFavorites}
+                className="flex justify-center items-center w-8 xl:w-12 h-8 xl:h-12 rounded-lg xl:rounded-xl bg-[#eaf7fc] hover:bg-primary group transition-all"
+                title={user ? "Add to favorites" : "Login to add to favorites"}
+              >
                 <svg
                   width={24}
                   height={24}

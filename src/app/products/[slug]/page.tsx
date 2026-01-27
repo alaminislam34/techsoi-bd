@@ -62,7 +62,7 @@ export default function ProductDetails() {
   } catch (err) {
     specifications = [];
   }
-
+  console.log("Product details:", product);
   const extraImages: string[] = details?.extra_images || [];
   const isInStock = Number(product?.stock) > 0;
   const maxQty = Number(product?.stock) || 1;
@@ -158,12 +158,9 @@ export default function ProductDetails() {
               <p className="text-gray-600 mt-3">{product.short_description}</p>
 
               <p className="flex items-center gap-2 mt-4">
-                ⭐ {product.rating ?? "4.5"}
+                ⭐ {product.rating ?? "0"}
                 <span className="text-gray-500">
                   ({product.review_count || 0} reviews)
-                </span>
-                <span className="text-gray-500">
-                  • Sold {product.sale_count || 0}
                 </span>
               </p>
 
@@ -176,11 +173,6 @@ export default function ProductDetails() {
                 ) : (
                   <span className="bg-red-100 text-red-700 px-3 py-1 rounded-lg text-sm font-medium">
                     Out of Stock
-                  </span>
-                )}
-                {(product.stock ?? 0) > 0 && (
-                  <span className="ml-3 text-sm text-gray-500">
-                    Only {product.stock} left
                   </span>
                 )}
               </p>
@@ -294,7 +286,17 @@ export default function ProductDetails() {
         <BlogCard limit={3} />
       </CommonWrapper>
 
-      <BuyNowModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <BuyNowModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        products={[
+          {
+            product_id: product.id,
+            quantity: qty,
+            amount: (product.sale_price || 0) * qty,
+          },
+        ]}
+      />
     </>
   );
 }
