@@ -146,7 +146,7 @@ export default function Navbar() {
                         className="w-5 h-auto"
                       />
                       <div className="flex flex-col justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
-                        <p className="text-[10px] text-white">2</p>
+                        <p className="text-[10px] text-white">0</p>
                       </div>
                     </div>
 
@@ -154,7 +154,7 @@ export default function Navbar() {
                       <p className="text-base font-medium text-primary">
                         Favourites
                       </p>
-                      <p className="text-sm text-[#505050]">৳650</p>
+                      <p className="text-sm text-[#505050]">৳0</p>
                     </div>
                   </Link>
 
