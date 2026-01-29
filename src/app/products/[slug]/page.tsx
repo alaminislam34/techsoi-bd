@@ -15,9 +15,12 @@ import { useAddToCart } from "@/api/hooks/useCart";
 import { useAddToFavorites } from "@/api/hooks/useFavorites";
 import { useAuth } from "@/Provider/AuthProvider";
 import { toast } from "react-toastify";
+import { apiClient, ApiResponse } from "@/api/apiClient";
+import { API_ENDPOINTS } from "@/api/ApiEndPoint";
 
 export default function ProductDetails() {
   const routeParams = useParams() as { slug?: string };
+  const [reviews, setReviews] = useState<any[]>([]);
   const slug = routeParams?.slug ?? "";
 
   // Call hook to fetch product by slug
@@ -27,6 +30,28 @@ export default function ProductDetails() {
     isError,
     error,
   } = useGetProductBySlug(slug);
+
+  useEffect(() => {
+    const fetchReviews = async (productSlug?: string) => {
+      if (!productSlug) return;
+      try {
+        const res: ApiResponse<any> = await apiClient.get(
+          API_ENDPOINTS.REVIEW_GET_SINGLE(productSlug),
+        );
+        console.log(res);
+        if (res.status === true) {
+          const data = res.data ?? [];
+          setReviews(Array.isArray(data) ? data : [data]);
+        } else {
+          setReviews([]);
+        }
+      } catch (err: any) {
+        console.error("Failed to fetch reviews:", err?.message);
+        setReviews([]);
+      }
+    };
+    fetchReviews(slug);
+  }, [slug]);
   console.log("slug product ", productResponse, "error:", error);
   const { mutate: addToCart } = useAddToCart();
 
@@ -64,8 +89,9 @@ export default function ProductDetails() {
   }
   console.log("Product details:", product);
   const extraImages: string[] = details?.extra_images || [];
-  const isInStock = Number(product?.stock) > 0;
-  const maxQty = Number(product?.stock) || 1;
+  const stockValue = Number(product?.stock);
+  const isInStock = Number.isFinite(stockValue) ? stockValue > 0 : true;
+  const maxQty = Number.isFinite(stockValue) && stockValue > 0 ? stockValue : 1;
 
   // If slug isn't ready yet (client component hydration) or the query is loading, show loader
   if (isLoading || !slug) {
@@ -264,13 +290,13 @@ export default function ProductDetails() {
           <ProductTabs
             fullDescription={details?.full_description}
             specifications={specifications}
-            reviews={product.reviews || []}
+            reviews={reviews}
             averageRating={product.rating}
             reviewCount={product.review_count}
-            productId={Number(product.id)}
+            productId={Number(product.details?.id)}
           />
 
-          <RelevantProducts currentProductId={Number(product.id)} />
+          <RelevantProducts currentProductId={Number(product.details?.id)} />
         </div>
       </CommonWrapper>
 

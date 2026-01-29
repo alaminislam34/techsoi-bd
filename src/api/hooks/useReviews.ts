@@ -39,8 +39,18 @@ export const useCreateReview = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { product_id: number; star: number; message: string }) =>
-      apiClient.post<Review>(API_ENDPOINTS.REVIEW_STORE, data),
+    mutationFn: (data: { product_id: number; star: number; message: string }) => {
+      const token =
+        typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      if (!token) {
+        throw new Error("Please login to add a review");
+      }
+      return apiClient.request<Review>(API_ENDPOINTS.REVIEW_STORE, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify(data),
+      });
+    },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["reviews", variables.product_id] });
       toast.success("Review added successfully");

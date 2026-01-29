@@ -35,12 +35,14 @@ export const API_ENDPOINTS = {
   ADMIN_LOGOUT: `${BASE_URL}/admin/logout`,
 
   // --- Order Management (Admin) ---
+  ORDER_CREATE: `${BASE_URL}/order`,
+  ORDER_SUCCESS: `${BASE_URL}/order-success`,
   ORDER_GET_ALL: `${BASE_URL}/order`,
   ORDER_GET_SINGLE: (id) => `${BASE_URL}/order/${id}`,
   ORDER_UPDATE: (id) => `${BASE_URL}/order/${id}`, // Body: { "pay_status": "1", "status": "1" }
   ORDER_DELETE: (id) => `${BASE_URL}/order/${id}`, // Body: { "cancel_message": "" }
 
-  USER_ORDER: `${BASE_URL}/user-order/`,
+  USER_ORDER: `${BASE_URL}/user-order`,
   // --- Order Details Management ---
   ORDER_DETAILS_UPDATE: (id) => `${BASE_URL}/order-details/${id}`, // Body: { "pay_status": "1", "status": "1" }
   ORDER_DETAILS_DELETE: (id) => `${BASE_URL}/order-details/${id}`, // Body: { "cancel_message": "" }
@@ -70,7 +72,7 @@ export const API_ENDPOINTS = {
 
   // --- Product Review Requests ---
   REVIEW_GET_ALL: `${BASE_URL}/review-product`,
-  REVIEW_GET_SINGLE: (id) => `${BASE_URL}/review-product/${id}`,
+  REVIEW_GET_SINGLE: (slug) => `${BASE_URL}/product-review/${slug}`,
   REVIEW_STORE: `${BASE_URL}/review-product`, // Body: { "product_id": "", "star": "", "message": "" }
   REVIEW_DELETE: (id) => `${BASE_URL}/review-product/${id}`,
 

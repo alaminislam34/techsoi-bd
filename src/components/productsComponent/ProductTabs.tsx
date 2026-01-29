@@ -85,7 +85,9 @@ export default function ProductTabs({
           </div>
         )}
 
-        {activeTab === "reviews" && <ReviewsSection productId={productId} />}
+        {activeTab === "reviews" && (
+          <ReviewsSection reviews={reviews} productId={productId} />
+        )}
       </div>
     </div>
   );

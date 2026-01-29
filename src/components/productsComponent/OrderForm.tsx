@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSslcommerzPayment } from "@/api/hooks/useSslcommerzPayment";
+import { useCreateOrder } from "@/api/hooks/useOrders";
 import { toast } from "react-toastify";
 
 type InputProps = {
@@ -67,7 +68,7 @@ export default function OrderForm({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Build products payload from cart items
     const products = (cartItems || [])
@@ -103,23 +104,31 @@ export default function OrderForm({
       return;
     }
 
-    // Call payment API
-    mutate(payload, {
-      onSuccess: (data: any) => {
-        toast.success("Redirecting to payment gateway...");
-        const redirectUrl = data?.redirectUrl || data?.redirect_url || data?.url || data?.GatewayPageURL || data?.payment_url;
-        if (redirectUrl && typeof window !== "undefined") {
-          window.location.href = redirectUrl;
-        } else {
-          toast.error("No payment gateway URL found in response");
-        }
-      },
-      onError: (err: any) => {
-        toast.error(err?.message || "Payment initialization failed.");
-      },
-    });
+    try {
+      await createOrder(payload);
+
+      const data: any = await startPayment(payload);
+      toast.success("Redirecting to payment gateway...");
+      const redirectUrl =
+        data?.redirectUrl ||
+        data?.redirect_url ||
+        data?.url ||
+        data?.GatewayPageURL ||
+        data?.payment_url;
+
+      if (redirectUrl && typeof window !== "undefined") {
+        window.location.href = redirectUrl;
+      } else {
+        toast.error("No payment gateway URL found in response");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Order/payment failed.");
+    }
   };
-  const { mutate, isPending } = useSslcommerzPayment();
+  const { mutateAsync: startPayment, isPending: isPaying } =
+    useSslcommerzPayment();
+  const { mutateAsync: createOrder, isPending: isCreatingOrder } =
+    useCreateOrder();
   return (
     <div
       className="rounded-2xl p-6"
@@ -205,10 +214,10 @@ export default function OrderForm({
 
         <button
           type="submit"
-          className={`w-full mt-6 bg-[#2CACE2] cursor-pointer text-white py-4 rounded-xl font-semibold hover:bg-sky-600 transition ${isPending ? "opacity-60 cursor-not-allowed" : ""}`}
-          disabled={isPending}
+          className={`w-full mt-6 bg-[#2CACE2] cursor-pointer text-white py-4 rounded-xl font-semibold hover:bg-sky-600 transition ${isCreatingOrder || isPaying ? "opacity-60 cursor-not-allowed" : ""}`}
+          disabled={isCreatingOrder || isPaying}
         >
-          {isPending ? "Processing..." : "Place Order"}
+          {isCreatingOrder || isPaying ? "Processing..." : "Place Order"}
         </button>
       </form>
     </div>
