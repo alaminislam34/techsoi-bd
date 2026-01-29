@@ -75,7 +75,7 @@ export default function AllBrands() {
                 modules={[Autoplay]}
                 spaceBetween={25}
                 slidesPerView={3}
-                loop={true}
+                loop={allBrands.length >= 5}
                 speed={4000}
                 allowTouchMove={false}
                 autoplay={{

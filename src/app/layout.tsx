@@ -23,9 +23,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <QueryProvider>
-        <AuthProvider>
-          <body>
+      <body suppressHydrationWarning>
+        <QueryProvider>
+          <AuthProvider>
             {/* Global Navbar */}
             {/* <NavbarTop /> */}
             <Navbar />
@@ -40,9 +40,9 @@ export default function RootLayout({
               autoClose={2000}
               hideProgressBar={false}
             />{" "}
-          </body>
-        </AuthProvider>
-      </QueryProvider>
+          </AuthProvider>
+        </QueryProvider>
+      </body>
     </html>
   );
 }

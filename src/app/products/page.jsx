@@ -42,85 +42,72 @@ function ProductListContent() {
   const { user } = useAuth();
 
   const products = productsResponse?.data || [];
-
   const categoryFromUrl = searchParams.get("category");
   const queryFromUrl = searchParams.get("query");
+  const subCategoryFromUrl = searchParams.get("sub_category");
 
-  // Call server-side filter when user has filters or a query is present
+  const hasServerFilters =
+    selectedCategories.length > 0 ||
+    selectedSubCategories.length > 0 ||
+    selectedBrands.length > 0 ||
+    (queryFromUrl && queryFromUrl.trim().length > 0);
+
+  // Call server-side filter when any id filter or query is present
   const {
     data: filteredResponse,
-    isLoading: isFiltering,
-    isError: isFilterError,
+    isLoading: isFilterLoading,
+    isFetching: isFilterFetching,
   } = useFilterProducts({
-    query: hasUserFiltered ? undefined : queryFromUrl || "",
+    query: queryFromUrl || "",
     categories: selectedCategories,
     subCategories: selectedSubCategories,
     brands: selectedBrands,
-    priceRange,
-    sort: sortBy,
   });
 
   useEffect(() => {
-    if (
-      !hasUserFiltered &&
-      categoryFromUrl &&
-      !selectedCategories.includes(categoryFromUrl)
-    ) {
+    if (categoryFromUrl) {
       setSelectedCategories([categoryFromUrl]);
+      setSelectedSubCategories([]);
+      setSelectedBrands([]);
+      setHasUserFiltered(true);
     }
-  }, [categoryFromUrl, hasUserFiltered]);
+  }, [categoryFromUrl]);
+
+  useEffect(() => {
+    if (subCategoryFromUrl) {
+      setSelectedSubCategories([subCategoryFromUrl]);
+      setSelectedCategories([]);
+      setSelectedBrands([]);
+      setHasUserFiltered(true);
+    }
+  }, [subCategoryFromUrl]);
 
   useEffect(() => {
     if (
       selectedCategories.length > 0 ||
       selectedSubCategories.length > 0 ||
-      selectedBrands.length > 0 ||
-      priceRange[0] !== 0 ||
-      priceRange[1] !== 1000000 ||
-      sortBy !== "newest"
+      selectedBrands.length > 0
     ) {
       setHasUserFiltered(true);
     }
-  }, [
-    selectedCategories,
-    selectedSubCategories,
-    selectedBrands,
-    priceRange,
-    sortBy,
-  ]);
+  }, [selectedCategories, selectedSubCategories, selectedBrands]);
 
   const filteredProducts = useMemo(() => {
-    // If server returned filtered data (when filters present), prefer it
-    if ((hasUserFiltered || queryFromUrl) && filteredResponse?.data) {
-      return filteredResponse.data;
-    }
+    // Start from server filtered results if available, otherwise all products
+    const baseProducts = hasServerFilters
+      ? filteredResponse?.data || []
+      : products;
 
-    // otherwise fall back to client-side filtering of all products
-    let filtered = [...products];
-
-    // Filter by category
-    if (selectedCategories.length > 0) {
-      filtered = filtered.filter((p) =>
-        selectedCategories.includes(String(p.category_id)),
-      );
-    } 
-    
-    // Filter by subcategory
-    if (selectedSubCategories.length > 0) {
-      filtered = filtered.filter((p) =>
-        selectedSubCategories.includes(String(p.subcategory_id)),
-      );
-    }
-    
-    // Filter by brand
-    if (selectedBrands.length > 0) {
-      filtered = filtered.filter((p) =>
-        selectedBrands.includes(String(p.brand_id)),
-      );
-    }
+    let filtered = [...baseProducts];
 
     // Filter by query (only if no user filters)
-    if (!hasUserFiltered && queryFromUrl && selectedCategories.length === 0 && selectedSubCategories.length === 0 && selectedBrands.length === 0) {
+    if (
+      !hasUserFiltered &&
+      queryFromUrl &&
+      selectedCategories.length === 0 &&
+      selectedSubCategories.length === 0 &&
+      selectedBrands.length === 0
+    ) {
       const searchTerm = queryFromUrl.toLowerCase().trim();
       filtered = filtered.filter(
         (p) =>
@@ -129,10 +116,15 @@ function ProductListContent() {
       );
     }
 
-    // Filter by price
-    filtered = filtered.filter(
-      (p) => p.sale_price >= priceRange[0] && p.sale_price <= priceRange[1],
-    );
+    // Filter by price (skip when range is default)
+    const isDefaultPriceRange =
+      priceRange[0] === 0 && priceRange[1] === 1000000;
+    if (!isDefaultPriceRange) {
+      filtered = filtered.filter((p) => {
+        const priceValue = Number(p.sale_price ?? p.regular_price ?? 0);
+        return priceValue >= priceRange[0] && priceValue <= priceRange[1];
+      });
+    }
 
     // Sort
     switch (sortBy) {
@@ -151,6 +143,7 @@ function ProductListContent() {
     return filtered;
   }, [
     products,
+    filteredResponse,
     selectedCategories,
     selectedSubCategories,
     selectedBrands,
@@ -158,9 +151,11 @@ function ProductListContent() {
     sortBy,
     queryFromUrl,
     hasUserFiltered,
-    filteredResponse,
+    hasServerFilters,
   ]);
-
+  const showLoading = hasServerFilters
+    ? isFilterLoading || isFilterFetching
+    : isLoading;
   const paginatedProducts = useMemo(() => {
     return filteredProducts.slice(0, showPerPage);
   }, [filteredProducts, showPerPage]);
@@ -175,6 +170,23 @@ function ProductListContent() {
 
   const handleBrandFilter = (brands) => {
     setSelectedBrands(brands);
+  };
+
+  const hasActiveFilters =
+    selectedCategories.length > 0 ||
+    selectedSubCategories.length > 0 ||
+    selectedBrands.length > 0 ||
+    priceRange[0] !== 0 ||
+    priceRange[1] !== 1000000 ||
+    sortBy !== "newest";
+
+  const handleClearFilters = () => {
+    setSelectedCategories([]);
+    setSelectedSubCategories([]);
+    setSelectedBrands([]);
+    setPriceRange([0, 1000000]);
+    setSortBy("newest");
+    setHasUserFiltered(false);
   };
 
   const handleAddToCart = (productId) => {
@@ -241,8 +253,17 @@ function ProductListContent() {
               </span>
             )}
           </p>
+          <p>{filteredProducts.length}</p>
 
           <div className="flex items-center gap-3">
+            {hasActiveFilters && (
+              <button
+                onClick={handleClearFilters}
+                className="text-xs md:text-sm px-3 py-1.5 rounded-md border border-[#bee5f6] text-[#303030] hover:text-white hover:bg-primary transition"
+              >
+                Clear filters
+              </button>
+            )}
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <span>Show:</span>
               <select
@@ -273,7 +294,7 @@ function ProductListContent() {
         </div>
 
         {/* Product grid */}
-        {isLoading ? (
+        {showLoading ? (
           <ProductsLoading />
         ) : paginatedProducts.length === 0 ? (
           <div className="text-center py-20 text-gray-500">

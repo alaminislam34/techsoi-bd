@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 import { useSearchProducts } from "@/api/hooks";
+import Image from "next/image";
 
 export default function Navbar() {
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -37,17 +38,13 @@ export default function Navbar() {
             {/* ---------- LOGO ---------- */}
             <Link href={"/"}>
               <div className="sm:block md:block mr-1 py-2">
-                {/* <Image
+                <Image
                   src={"/icons/logo.png"}
                   height={400}
                   width={800}
                   alt="Website logo"
                   className="h-10 md:h-14 w-auto object-contain"
-                /> */}
-                <h1 className="text-xl md:text-2xl font-semibold text-primary">
-                  {" "}
-                  Technology Hat
-                </h1>
+                />
               </div>
             </Link>
 

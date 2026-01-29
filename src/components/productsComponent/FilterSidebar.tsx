@@ -49,7 +49,7 @@ export default function FilterSidebar({
   // Price States
   const [minPrice, setMinPrice] = useState(100);
   const [maxPrice, setMaxPrice] = useState(300000);
-  const MIN_PRICE = 100;
+  const MIN_PRICE = 0;
   const MAX_PRICE = 300000;
   const MIN_GAP = 1000;
 
@@ -141,7 +141,7 @@ export default function FilterSidebar({
               />
               <input
                 type="range"
-                min={100}
+                min={0}
                 max={300000}
                 value={minPrice}
                 onChange={(e) => {
@@ -155,7 +155,7 @@ export default function FilterSidebar({
               />
               <input
                 type="range"
-                min={100}
+                min={0}
                 max={300000}
                 value={maxPrice}
                 onChange={(e) => {
