@@ -8,7 +8,20 @@ import SafeImage from "@/components/ui/SafeImage";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/api/apiClient";
 import { API_ENDPOINTS } from "@/api/ApiEndPoint";
-
+const brandsImages = [
+  {
+    image: "/brandslogo/brand1.png",
+  },
+  {
+    image: "/brandslogo/brand2.png",
+  },
+  {
+    image: "/brandslogo/brand3.png",
+  },
+  {
+    image: "/brandslogo/brand4.png",
+  },
+];
 export default function AllBrands() {
   const [allBrands, setAllBrands] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +30,7 @@ export default function AllBrands() {
     const fetchBrands = async () => {
       try {
         const res = await apiClient.get(API_ENDPOINTS.SPECIAL_BRAND);
-
+        console.log(res);
         if (res.status) {
           setAllBrands(res.data);
         } else {
@@ -35,6 +48,11 @@ export default function AllBrands() {
 
   // For infinite smooth marquee (fixes loop warning)
   const duplicatedBrands = [...allBrands, ...allBrands, ...allBrands];
+  const staticBrandsImages = [
+    ...brandsImages,
+    ...brandsImages,
+    ...brandsImages,
+  ];
 
   if (loading) {
     return (
@@ -89,7 +107,10 @@ export default function AllBrands() {
                   1024: { slidesPerView: 4, spaceBetween: 25 },
                 }}
               >
-                {duplicatedBrands.map((item, index) => (
+                {(duplicatedBrands.length === 0
+                  ? staticBrandsImages
+                  : duplicatedBrands
+                ).map((item, index) => (
                   <SwiperSlide
                     key={`${item.id}-${index}`}
                     className="flex justify-center items-center"

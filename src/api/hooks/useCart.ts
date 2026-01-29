@@ -12,9 +12,17 @@ interface CartProduct {
 
 // Get cart products
 export const useGetCartProducts = () => {
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
   return useQuery({
     queryKey: ["cart"],
-    queryFn: () => apiClient.get<CartProduct[]>(API_ENDPOINTS.CART_PRODUCT_GET),
+    queryFn: () =>
+      apiClient.request<CartProduct[]>(API_ENDPOINTS.CART_PRODUCT_GET, {
+        method: "GET",
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      }),
+    enabled: !!token,
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 };
@@ -24,8 +32,18 @@ export const useAddToCart = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { product_id: number; quantity?: number }) =>
-      apiClient.post<CartProduct>(API_ENDPOINTS.CART_PRODUCT_ADD, data),
+    mutationFn: (data: { product_id: number; quantity?: number }) => {
+      const token =
+        typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      if (!token) {
+        throw new Error("Please login to add items to cart");
+      }
+      return apiClient.request<CartProduct>(API_ENDPOINTS.CART_PRODUCT_ADD, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify(data),
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       toast.success("Added to cart");
@@ -41,8 +59,17 @@ export const useDeleteFromCart = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: number) =>
-      apiClient.delete(API_ENDPOINTS.CART_PRODUCT_DELETE(id)),
+    mutationFn: (id: number) => {
+      const token =
+        typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      if (!token) {
+        throw new Error("Please login to remove items from cart");
+      }
+      return apiClient.request(API_ENDPOINTS.CART_PRODUCT_DELETE(id), {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       toast.success("Removed from cart");

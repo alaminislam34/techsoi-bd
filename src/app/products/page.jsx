@@ -93,7 +93,6 @@ function ProductListContent() {
   }, [selectedCategories, selectedSubCategories, selectedBrands]);
 
   const filteredProducts = useMemo(() => {
-    // Start from server filtered results if available, otherwise all products
     const baseProducts = hasServerFilters
       ? filteredResponse?.data || []
       : products;
