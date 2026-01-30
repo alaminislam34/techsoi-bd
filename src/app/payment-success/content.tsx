@@ -31,7 +31,7 @@ export default function PaymentSuccessContent() {
   }, [searchParams]);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 to-cyan-50 flex items-center justify-center px-4">
+    <div className="min-h-screen my-12 flex items-center justify-center">
       <div className="w-full max-w-md">
         {/* Success Card */}
         <div className="bg-white rounded-3xl shadow-2xl p-8 text-center space-y-6">

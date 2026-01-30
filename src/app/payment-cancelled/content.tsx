@@ -15,7 +15,7 @@ export default function PaymentCancelledContent() {
   }, [searchParams]);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-amber-50 to-yellow-50 flex items-center justify-center px-4">
+    <div className="min-h-screen my-12 flex items-center justify-center">
       <div className="w-full max-w-md">
         {/* Cancelled Card */}
         <div className="bg-white rounded-3xl shadow-2xl p-8 text-center space-y-6">
@@ -50,7 +50,9 @@ export default function PaymentCancelledContent() {
             )}
 
             <div className="text-sm text-amber-700 bg-amber-100 p-3 rounded-lg">
-              <p>You can return to your cart and try again whenever you're ready.</p>
+              <p>
+                You can return to your cart and try again whenever you're ready.
+              </p>
             </div>
           </div>
 
