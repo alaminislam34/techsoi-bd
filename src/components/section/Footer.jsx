@@ -250,7 +250,7 @@ export default function Footer() {
                       fill="currentColor"
                     />
                   </svg>
-                  <span className="text-sm md:text-lg">Facebook</span>
+                  <span className="text-sm md:text-lg pb-1.5">Facebook</span>
                 </Link>
                 <Link
                   href={info?.instagram_link || "#"}
@@ -282,7 +282,7 @@ export default function Footer() {
                       strokeLinejoin="round"
                     />
                   </svg>
-                  <span className="text-sm md:text-lg">Instagram</span>
+                  <span className="text-sm md:text-lg pb-1.5">Instagram</span>
                 </Link>
                 <Link
                   href={info?.tiktok_link || "#"}
@@ -307,10 +307,10 @@ export default function Footer() {
                     />
                   </svg>
 
-                  <span className="text-sm md:text-lg">Tiktok</span>
+                  <span className="text-sm md:text-lg pb-1.5">Tiktok</span>
                 </Link>
                 <Link
-                  href={`https://www.youtube.com/@techsoitechnologies3169`}
+                  href={`${info.youtube_link || "https://www.youtube.com/@techsoitechnologies3169"}`}
                   className="flex items-center gap-2 hover:text-[#2CACE2] transition-colors"
                 >
                   <svg
@@ -333,7 +333,7 @@ export default function Footer() {
                     />
                   </svg>
 
-                  <span className="text-sm md:text-lg">Youtube</span>
+                  <span className="text-sm md:text-lg pb-1.5">Youtube</span>
                 </Link>
               </div>
             </div>
