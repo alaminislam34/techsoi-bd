@@ -345,7 +345,7 @@ export default function Navbar() {
       </div>
 
       {/* ---------- MOBILE BOTTOM NAVIGATION (FIX FOR SMALL DEVICES) ---------- */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 px-4 flex justify-between items-center z-[100] shadow-lg">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 px-4 flex justify-between items-center z-100 shadow-lg">
         <Link href="/" className="flex flex-col items-center gap-1">
           <div className="p-1.5">
             <User size={20} className="text-gray-600" />
