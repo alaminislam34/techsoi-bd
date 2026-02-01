@@ -43,7 +43,7 @@ export default function NavbarTop() {
 
         <div className="fixed z-50 bottom-5 lg:bottom-8 lg:right-8 right-4">
           <a
-            href={+8801672224906}
+            href="https://wa.me/8801672224906"
             target="_blank"
             rel="noopener noreferrer"
             className="flex p-3 text-2xl lg:text-3xl rounded-full bg-[#25D366] text-white shadow-xl hover:scale-110 transition-transform duration-300"
