@@ -142,7 +142,7 @@ export default function ProductDetails() {
                 <img
                   src={activeImg || "/images/monitor.jpg"}
                   alt={product.name}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover rounded-2xl"
                   onError={(e) => {
                     e.currentTarget.src = "/images/monitor.jpg";
                   }}
