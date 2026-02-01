@@ -1,7 +1,12 @@
+"use client";
+
 import CommonWrapper from "@/components/layout/CommonWrapper";
+import axios from "axios";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Footer() {
+  const [info, setInfo] = useState({});
   const quickLinks = [
     { to: "/", label: "Home" },
     { to: "/about-us", label: "About Us" },
@@ -15,6 +20,19 @@ export default function Footer() {
     { to: "/monitor", label: "Monitor" },
     { to: "/casing", label: "Casing" },
   ];
+
+  useEffect(() => {
+    const fetch = async () => {
+      const res = await axios.get("https://api.techsoibd.com/api/website-info");
+      if (res.data) {
+        setInfo(res.data.data);
+      } else {
+        setInfo(null);
+      }
+    };
+
+    fetch();
+  }, []);
 
   return (
     <footer className="bg-[#eaf7fc] mt-12 md:mt-30">
@@ -40,7 +58,6 @@ export default function Footer() {
                   xmlns="http://www.w3.org/2000/svg"
                   className="w-40 md:w-46.25 h-auto"
                 >
-                  {/* ... SVG Paths remain exactly the same ... */}
                   <path
                     d="M77.9891 0.273926H84.6235V11.3036C86.1527 8.94812 88.116 6.80388 91.479 6.80388C96.5009 6.80388 99.4277 10.7783 99.4277 17.2125V35.3606H92.7894V19.7226C92.7894 15.9576 91.3039 14.0213 88.7729 14.0213C86.2422 14.0213 84.6235 15.9579 84.6235 19.7226V35.3606H77.9891V0.273926Z"
                     fill="#231F20"
@@ -96,7 +113,7 @@ export default function Footer() {
 
             <div className="flex flex-col gap-4">
               <Link
-                href={"mailto:hellotechsoi@gmail.com"}
+                href={`mailto:${info?.email || "technologiestechsoi@gmail.com"}`}
                 className="flex items-center gap-3 hover:opacity-80 transition-opacity"
               >
                 <svg
@@ -114,11 +131,11 @@ export default function Footer() {
                   />
                 </svg>
                 <p className="text-base md:text-lg text-[#303030]">
-                  hellotechsoi@gmail.com
+                  {info?.email || "technologiestechsoi@gmail.com"}
                 </p>
               </Link>
               <Link
-                href={"tel:+8880000000000"}
+                href={`tel:${info?.phone || "+880 1672-224906"}`}
                 className="flex items-center gap-3 hover:opacity-80 transition-opacity"
               >
                 <svg
@@ -165,7 +182,7 @@ export default function Footer() {
                   />
                 </svg>
                 <p className="text-base md:text-lg text-[#303030]">
-                  Mohakhali, Amtoli, Dhaka, Bangladesh.
+                  {info?.address || "Mohakhali, Amtoli, Dhaka, Bangladesh."}
                 </p>
               </div>
             </div>
@@ -212,7 +229,7 @@ export default function Footer() {
               </p>
               <div className="flex flex-col items-start gap-4">
                 <Link
-                  href={"#"}
+                  href={info?.facebook_link || "#"}
                   className="flex items-center gap-2 hover:text-[#2CACE2] transition-colors"
                 >
                   <svg
@@ -236,7 +253,7 @@ export default function Footer() {
                   <span className="text-sm md:text-lg">Facebook</span>
                 </Link>
                 <Link
-                  href={"#"}
+                  href={info?.instagram_link || "#"}
                   className="flex items-center gap-2 hover:text-[#2CACE2] transition-colors"
                 >
                   <svg
@@ -268,7 +285,7 @@ export default function Footer() {
                   <span className="text-sm md:text-lg">Instagram</span>
                 </Link>
                 <Link
-                  href={"#"}
+                  href={info?.tiktok_link || "#"}
                   className="flex items-center gap-2 hover:text-[#2CACE2] transition-colors"
                 >
                   <svg
@@ -293,7 +310,7 @@ export default function Footer() {
                   <span className="text-sm md:text-lg">Tiktok</span>
                 </Link>
                 <Link
-                  href={"#"}
+                  href={`https://www.youtube.com/@techsoitechnologies3169`}
                   className="flex items-center gap-2 hover:text-[#2CACE2] transition-colors"
                 >
                   <svg
