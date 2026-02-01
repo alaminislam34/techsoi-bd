@@ -10,12 +10,7 @@ import { useRouter } from "next/navigation";
 import { useSearchProducts } from "@/api/hooks";
 import Image from "next/image";
 import axios from "axios";
-import {
-  MdWhatsapp,
-  MdOutlinePhoneInTalk,
-  MdOutlineMailOutline,
-  MdOutlineLocationOn,
-} from "react-icons/md";
+import { MdWhatsapp } from "react-icons/md";
 
 export default function Navbar() {
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -55,26 +50,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* ---------- NAVBAR TOP SECTION ---------- */}
-      <div className="border-b border-[#d1eef8] bg-[#eaf7fc] py-2 text-[12px] md:text-[13px] text-slate-700 font-medium">
-        <CommonWrapper>
-          <div className="flex flex-wrap items-center justify-center lg:justify-end gap-x-5 gap-y-2">
-            <div className="flex items-center gap-1.5">
-              <MdOutlinePhoneInTalk className="text-[#00aeef] text-lg" />
-              <span>Phone: {websiteInfo?.phone || "01754545454"}</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <MdOutlineMailOutline className="text-[#00aeef] text-lg" />
-              <span>Mail: {websiteInfo?.email || "test@gmail.com"}</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <MdOutlineLocationOn className="text-[#00aeef] text-lg" />
-              <span>Location: {websiteInfo?.address || "Chapai"}</span>
-            </div>
-          </div>
-        </CommonWrapper>
-      </div>
-
       {/* ---------- MAIN NAVBAR ---------- */}
       <div className="bg-[#303030] backdrop-blur-[50px] sticky top-0 z-50 shadow-xs">
         <CommonWrapper>
