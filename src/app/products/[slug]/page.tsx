@@ -38,7 +38,7 @@ export default function ProductDetails() {
         const res: ApiResponse<any> = await apiClient.get(
           API_ENDPOINTS.REVIEW_GET_SINGLE(productSlug),
         );
-        console.log(res);
+        console.log("Product review", res);
         if (res.status === true) {
           const data = res.data ?? [];
           setReviews(Array.isArray(data) ? data : [data]);
@@ -52,22 +52,18 @@ export default function ProductDetails() {
     };
     fetchReviews(slug);
   }, [slug]);
-  console.log("slug product ", productResponse, "error:", error);
+
   const { mutate: addToCart } = useAddToCart();
 
-  // Note: React Query returns `error` separately when requests fail.
   const apiError = error as any;
-  const { mutate: addToFavorites } = useAddToFavorites();
   const { user } = useAuth();
 
-  // Initialize state hooks before any conditional returns
   const [activeImg, setActiveImg] = useState("");
   const [qty, setQty] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const product = productResponse?.data;
 
-  // Set initial active image when the product is loaded
   useEffect(() => {
     if (product && !activeImg) {
       setActiveImg(product.main_image || "/images/monitor.jpg");
@@ -87,7 +83,7 @@ export default function ProductDetails() {
   } catch (err) {
     specifications = [];
   }
-  console.log("Product details:", product);
+
   const extraImages: string[] = details?.extra_images || [];
   const stockValue = Number(product?.stock);
   const isInStock = Number.isFinite(stockValue) ? stockValue > 0 : true;
@@ -115,9 +111,6 @@ export default function ProductDetails() {
       </CommonWrapper>
     );
   }
-
-  const totalSalePrice = (product.sale_price || 0) * qty;
-  const totalRegularPrice = (product.regular_price || 0) * qty;
 
   const handleAddToCart = () => {
     if (!user) {
@@ -149,7 +142,6 @@ export default function ProductDetails() {
                 />
               </div>
 
-              {/* Variant Images - Show main image and extra images */}
               <div className="flex gap-4 mt-4">
                 {(
                   ([product.main_image, ...extraImages].filter(

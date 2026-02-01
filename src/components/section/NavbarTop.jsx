@@ -28,7 +28,6 @@ export default function NavbarTop() {
   }, []);
 
   if (!websiteInfo) return null;
-  console.log(websiteInfo)
 
   return (
     <>
