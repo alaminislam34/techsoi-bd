@@ -219,20 +219,14 @@ export default function ProductDetails() {
                 <div className="h-12 w-px bg-gray-300 mx-6"></div>
 
                 {/* EMI system */}
-                <div className="flex flex-col items-center justify-center text-center pl-2">
+                <div className="flex flex-col items-start justify-start pl-2">
                   {/* Heading */}
-                  <h1 className="text-sm font-semibold text-gray-600 mb-2">
+                  <h1 className="text-sm font-semibold text-left text-gray-600 mb-2">
                     EMI System:
                   </h1>
 
                   {/* Price row */}
-                  <div className="flex items-center gap-2">
-                    <div className="relative -translate-y-0.5">
-                      <div className="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
-                        <div className="w-3 h-3 rounded-full bg-primary"></div>
-                      </div>
-                    </div>
-
+                  <div className="flex items-center justify-start text-left gap-2">
                     {product.emi_status ? (
                       <span className="text-primary text-lg font-bold leading-none">
                         EMI Available
@@ -270,7 +264,7 @@ export default function ProductDetails() {
               {/* Action Buttons */}
               <div className="mt-8 flex gap-4 flex-wrap md:flex-nowrap">
                 <button
-                  className={`px-8 cursor-pointer py-3 rounded-xl bg-primary text-white font-semibold text-lg hover:bg-blue-600 transition ${!isInStock ? "opacity-50 cursor-not-allowed" : ""}`}
+                  className={`px-8 cursor-pointer py-3 rounded-xl bg-primary text-white font-semibold text-lg transition ${!isInStock ? "opacity-50 cursor-not-allowed" : ""}`}
                   onClick={() => setIsModalOpen(true)}
                   disabled={!isInStock}
                 >
