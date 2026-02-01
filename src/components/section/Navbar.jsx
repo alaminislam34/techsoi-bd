@@ -32,14 +32,14 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="bg-white/50 backdrop-blur-[50px] sticky top-0 z-50 shadow-xs">
+      <div className="bg-[#303030] backdrop-blur-[50px] sticky top-0 z-50 shadow-xs">
         <CommonWrapper>
           <div className="flex justify-between items-center relative py-2.5 md:py-4">
             {/* ---------- LOGO ---------- */}
             <Link href={"/"}>
               <div className="sm:block md:block mr-1 py-2">
                 <Image
-                  src={"/icons/logo.png"}
+                  src={"/icons/logo.jpg"}
                   height={400}
                   width={800}
                   alt="Website logo"
@@ -48,9 +48,8 @@ export default function Navbar() {
               </div>
             </Link>
 
-            {/* ---------- SEARCH ---------- */}
-            <div className="hidden px-2 md:flex justify-between items-center md:w-xs lg:w-2xl relative mx-4 sm:mx-0 lg:mx-3 md:mx-4 py-2 rounded-xl bg-white border border-[#bee5f6]">
-              <div className="relative flex-1">
+            <div className="hidden px-2 md:flex justify-between items-center md:w-xs lg:w-2xl relative mx-4 sm:mx-0 lg:mx-3 md:mx-4 py-2 rounded-xl bg-white border-2 border-primary">
+              <div className="relative flex-1 ">
                 <input
                   value={searchTerm}
                   onChange={(e) => {
@@ -61,7 +60,7 @@ export default function Navbar() {
                   onBlur={() =>
                     setTimeout(() => setShowSuggestions(false), 150)
                   }
-                  className="lg:text-lg w-full focus:outline-none"
+                  className="lg:text-lg w-full focus:outline-none "
                   placeholder="Search products.."
                 />
 
@@ -154,7 +153,7 @@ export default function Navbar() {
                       <p className="text-base font-medium text-primary">
                         Favourites
                       </p>
-                      <p className="text-sm text-[#505050]">৳0</p>
+                      <p className="text-sm text-white">৳0</p>
                     </div>
                   </Link>
 
@@ -179,7 +178,7 @@ export default function Navbar() {
 
                     <div className="md:block hidden">
                       <p className="text-sm font-medium text-primary">Cart</p>
-                      <p className="text-sm text-[#505050]">৳0</p>
+                      <p className="text-sm text-white">৳0</p>
                     </div>
                   </Link>
 
@@ -198,7 +197,7 @@ export default function Navbar() {
 
                     <div className="md:block hidden">
                       <p className="text-sm font-medium text-primary">Orders</p>
-                      <p className="text-sm text-[#505050]">৳0</p>
+                      <p className="text-sm text-white">৳0</p>
                     </div>
                   </Link>
                 </>
@@ -263,14 +262,14 @@ export default function Navbar() {
                           <hr className="border-gray-100" />
                           <Link
                             href={"/myorders"}
-                            className="hidden md:flex items-center relative gap-2"
+                            className="hidden md:flex items-center relative gap-2 group"
                           >
-                            <div className="w-10 h-10 relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
-                              <div className="flex items-center mt-2 justify-center">
+                            <div className="w-10 h-10 relative overflow-hidden rounded-[99px] text-primary group-hover:bg-primary group-hover:text-white bg-[#eaf7fc]">
+                              <div className="flex items-center mt-2 justify-center ">
                                 <Handbag size={20} />
                               </div>
-                              <div className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
-                                <p className="text-[10px] text-white">0</p>
+                              <div className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary text-white group-hover:bg-white group-hover:text-primary">
+                                <p className="text-[10px] ">0</p>
                               </div>
                             </div>
 
