@@ -100,7 +100,7 @@ export default function NavbarCategory() {
           {/* Left Scroll Button */}
           <button
             onClick={() => scroll("left")}
-            className="absolute left-0 z-20 p-1 bg-[#eaf7fc]/80 hover:text-primary lg:hidden"
+            className="absolute left-0 z-20 p-1 bg-[#eaf7fc]/80 hover:text-primary"
             aria-label="Scroll left"
           >
             <ChevronLeft size={24} />
@@ -141,7 +141,7 @@ export default function NavbarCategory() {
           {/* Right Scroll Button */}
           <button
             onClick={() => scroll("right")}
-            className="absolute right-0 z-20 p-1 bg-[#eaf7fc]/80 hover:text-primary lg:hidden"
+            className="absolute right-0 z-20 p-1 bg-[#eaf7fc]/80 hover:text-primary"
             aria-label="Scroll right"
           >
             <ChevronRight size={24} />
