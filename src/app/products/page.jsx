@@ -309,7 +309,7 @@ function ProductListContent() {
             {paginatedProducts.map((p) => (
               <div className="h-full" key={p.id}>
                 <div className="flex flex-col gap-2 justify-between md:gap-5 p-1.5 md:p-4 rounded-xl md:rounded-[20px] bg-white border border-[#bee5f6] hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_2px_10px_#72C7EC] hover:border-[#72C7EC] h-full">
-                  <div>
+                  <div className="space-y-4">
                     <Link href={`/products/${p.slug}`}>
                       <SafeImage
                         src={p.main_image}
