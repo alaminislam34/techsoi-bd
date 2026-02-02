@@ -8,10 +8,9 @@ import { CalendarDays } from "lucide-react";
 import { useParams } from "next/navigation";
 
 export default function BlogPage() {
-  const { id } = useParams();
-  const blogId = Number(id);
+  const { slug } = useParams();
 
-  const { data: blogResponse, isLoading, isError } = useGetBlog(blogId);
+  const { data: blogResponse, isLoading, isError } = useGetBlog(slug);
   const blog = blogResponse?.data;
 
   // Format date helper

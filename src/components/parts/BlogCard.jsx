@@ -60,7 +60,7 @@ export default function BlogCard({ limit = 6 }) {
           {blogs.map((blog) => (
             <SwiperSlide key={blog.id}>
               <Link
-                href={`/blog/${blog.id}`}
+                href={`/blog/${blog.slug}`}
                 className="flex flex-col gap-2 md:gap-3 p-3 md:p-4 rounded-2xl border border-[#bee5f6] hover:border-[#2CACE2] transition-all"
               >
                 <div className="w-full h-48 md:h-56 rounded-xl overflow-hidden bg-gray-200">
@@ -130,10 +130,13 @@ export default function BlogCard({ limit = 6 }) {
                   <p className="text-[10px] md:text-base text-left text-[#505050] line-clamp-2">
                     {blog.short_description}
                   </p>
-                  <div className="flex items-center gap-2">
-                    <p className="text-[12px] md:text-lg text-left text-[#303030]">
+                  <Link
+                    href={`/blog/${blog.slug}`}
+                    className="flex items-center gap-2"
+                  >
+                    <span className="text-[12px] md:text-lg inline-block text-left text-[#303030]">
                       Read more
-                    </p>
+                    </span>
                     <svg
                       width={24}
                       height={24}
@@ -157,7 +160,7 @@ export default function BlogCard({ limit = 6 }) {
                         strokeLinejoin="round"
                       />
                     </svg>
-                  </div>
+                  </Link>
                 </div>
               </Link>
             </SwiperSlide>

@@ -32,11 +32,11 @@ export const useGetBlogsLimit = (limit: number) => {
 };
 
 // Get single blog
-export const useGetBlog = (id: string) => {
+export const useGetBlog = (slug: string) => {
   return useQuery({
-    queryKey: ["blog", id],
-    queryFn: () => apiClient.get<Blog>(API_ENDPOINTS.BLOG_GET_SINGLE(id)),
-    enabled: !!id,
+    queryKey: ["blog", slug],
+    queryFn: () => apiClient.get<Blog>(API_ENDPOINTS.BLOG_GET_SINGLE(slug)),
+    enabled: !!slug,
     staleTime: 10 * 60 * 1000,
   });
 };
