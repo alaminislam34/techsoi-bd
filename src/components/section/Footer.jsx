@@ -159,7 +159,7 @@ export default function Footer() {
                   />
                 </svg>
                 <p className="text-base md:text-lg text-[#303030]">
-                  +888 0000 000 000
+                  {info?.phone || "+880 1672-224906"}
                 </p>
               </Link>
               <div className="flex items-start gap-3">
