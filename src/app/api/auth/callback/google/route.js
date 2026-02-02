@@ -66,7 +66,7 @@ export async function GET(req) {
       },
     });
 
-    const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+    const baseUrl = process.env.NEXTAUTH_URL;
     const response = NextResponse.redirect(`${baseUrl}/auth/redirect`);
 
     // Secure httpOnly cookie for server-side API requests
