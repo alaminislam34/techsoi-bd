@@ -1,104 +1,56 @@
 "use client";
 
-import { createContext, useContext } from "react";
-import { createAuthClient } from "better-auth/client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "@/api/apiClient";
-import { API_ENDPOINTS } from "@/api/ApiEndPoint";
+import { createContext, useContext, useMemo } from "react";
 import { toast } from "react-toastify";
-
-const client = createAuthClient();
+import Cookies from "js-cookie";
 
 const AuthContext = createContext(null);
 
+const parseUserCookie = () => {
+  const rawUser = Cookies.get("user");
+  if (!rawUser) return null;
+  try {
+    return JSON.parse(rawUser);
+  } catch (error) {
+    console.warn("Invalid user cookie JSON:", error);
+    return null;
+  }
+};
+
 export const AuthProvider = ({ children }) => {
-  const queryClient = useQueryClient();
+  const user = useMemo(() => parseUserCookie(), []);
 
-  // Fetch session and login with backend
-  const { data: user = null, isLoading: loading } = useQuery({
-    queryKey: ["auth:session"],
-    queryFn: async () => {
-      const session = await client.getSession();
-      const googleUser = session?.data.user;
-
-      if (googleUser) {
-        try {
-          const loginRes = await apiClient.post(API_ENDPOINTS.USER_LOGIN, {
-            name: googleUser.name,
-            email: googleUser.email,
-            image: googleUser.image,
-          });
-
-          if (loginRes.token) {
-            localStorage.setItem("token", loginRes.token);
-          }
-
-          return loginRes.data || googleUser;
-        } catch (error) {
-          console.error("Backend login failed:", error);
-          return googleUser;
-        }
+  const loginWithGoogle = async () => {
+    try {
+      const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+      if (!clientId || !appUrl) {
+        toast.error("Google login is not configured properly.");
+        return;
       }
 
-      return null;
-    },
-    staleTime: 1000 * 60 * 5, // 5 minutes
-  });
-
-  // Google sign-in mutation
-  const loginWithGoogle = useMutation({
-    mutationFn: async () => {
-      await client.signIn.social({
-        provider: "google",
-        callbackURL: "/",
-      });
-    },
-    onError: (err) => {
-      console.error("Google login failed:", err);
-      toast.error("Google login failed");
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["auth:session"] });
-    },
-  });
+      const redirectUri = `${appUrl}/api/auth/callback/google`;
+      const scope = encodeURIComponent("email profile openid");
+      const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
+      window.location.href = googleUrl;
+    } catch (error) {
+      toast.error("Failed to initiate Google login. Please try again.");
+    }
+  };
 
   // Logout mutation
-  const logout = useMutation({
-    mutationFn: async () => {
-      try {
-        // Call backend logout API (GET request)
-        await apiClient.get(API_ENDPOINTS.USER_LOGOUT);
-      } catch (error) {
-        // Continue logout even if backend call fails
-        console.error("Backend logout failed:", error);
-      }
-
-      // Remove token from localStorage
-      localStorage.removeItem("token");
-
-      // Sign out from better-auth
-      await client.signIn.signOut();
-    },
-    onSuccess: () => {
-      queryClient.setQueryData(["auth:session"], null);
-      toast.success("Logged out successfully");
-    },
-    onError: (err) => {
-      console.error("Logout failed:", err);
-      toast.error("Logout failed");
-    },
-  });
+  const logout = () => {
+    Cookies.remove("user");
+    Cookies.remove("accessToken");
+    window.location.reload();
+  };
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        loading,
-        loginWithGoogle: loginWithGoogle.mutate,
-        logout: logout.mutate,
-        isLoggingOut: logout.isPending,
-        refreshSession: () =>
-          queryClient.invalidateQueries({ queryKey: ["auth:session"] }),
+        loginWithGoogle,
+        logout,
       }}
     >
       {children}

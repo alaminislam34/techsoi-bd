@@ -317,9 +317,10 @@ function ProductListContent() {
                         width={400}
                         height={400}
                         unoptimized
-                        className="w-full rounded-lg md:rounded-4.5 object-cover"
+                        className="w-full rounded-lg md:rounded-4.5 h-fit aspect-4/3 object-cover"
                       />
                     </Link>
+                    <br />
                     <p className="w-full text-[14px] md:text-[16px] lg:text-4.5 font-medium text-[#303030] line-clamp-2">
                       {p.name}
                     </p>

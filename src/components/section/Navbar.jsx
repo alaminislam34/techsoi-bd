@@ -14,15 +14,36 @@ import { MdWhatsapp } from "react-icons/md";
 
 export default function Navbar() {
   const [openDropdown, setOpenDropdown] = useState(false);
-  const { user, logout, loginWithGoogle, isLoggingOut } = useAuth();
+  const { user, logout, isLoggingOut } = useAuth();
   const router = useRouter();
   const [websiteInfo, setWebsiteInfo] = useState(null);
-
+  console.log(user);
   // Search state
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
 
+  const loginWithGoogle = async () => {
+    try {
+      const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+      console.log("google client id:", clientId);
+      if (!clientId || !appUrl) {
+        console.error("Google Login environment variables missing!");
+        toast.error("Google login is not configured properly.");
+        return;
+      }
+
+      const redirectUri = `${appUrl}/api/auth/callback/google`;
+      const scope = encodeURIComponent("email profile openid");
+      const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
+      console.log(redirectUri);
+      window.location.href = googleUrl;
+    } catch (error) {
+      console.error("Google login error:", error);
+      toast.error("Failed to initiate Google login. Please try again.");
+    }
+  };
   // Fetch Website Info for Top Bar
   useEffect(() => {
     const fetchInfo = async () => {
@@ -55,16 +76,14 @@ export default function Navbar() {
         <CommonWrapper>
           <div className="flex justify-between items-center relative py-2.5 md:py-4">
             {/* ---------- LOGO ---------- */}
-            <Link href={"/"}>
-              <div className="sm:block md:block mr-1 py-2">
-                <Image
-                  src={"/icons/logo.jpg"}
-                  height={400}
-                  width={800}
-                  alt="Website logo"
-                  className="h-10 md:h-14 w-auto object-contain"
-                />
-              </div>
+            <Link href="/" className="sm:block md:block mr-1 py-2">
+              <Image
+                src="/icons/logo.jpg"
+                height={400}
+                width={800}
+                alt="Website logo"
+                className="h-10 md:h-14 w-auto object-contain"
+              />
             </Link>
 
             {/* ---------- SEARCH BAR ---------- */}
@@ -146,10 +165,10 @@ export default function Navbar() {
               {user && (
                 <>
                   <Link
-                    href={"/favourite"}
+                    href="/favourite"
                     className="hidden md:flex items-center relative gap-2"
                   >
-                    <div className="w-10 h-10 flex items-center justify-center relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
+                    <span className="w-10 h-10 flex items-center justify-center relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
                       <SafeImage
                         src="/icons/heart.png"
                         fallbackSrc="/icons/heart.png"
@@ -158,23 +177,23 @@ export default function Navbar() {
                         alt="Favourite icon"
                         className="w-5 h-auto"
                       />
-                      <div className="flex flex-col justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
-                        <p className="text-[10px] text-white">0</p>
-                      </div>
-                    </div>
-                    <div className="md:block hidden">
-                      <p className="text-base font-medium text-primary">
+                      <span className="flex flex-col justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
+                        <span className="text-[10px] text-white">0</span>
+                      </span>
+                    </span>
+                    <span className="md:block hidden">
+                      <span className="block text-base font-medium text-primary">
                         Favourites
-                      </p>
-                      <p className="text-sm text-white">৳0</p>
-                    </div>
+                      </span>
+                      <span className="block text-sm text-white">৳0</span>
+                    </span>
                   </Link>
 
                   <Link
-                    href={"/mycart"}
+                    href="/mycart"
                     className="hidden md:flex items-center relative gap-2"
                   >
-                    <div className="w-10 h-10 flex items-center justify-center relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
+                    <span className="w-10 h-10 flex items-center justify-center relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
                       <SafeImage
                         src="/icons/cart.png"
                         fallbackSrc="/icons/cart.png"
@@ -183,32 +202,36 @@ export default function Navbar() {
                         alt="Cart icon"
                         className="w-5 h-auto"
                       />
-                      <div className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
-                        <p className="text-[10px] text-white">0</p>
-                      </div>
-                    </div>
-                    <div className="md:block hidden">
-                      <p className="text-sm font-medium text-primary">Cart</p>
-                      <p className="text-sm text-white">৳0</p>
-                    </div>
+                      <span className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
+                        <span className="text-[10px] text-white">0</span>
+                      </span>
+                    </span>
+                    <span className="md:block hidden">
+                      <span className="block text-sm font-medium text-primary">
+                        Cart
+                      </span>
+                      <span className="block text-sm text-white">৳0</span>
+                    </span>
                   </Link>
 
                   <Link
-                    href={"/myorders"}
+                    href="/myorders"
                     className="hidden md:flex items-center relative gap-2"
                   >
-                    <div className="w-10 h-10 relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
-                      <div className="flex items-center mt-2 justify-center">
+                    <span className="w-10 h-10 relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
+                      <span className="flex items-center mt-2 justify-center">
                         <Handbag size={20} />
-                      </div>
-                      <div className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
-                        <p className="text-[10px] text-white">0</p>
-                      </div>
-                    </div>
-                    <div className="md:block hidden">
-                      <p className="text-sm font-medium text-primary">Orders</p>
-                      <p className="text-sm text-white">৳0</p>
-                    </div>
+                      </span>
+                      <span className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
+                        <span className="text-[10px] text-white">0</span>
+                      </span>
+                    </span>
+                    <span className="md:block hidden">
+                      <span className="block text-sm font-medium text-primary">
+                        Orders
+                      </span>
+                      <span className="block text-sm text-white">৳0</span>
+                    </span>
                   </Link>
                 </>
               )}
@@ -322,18 +345,18 @@ export default function Navbar() {
       {/* ---------- MOBILE BOTTOM NAVIGATION (FIX FOR SMALL DEVICES) ---------- */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 px-4 flex justify-between items-center z-100 shadow-lg">
         <Link href="/" className="flex flex-col items-center gap-1">
-          <div className="p-1.5">
+          <span className="p-1.5 inline-block">
             <User size={20} className="text-gray-600" />
-          </div>
+          </span>
           <span className="text-[10px] text-gray-600">Home</span>
         </Link>
         <Link
           href="/favourite"
           className="flex flex-col items-center gap-1 relative"
         >
-          <div className="p-1.5">
+          <span className="p-1.5 inline-block">
             <Heart size={20} className="text-gray-600" />
-          </div>
+          </span>
           <span className="absolute top-1 right-2 bg-primary text-white text-[8px] w-3.5 h-3.5 flex items-center justify-center rounded-full">
             0
           </span>
@@ -343,18 +366,18 @@ export default function Navbar() {
           href="/mycart"
           className="flex flex-col items-center gap-1 relative"
         >
-          <div className="p-1.5">
+          <span className="p-1.5 inline-block">
             <Handbag size={20} className="text-gray-600" />
-          </div>
+          </span>
           <span className="absolute top-1 right-1.5 bg-primary text-white text-[8px] w-3.5 h-3.5 flex items-center justify-center rounded-full">
             0
           </span>
           <span className="text-[10px] text-gray-600">Cart</span>
         </Link>
         <Link href="/myorders" className="flex flex-col items-center gap-1">
-          <div className="p-1.5">
+          <span className="p-1.5 inline-block">
             <Handbag size={20} className="text-gray-600" />
-          </div>
+          </span>
           <span className="text-[10px] text-gray-600">Orders</span>
         </Link>
       </div>

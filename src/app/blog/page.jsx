@@ -77,7 +77,7 @@ function OurBlogs() {
               </div>
 
               <h3 className="text-lg font-semibold mt-3 line-clamp-2">
-                {blog.title}
+                {blog.title_bn}
               </h3>
 
               <p className="text-gray-600 text-sm mt-2 leading-relaxed line-clamp-2">

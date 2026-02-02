@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
 import { API_ENDPOINTS } from "../ApiEndPoint";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 
 interface Order {
   id: number;
@@ -22,6 +23,18 @@ interface OrderDetails {
   quantity: number;
   amount: number;
 }
+
+const getClientToken = () => {
+  if (typeof window === "undefined") {
+    return undefined;
+  }
+
+  return (
+    window.localStorage.getItem("accessToken") ||
+    Cookies.get("accessTokenClient") ||
+    Cookies.get("accessToken")
+  );
+};
 
 // Get all orders
 export const useGetAllOrders = () => {
@@ -57,7 +70,7 @@ export const useGetUserOrders = () => {
     queryKey: ["orders"],
     queryFn: async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token = getClientToken();
         if (!token) {
           throw new Error("Unauthorized access");
         }
@@ -65,7 +78,7 @@ export const useGetUserOrders = () => {
           API_ENDPOINTS.USER_ORDER,
           {
             method: "GET",
-            headers: { Authorization: `Bearer ${token}` },
+            auth: true,
           },
         );
         return response;
@@ -111,14 +124,13 @@ export const useCreateOrder = () => {
       postcode: string;
       products: Array<{ product_id: number; quantity: number; amount: number }>;
     }) => {
-      const token =
-        typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      const token = getClientToken();
       if (!token) {
         throw new Error("Please login to place an order");
       }
       return apiClient.request(API_ENDPOINTS.ORDER_CREATE, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+        auth: true,
         body: JSON.stringify(data),
       });
     },

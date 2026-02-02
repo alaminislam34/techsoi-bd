@@ -32,7 +32,7 @@ export const useGetBlogsLimit = (limit: number) => {
 };
 
 // Get single blog
-export const useGetBlog = (id: number) => {
+export const useGetBlog = (id: string) => {
   return useQuery({
     queryKey: ["blog", id],
     queryFn: () => apiClient.get<Blog>(API_ENDPOINTS.BLOG_GET_SINGLE(id)),
@@ -89,8 +89,7 @@ export const useDeleteBlog = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: number) =>
-      apiClient.delete(API_ENDPOINTS.BLOG_DELETE(id)),
+    mutationFn: (id: number) => apiClient.delete(API_ENDPOINTS.BLOG_DELETE(id)),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
       toast.success("Blog deleted successfully");

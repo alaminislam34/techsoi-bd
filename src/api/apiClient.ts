@@ -10,20 +10,50 @@ export interface ApiErrorResponse {
   message: string;
 }
 
+export interface ApiRequestOptions extends RequestInit {
+  auth?: boolean;
+  authToken?: string;
+}
+
 class ApiClient {
   private baseURL = "https://api.techsoibd.com/api";
 
+  private async resolveAuthToken(
+    auth: boolean | undefined,
+    authToken?: string,
+  ): Promise<string | undefined> {
+    if (authToken) {
+      return authToken;
+    }
+
+    if (!auth || typeof window === "undefined") {
+      return undefined;
+    }
+
+    try {
+      const localToken = window.localStorage.getItem("accessToken");
+      if (localToken) {
+        return localToken;
+      }
+      const { default: Cookies } = await import("js-cookie");
+      return Cookies.get("accessToken") || Cookies.get("accessTokenClient");
+    } catch {
+      return undefined;
+    }
+  }
+
   async request<T>(
     url: string,
-    options: RequestInit = {},
+    options: ApiRequestOptions = {},
   ): Promise<ApiResponse<T>> {
-    const headers = new Headers(options.headers || {});
-    const hasBody = options.body !== undefined && options.body !== null;
+    const { auth, authToken, ...requestOptions } = options;
+    const headers = new Headers(requestOptions.headers || {});
+    const hasBody = requestOptions.body !== undefined && requestOptions.body !== null;
     const isFormData =
-      typeof FormData !== "undefined" && options.body instanceof FormData;
+      typeof FormData !== "undefined" && requestOptions.body instanceof FormData;
     const isUrlEncoded =
       typeof URLSearchParams !== "undefined" &&
-      options.body instanceof URLSearchParams;
+      requestOptions.body instanceof URLSearchParams;
 
     if (
       hasBody &&
@@ -34,12 +64,17 @@ class ApiClient {
       headers.set("Content-Type", "application/json");
     }
 
+    const token = await this.resolveAuthToken(auth, authToken);
+    if (auth && token && !headers.has("Authorization")) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+
     const fullUrl = /^https?:\/\//i.test(url)
       ? url
       : `${this.baseURL}${url.startsWith("/") ? "" : "/"}${url}`;
 
     const config: RequestInit = {
-      ...options,
+      ...requestOptions,
       headers,
     };
 

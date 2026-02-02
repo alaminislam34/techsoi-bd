@@ -70,7 +70,7 @@ export default function BlogCard({ limit = 6 }) {
                     alt={blog.title}
                     width={400}
                     height={224}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform"
+                    className="w-full h-full object-cover aspect-4/3 hover:scale-105 transition-transform"
                   />
                 </div>
                 <div className="flex items-center gap-1 md:gap-1.5 rounded-lg">
@@ -125,7 +125,7 @@ export default function BlogCard({ limit = 6 }) {
                 </div>
                 <div className="flex flex-col gap-2 md:gap-3">
                   <p className="text-[14px] md:text-xl font-medium text-left text-[#303030] line-clamp-2">
-                    {blog.title}
+                    {blog.title_bn}
                   </p>
                   <p className="text-[10px] md:text-base text-left text-[#505050] line-clamp-2">
                     {blog.short_description}
