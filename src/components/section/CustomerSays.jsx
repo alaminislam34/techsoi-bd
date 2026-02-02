@@ -6,6 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { motion } from "motion/react";
 
 const ReviewCard = ({ review }) => {
   const user = review.user && review.user.length > 0 ? review.user[0] : null;
@@ -15,7 +16,12 @@ const ReviewCard = ({ review }) => {
   const message = review.message || "";
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.8 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      viewport={{ once: false, amount: 0.3 }}
       className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
       style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
     >
@@ -61,7 +67,7 @@ const ReviewCard = ({ review }) => {
         </div>
         <p className="text-[14px] md:text-xl text-[#4b5565]">{message}</p>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -101,67 +107,81 @@ export default function CustomerSays() {
       <div className="relative overflow-hidden">
         <div className="hidden md:block absolute top-0 left-0 w-50 h-full bg-linear-to-l from-white/0 to-white z-10 -ml-16.75"></div>
         <div className="hidden md:block absolute top-0 right-0 w-50 h-full bg-linear-to-r from-white/0 to-white z-10 -mr-16.75"></div>
-        <Swiper
-          className="mt-12"
-          modules={[Autoplay]}
-          spaceBetween={40}
-          slidesPerView={3}
-          autoplay={{
-            delay: 0,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: true,
-          }}
-          freeMode={true}
-          loop={true}
-          speed={6000}
-          breakpoints={{
-            0: {
-              slidesPerView: 1,
-              spaceBetween: 5,
-            },
-            1024: {
-              slidesPerView: 3,
-              spaceBetween: 40,
-            },
-          }}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: false }}
         >
-          {displayReviews.map((review) => (
-            <SwiperSlide key={review.id}>
-              <ReviewCard review={review} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-        <Swiper
-          className="mt-5 md:mt-6"
-          modules={[Autoplay]}
-          spaceBetween={40}
-          slidesPerView={3}
-          autoplay={{
-            delay: 0,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: true,
-            reverseDirection: true,
-          }}
-          freeMode={true}
-          loop={true}
-          speed={6000}
-          breakpoints={{
-            0: {
-              slidesPerView: 1,
-              spaceBetween: 5,
-            },
-            1024: {
-              slidesPerView: 3,
-              spaceBetween: 40,
-            },
-          }}
+          <Swiper
+            className="mt-12"
+            modules={[Autoplay]}
+            spaceBetween={40}
+            slidesPerView={3}
+            autoplay={{
+              delay: 0,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+            freeMode={true}
+            loop={true}
+            speed={6000}
+            breakpoints={{
+              0: {
+                slidesPerView: 1,
+                spaceBetween: 5,
+              },
+              1024: {
+                slidesPerView: 3,
+                spaceBetween: 40,
+              },
+            }}
+          >
+            {displayReviews.map((review) => (
+              <SwiperSlide key={review.id}>
+                <ReviewCard review={review} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          viewport={{ once: false }}
         >
-          {displayReviews.map((review) => (
-            <SwiperSlide key={`reverse-${review.id}`}>
-              <ReviewCard review={review} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+          <Swiper
+            className="mt-5 md:mt-6"
+            modules={[Autoplay]}
+            spaceBetween={40}
+            slidesPerView={3}
+            autoplay={{
+              delay: 0,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+              reverseDirection: true,
+            }}
+            freeMode={true}
+            loop={true}
+            speed={6000}
+            breakpoints={{
+              0: {
+                slidesPerView: 1,
+                spaceBetween: 5,
+              },
+              1024: {
+                slidesPerView: 3,
+                spaceBetween: 40,
+              },
+            }}
+          >
+            {displayReviews.map((review) => (
+              <SwiperSlide key={`reverse-${review.id}`}>
+                <ReviewCard review={review} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </motion.div>
       </div>
     </>
   );
