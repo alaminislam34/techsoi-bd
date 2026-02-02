@@ -342,7 +342,7 @@ export default function Footer() {
 
         <div className="flex justify-center md:justify-end items-center w-full py-6 border-t border-[#bee5f6]">
           <p className="text-xs md:text-base text-[#808080]">
-            Build by Mr. Jhon &amp; Mr. Don
+            Build by Partho Karmokar &amp; Al Amin
           </p>
         </div>
       </CommonWrapper>
