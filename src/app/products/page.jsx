@@ -353,10 +353,10 @@ function ProductListContent() {
                           </svg>
 
                           <p className="text-[12px] lg:text-sm text-[#505050]">
-                            4.5
+                            {p.average_rating ? p.average_rating.toFixed(1) : "0"}
                           </p>
                           <p className="text-[12px] lg:text-sm text-[#505050]">
-                            (24)
+                            ({p.total_reviews || 0})
                           </p>
                         </div>
                       </div>
