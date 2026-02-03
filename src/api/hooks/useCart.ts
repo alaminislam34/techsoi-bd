@@ -49,6 +49,14 @@ export const useAddToCart = () => {
       if (!token) {
         throw new Error("Please login to add items to cart");
       }
+
+      const cachedCart = queryClient.getQueryData<CartProduct[]>(["cart"]);
+      if (
+        cachedCart?.some((item) => item.product_id === data.product_id)
+      ) {
+        throw new Error("This product is already added to your cart");
+      }
+
       return apiClient.request<CartProduct>(API_ENDPOINTS.CART_PRODUCT_ADD, {
         method: "POST",
         auth: true,
