@@ -51,7 +51,6 @@ export default function FilterSidebar({
   const [maxPrice, setMaxPrice] = useState(300000);
   const MIN_PRICE = 0;
   const MAX_PRICE = 300000;
-  const MIN_GAP = 1000;
 
   // Compute range bar percentages (guarded 0-100)
   const leftPct = Math.max(0, Math.min(100, (minPrice / MAX_PRICE) * 100));
@@ -147,7 +146,7 @@ export default function FilterSidebar({
                 onChange={(e) => {
                   let val = Number(e.target.value);
                   if (isNaN(val)) val = MIN_PRICE;
-                  val = Math.max(MIN_PRICE, Math.min(val, maxPrice - MIN_GAP));
+                  val = Math.max(MIN_PRICE, Math.min(val, maxPrice));
                   setMinPrice(val);
                   onPriceChange([val, maxPrice]);
                 }}
@@ -161,7 +160,7 @@ export default function FilterSidebar({
                 onChange={(e) => {
                   let val = Number(e.target.value);
                   if (isNaN(val)) val = MAX_PRICE;
-                  val = Math.min(MAX_PRICE, Math.max(val, minPrice + MIN_GAP));
+                  val = Math.min(MAX_PRICE, Math.max(val, minPrice));
                   setMaxPrice(val);
                   onPriceChange([minPrice, val]);
                 }}
@@ -178,11 +177,8 @@ export default function FilterSidebar({
                   onChange={(e) => {
                     let val = Number(e.target.value);
                     if (isNaN(val)) val = MIN_PRICE;
-                    // Clamp and ensure gap
-                    val = Math.max(
-                      MIN_PRICE,
-                      Math.min(val, maxPrice - MIN_GAP),
-                    );
+                    // Clamp value
+                    val = Math.max(MIN_PRICE, Math.min(val, maxPrice));
                     setMinPrice(val);
                     onPriceChange([val, maxPrice]);
                   }}
@@ -197,11 +193,8 @@ export default function FilterSidebar({
                   onChange={(e) => {
                     let val = Number(e.target.value);
                     if (isNaN(val)) val = MAX_PRICE;
-                    // Clamp and ensure gap
-                    val = Math.min(
-                      MAX_PRICE,
-                      Math.max(val, minPrice + MIN_GAP),
-                    );
+                    // Clamp value
+                    val = Math.min(MAX_PRICE, Math.max(val, minPrice));
                     setMaxPrice(val);
                     onPriceChange([minPrice, val]);
                   }}

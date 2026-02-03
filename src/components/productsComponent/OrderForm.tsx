@@ -38,10 +38,17 @@ function Input({ label, placeholder, name, value, onChange }: InputProps) {
 export default function OrderForm({
   cartItems = [],
   quantities = {},
+  totalAmount = 0,
 }: {
   cartItems: any[];
   quantities: Record<number, number>;
+  totalAmount?: number;
 }) {
+  const { mutateAsync: createOrder, isPending: isCreatingOrder } =
+    useCreateOrder();
+  const { mutateAsync: startPayment, isPending: isPaying } =
+    useSslcommerzPayment();
+
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -52,12 +59,18 @@ export default function OrderForm({
   });
 
   // Calculate totals
-  const subtotal = cartItems.reduce((acc, item) => {
-    return acc + (item.amount || 0);
-  }, 0);
+  const subtotal =
+    totalAmount ||
+    cartItems.reduce((acc, item) => {
+      const product = item.product?.[0];
+      const price =
+        Number(product?.sale_price) || Number(product?.regular_price) || 0;
+      const qty = quantities[item.id] ?? 1;
+      return acc + price * qty;
+    }, 0);
 
   const tax = Math.round(subtotal * 0.05); // 5% tax
-  const shipping = 100; // Fixed shipping
+  const shipping = 100;
   const total = subtotal + tax + shipping;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,65 +83,72 @@ export default function OrderForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!cartItems || cartItems.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
+
     // Build products payload from cart items
     const products = (cartItems || [])
       .map((item: any) => {
-        const qty = quantities[item.id] ?? Number(item.quantity) ?? 1;
-        const pid = Number(item.product_id ?? item.product?.id);
-        const amt = Number(item.amount) || 0;
+        const product = item.product?.[0];
+        const qty = quantities[item.id] ?? 1;
+        const pid = Number(item.product_id);
+        const price =
+          Number(product?.sale_price) || Number(product?.regular_price) || 0;
+        const amt = price * qty;
         return {
           product_id: pid,
           quantity: qty,
           amount: amt,
         };
       })
-      .filter((p) => Number.isFinite(p.product_id) && p.product_id > 0 && p.quantity > 0);
+      .filter(
+        (p) =>
+          Number.isFinite(p.product_id) && p.product_id > 0 && p.quantity > 0,
+      );
 
     if (products.length === 0) {
-      toast.error("Your cart is empty or invalid.");
-      return;
-    }
-
-    const payload = {
-      name: formData.fullName.trim(),
-      phone: formData.phone.trim(),
-      email: formData.email.trim(),
-      address: formData.address.trim(),
-      city: formData.city.trim(),
-      postcode: formData.postcode.trim(),
-      products,
-    };
-
-    if (!payload.name || !payload.phone || !payload.address || !payload.city || !payload.postcode) {
-      toast.error("Please fill all required fields.");
+      toast.error("Your cart is empty or invalid");
       return;
     }
 
     try {
+      const payload = {
+        name: formData.fullName.trim(),
+        phone: formData.phone.trim(),
+        email: formData.email.trim(),
+        address: formData.address.trim(),
+        city: formData.city.trim(),
+        postcode: formData.postcode.trim(),
+        products,
+      };
+
       await createOrder(payload);
 
       const data: any = await startPayment(payload);
-      toast.success("Redirecting to payment gateway...");
+
       const redirectUrl =
         data?.redirectUrl ||
         data?.redirect_url ||
-        data?.url ||
         data?.GatewayPageURL ||
-        data?.payment_url;
+        data?.url ||
+        data?.payment_url ||
+        data?.location;
 
       if (redirectUrl && typeof window !== "undefined") {
+        toast.success("Redirecting to payment gateway...");
         window.location.href = redirectUrl;
       } else {
-        toast.error("No payment gateway URL found in response");
+        toast.error("No payment gateway URL found");
       }
     } catch (err: any) {
-      toast.error(err?.message || "Order/payment failed.");
+      console.error("API Error:", err.message);
+      toast.error(err?.message || "Failed to place order");
     }
   };
-  const { mutateAsync: startPayment, isPending: isPaying } =
-    useSslcommerzPayment();
-  const { mutateAsync: createOrder, isPending: isCreatingOrder } =
-    useCreateOrder();
+
   return (
     <div
       className="rounded-2xl p-6"
@@ -171,14 +191,14 @@ export default function OrderForm({
       <form className="space-y-5" onSubmit={handleSubmit}>
         <Input
           label="Full Name"
-          placeholder="Mr. Jhon Don"
+          placeholder="Your full name"
           name="fullName"
           value={formData.fullName}
           onChange={handleChange}
         />
         <Input
           label="Phone number"
-          placeholder="+888 0000 0000"
+          placeholder="01XXXXXXXXX"
           name="phone"
           value={formData.phone}
           onChange={handleChange}
@@ -192,7 +212,7 @@ export default function OrderForm({
         />
         <Input
           label="Address"
-          placeholder="Dhaka"
+          placeholder="address line"
           name="address"
           value={formData.address}
           onChange={handleChange}
@@ -206,7 +226,7 @@ export default function OrderForm({
         />
         <Input
           label="Postcode / ZIP"
-          placeholder="1222"
+          placeholder="post code"
           name="postcode"
           value={formData.postcode}
           onChange={handleChange}

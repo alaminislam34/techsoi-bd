@@ -253,7 +253,6 @@ function ProductListContent() {
               </span>
             )}
           </p>
-          <p>{filteredProducts.length}</p>
 
           <div className="flex items-center gap-3">
             {hasActiveFilters && (
@@ -353,7 +352,9 @@ function ProductListContent() {
                           </svg>
 
                           <p className="text-[12px] lg:text-sm text-[#505050]">
-                            {p.average_rating ? p.average_rating.toFixed(1) : "0"}
+                            {p.average_rating
+                              ? p.average_rating.toFixed(1)
+                              : "0"}
                           </p>
                           <p className="text-[12px] lg:text-sm text-[#505050]">
                             ({p.total_reviews || 0})

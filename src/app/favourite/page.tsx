@@ -15,47 +15,110 @@ import WebFutures from "@/components/section/WebFutures";
 import BlogTitle from "@/components/layout/BlogTitle";
 import BlogCard from "@/components/parts/BlogCard";
 import { toast } from "react-toastify";
-
-// Your favorite hooks
-import {
-  useGetFavorites,
-  useDeleteFromFavorites,
-  useAddToCart,
-} from "@/api/hooks"; // adjust path if needed
+import { apiClient } from "@/api/apiClient";
+import { API_ENDPOINTS } from "@/api/ApiEndPoint";
+import Cookies from "js-cookie";
 
 export default function FavouritePage() {
-  const { data: favoritesResponse, isLoading, isError } = useGetFavorites();
-  const { mutate: deleteFromFavorites, isPending: isDeleting } =
-    useDeleteFromFavorites();
-  const { mutate: addToCart } = useAddToCart();
-  const handleAddToCart = (productId: number, quantity: number) => {
-    addToCart({ product_id: productId, quantity: 1 });
+  const [favorites, setFavorites] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+
+  const getClientToken = () => {
+    if (typeof window === "undefined") {
+      return undefined;
+    }
+
+    return (
+      window.localStorage.getItem("accessToken") ||
+      Cookies.get("accessTokenClient") ||
+      Cookies.get("accessToken")
+    );
+  };
+
+  const fetchFavorites = async () => {
+    try {
+      setIsLoading(true);
+      setIsError(false);
+
+      const token = getClientToken();
+      if (!token) {
+        setFavorites([]);
+        return;
+      }
+
+      const response = await apiClient.request<any[]>(
+        API_ENDPOINTS.FAV_LIST_GET,
+        {
+          auth: true,
+          method: "GET",
+        },
+      );
+    
+      setFavorites(response?.data || []);
+    } catch (error: any) {
+      console.error("Failed to load favourites:", error);
+      if (error?.status !== 401) {
+        toast.error(error?.message || "Failed to load favourites");
+      }
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAddToCart = async (productId: number, quantity: number) => {
+    try {
+      setIsAddingToCart(true);
+      await apiClient.request(API_ENDPOINTS.CART_PRODUCT_ADD, {
+        auth: true,
+        method: "POST",
+        body: JSON.stringify({ product_id: productId, quantity }),
+      });
+      toast.success("Added to cart");
+    } catch (error: any) {
+      console.error("Failed to add to cart:", error);
+      toast.error(error?.message || "Failed to add to cart");
+    } finally {
+      setIsAddingToCart(false);
+    }
   };
   // Local quantity state (kept as per your design)
   const [quantities, setQuantities] = useState<Record<number, number>>({});
-
-  const favorites = favoritesResponse?.data || [];
 
   // Initialize quantity to 1 for each favorite item
   useEffect(() => {
     if (favorites.length > 0) {
       const initialQuantities: Record<number, number> = {};
       favorites.forEach((fav: any) => {
-        initialQuantities[fav.id] = 1; // default qty
+        initialQuantities[fav.id] = 1;
       });
       setQuantities(initialQuantities);
     }
   }, [favorites]);
 
-  const handleDelete = (favId: number) => {
-    deleteFromFavorites(favId, {
-      onSuccess: () => {
-        toast.success("Removed from favorites");
-      },
-      onError: () => {
-        toast.error("Failed to remove item");
-      },
-    });
+  useEffect(() => {
+    fetchFavorites();
+  }, []);
+
+  const handleDelete = async (favId: number) => {
+    try {
+      setIsDeleting(true);
+      await apiClient.request(API_ENDPOINTS.FAV_LIST_DELETE(favId), {
+        auth: true,
+        method: "DELETE",
+      });
+
+      setFavorites((prev) => prev.filter((fav) => fav.id !== favId));
+      toast.success("Removed from favorites");
+    } catch (error: any) {
+      console.error("Failed to remove favourite:", error);
+      toast.error(error?.message || "Failed to remove item");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const updateQty = (id: number, delta: number) => {
@@ -70,15 +133,6 @@ export default function FavouritePage() {
       <div className="h-[60vh] flex flex-col items-center justify-center text-primary gap-4">
         <Loader2 className="animate-spin" size={40} />
         <p className="font-medium">Loading your favourites...</p>
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="h-[60vh] flex flex-col items-center justify-center text-red-500 gap-4">
-        <HeartOff size={48} />
-        <p>Failed to load favourites. Please try again later.</p>
       </div>
     );
   }
@@ -117,11 +171,14 @@ export default function FavouritePage() {
                       {/* Table Body */}
                       <tbody className="divide-y divide-gray-100 ">
                         {favorites.map((fav: any) => {
-                          const product = fav.product;
+                          const product = fav.product?.[0]; // Product is an array, get first item
                           const currentQty = quantities[fav.id] || 1;
-                          const price =
-                            product?.sale_price || product?.regular_price || 0;
-                          const subtotal = price * currentQty;
+
+                          // Ensure price is a number
+                          const salePrice = Number(product?.sale_price) || 0;
+                          const regularPrice =
+                            Number(product?.regular_price) || 0;
+                          const price = salePrice || regularPrice || 0;
 
                           return (
                             <tr
@@ -146,7 +203,6 @@ export default function FavouritePage() {
                                     {product?.main_image ? (
                                       <SafeImage
                                         src={product?.main_image}
-                                        fallbackSrc="/images/monitor.png"
                                         alt={product?.name || "Product"}
                                         fill
                                         className="object-contain p-1"
@@ -192,8 +248,13 @@ export default function FavouritePage() {
                               </td>
 
                               {/* Price */}
-                              <td className="py-2 text-center font-bold text-primary">
-                                ৳{price.toLocaleString()}
+                              <td className="py-2 text-center">
+                                <span className="font-bold text-primary text-base">
+                                  ৳
+                                  {price > 0
+                                    ? (price * currentQty).toLocaleString()
+                                    : "0"}
+                                </span>
                               </td>
 
                               {/* Add to Cart */}
@@ -206,7 +267,8 @@ export default function FavouritePage() {
                                         currentQty,
                                       )
                                     }
-                                    className="flex items-center justify-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-opacity-90 transition-all w-full md:w-auto"
+                                    disabled={isAddingToCart}
+                                    className="flex items-center justify-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-opacity-90 transition-all w-full md:w-auto disabled:opacity-60"
                                   >
                                     <ShoppingCart size={14} />
                                     Add to Cart

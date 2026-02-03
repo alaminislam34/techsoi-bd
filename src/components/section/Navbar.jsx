@@ -17,11 +17,17 @@ export default function Navbar() {
   const { user, logout, isLoggingOut } = useAuth();
   const router = useRouter();
   const [websiteInfo, setWebsiteInfo] = useState(null);
+  const [isHydrated, setIsHydrated] = useState(false);
   console.log(user);
   // Search state
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+
+  // Ensure hydration is complete before rendering dynamic content
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   const loginWithGoogle = async () => {
     try {
@@ -162,7 +168,7 @@ export default function Navbar() {
 
             {/* ---------- ACTIONS ---------- */}
             <div className="flex items-center gap-2 md:gap-4">
-              {user && (
+              {isHydrated && user && (
                 <>
                   <Link
                     href="/favourite"
@@ -242,7 +248,7 @@ export default function Navbar() {
                   onClick={() => setOpenDropdown(!openDropdown)}
                   className="w-10 h-10 rounded-full bg-[#d8f1fb] flex items-center justify-center overflow-hidden border border-[#bee5f6]"
                 >
-                  {user?.image ? (
+                  {isHydrated && user?.image ? (
                     <img
                       src={user.image}
                       alt="user"

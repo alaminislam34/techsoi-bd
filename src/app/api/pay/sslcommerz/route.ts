@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   try {
     const storeId = process.env.SSLCOMMERZ_STORE_ID;
     const storePassword = process.env.SSLCOMMERZ_STORE_PASSWORD;
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
 
     if (!storeId || !storePassword) {
       return NextResponse.json(

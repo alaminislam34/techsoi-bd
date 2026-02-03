@@ -71,6 +71,7 @@ export const useGetUserOrders = () => {
     queryFn: async () => {
       try {
         const token = getClientToken();
+        console.log(token);
         if (!token) {
           throw new Error("Unauthorized access");
         }
@@ -81,6 +82,7 @@ export const useGetUserOrders = () => {
             auth: true,
           },
         );
+
         return response;
       } catch (error: any) {
         console.error("Failed to fetch orders:", error.message);

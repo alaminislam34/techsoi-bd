@@ -12,7 +12,6 @@ import BlogTitle from "@/components/layout/BlogTitle";
 import BlogCard from "@/components/parts/BlogCard";
 import BuyNowModal from "@/components/ui/BuyNowModal";
 import { useAddToCart } from "@/api/hooks/useCart";
-import { useAddToFavorites } from "@/api/hooks/useFavorites";
 import { useAuth } from "@/Provider/AuthProvider";
 import { toast } from "react-toastify";
 import { apiClient, ApiResponse } from "@/api/apiClient";
@@ -101,7 +100,7 @@ export default function ProductDetails() {
   }
 
   // If the request errored, show a helpful message; otherwise show a not-found message
-  if (isError || !product) {
+  if (!product) {
     const message = isError
       ? `Error: ${apiError?.message ?? "Failed to load product"}`
       : "Product not found";

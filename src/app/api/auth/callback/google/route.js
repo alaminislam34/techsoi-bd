@@ -73,7 +73,7 @@ export async function GET(req) {
     response.cookies.set("accessToken", apiResult.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      maxAge: 7 * 24 * 60 * 60,
+      maxAge: 30 * 24 * 60 * 60,
       path: "/",
       sameSite: "lax",
     });
@@ -82,7 +82,7 @@ export async function GET(req) {
     response.cookies.set("accessTokenClient", apiResult.token, {
       httpOnly: false,
       secure: process.env.NODE_ENV === "production",
-      maxAge: 7 * 24 * 60 * 60,
+      maxAge: 30 * 24 * 60 * 60,
       path: "/",
       sameSite: "lax",
     });
@@ -91,7 +91,7 @@ export async function GET(req) {
       response.cookies.set("user", JSON.stringify(user.data.data), {
         httpOnly: false,
         secure: process.env.NODE_ENV === "production",
-        maxAge: 7 * 24 * 60 * 60,
+        maxAge: 30 * 24 * 60 * 60,
         path: "/",
         sameSite: "lax",
       });
