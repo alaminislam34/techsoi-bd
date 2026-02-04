@@ -71,7 +71,7 @@ export const useGetUserOrders = () => {
     queryFn: async () => {
       try {
         const token = getClientToken();
-        console.log(token);
+
         if (!token) {
           throw new Error("Unauthorized access");
         }

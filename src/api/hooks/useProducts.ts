@@ -119,7 +119,7 @@ export const useFilterProducts = (opts: {
   const extraParams = params.toString();
   const url = `${baseUrl}${extraParams ? `${baseUrl.includes("?") ? "&" : "?"}${extraParams}` : ""}`;
   // Only enable if there are actual filters/parameters to apply
-  console.log(url);
+
   const enabledFlag =
     normalizedQuery.length > 0 ||
     (categories && categories.length > 0) ||

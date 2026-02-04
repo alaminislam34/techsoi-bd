@@ -28,7 +28,7 @@ export default function AllBrands() {
     const fetchBrands = async () => {
       try {
         const res = await apiClient.get(API_ENDPOINTS.SPECIAL_BRAND);
-        console.log(res);
+    
         if (res.status) {
           setAllBrands(res.data);
         } else {

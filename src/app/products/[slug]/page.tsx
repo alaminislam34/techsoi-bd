@@ -37,7 +37,7 @@ export default function ProductDetails() {
         const res: ApiResponse<any> = await apiClient.get(
           API_ENDPOINTS.REVIEW_GET_SINGLE(productSlug),
         );
-        console.log("Product review", res);
+
         if (res.status === true) {
           const data = res.data ?? [];
           setReviews(Array.isArray(data) ? data : [data]);

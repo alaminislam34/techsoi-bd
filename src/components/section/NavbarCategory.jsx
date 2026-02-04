@@ -18,9 +18,7 @@ export default function NavbarCategory() {
 
   const [activeFilter, setActiveFilter] = useState(null);
   const scrollRef = useRef(null);
-  allCategories.forEach((category) => {
-    console.log(category.name, "-", category.id);
-  });
+
   // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {

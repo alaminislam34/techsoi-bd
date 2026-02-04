@@ -20,8 +20,6 @@ export interface SslcommerzPayload {
 
 const createPayment = async (payload: SslcommerzPayload) => {
   try {
-    console.log("Initiating SSLCOMMERZ payment with payload:", payload);
-
     const res = await fetch("/api/pay/sslcommerz", {
       method: "POST",
       headers: {
@@ -66,7 +64,7 @@ const createPayment = async (payload: SslcommerzPayload) => {
     console.error("SSLCOMMERZ Error Details:", {
       message: error?.message,
       response: error?.response,
-      stack: error?.stack
+      stack: error?.stack,
     });
     throw error;
   }
@@ -77,9 +75,9 @@ export const useSslcommerzPayment = () => {
     mutationFn: createPayment,
     onError: (error: any) => {
       console.error("Payment mutation error:", error);
-      const errorMessage = 
-        error?.response?.data?.message || 
-        error?.message || 
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
         "Payment initialization failed";
       toast.error(errorMessage);
     },

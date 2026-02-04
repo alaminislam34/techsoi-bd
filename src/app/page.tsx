@@ -61,8 +61,6 @@ export default function Home() {
   const topSellingProducts = [...allProducts]
     .sort((a, b) => b.sale_count - a.sale_count)
     .slice(0, 8);
-  // console.log("Features product:", features);
-  // console.log("top selling product:", topSellingProducts);
   return (
     <>
       <Hero />

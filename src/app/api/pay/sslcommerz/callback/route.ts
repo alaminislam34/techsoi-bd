@@ -23,7 +23,6 @@ export async function GET(req: NextRequest) {
     successUrl.searchParams.set("card_type", cardType);
 
     // TODO: Save order to database here
-    console.log("Payment Success - Transaction:", tranId);
 
     return NextResponse.redirect(successUrl);
   }
@@ -32,7 +31,7 @@ export async function GET(req: NextRequest) {
     // Redirect to failure page
     const failUrl = new URL("/payment-failed", req.nextUrl.origin);
     failUrl.searchParams.set("tran_id", tranId);
-    console.log("Payment Failed - Transaction:", tranId);
+
     return NextResponse.redirect(failUrl);
   }
 
@@ -40,7 +39,7 @@ export async function GET(req: NextRequest) {
     // Redirect to cancelled page
     const cancelUrl = new URL("/payment-cancelled", req.nextUrl.origin);
     cancelUrl.searchParams.set("tran_id", tranId);
-    console.log("Payment Cancelled - Transaction:", tranId);
+
     return NextResponse.redirect(cancelUrl);
   }
 
@@ -52,11 +51,6 @@ export async function POST(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const status = searchParams.get("status") || "unknown";
   const body = await req.json().catch(() => ({}));
-
-  console.log(`Payment ${status.toUpperCase()} - Callback:`, {
-    params: Object.fromEntries(searchParams),
-    body,
-  });
 
   // Extract transaction details from POST body or searchParams
   const tranId = body?.tran_id || searchParams.get("tran_id") || "";
@@ -86,21 +80,18 @@ export async function POST(req: NextRequest) {
     successUrl.searchParams.set("tran_id", tranId);
     successUrl.searchParams.set("amount", amount);
     successUrl.searchParams.set("currency", currency);
-    console.log("Payment Success - Transaction:", tranId);
     return NextResponse.redirect(successUrl);
   }
 
   if (status === "fail") {
     const failUrl = new URL("/payment-failed", req.nextUrl.origin);
     failUrl.searchParams.set("tran_id", tranId);
-    console.log("Payment Failed - Transaction:", tranId);
     return NextResponse.redirect(failUrl);
   }
 
   if (status === "cancel") {
     const cancelUrl = new URL("/payment-cancelled", req.nextUrl.origin);
     cancelUrl.searchParams.set("tran_id", tranId);
-    console.log("Payment Cancelled - Transaction:", tranId);
     return NextResponse.redirect(cancelUrl);
   }
 

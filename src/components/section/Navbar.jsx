@@ -18,7 +18,6 @@ export default function Navbar() {
   const router = useRouter();
   const [websiteInfo, setWebsiteInfo] = useState(null);
   const [isHydrated, setIsHydrated] = useState(false);
-  console.log(user);
   // Search state
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
@@ -33,7 +32,6 @@ export default function Navbar() {
     try {
       const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
       const appUrl = process.env.NEXT_PUBLIC_APP_URL;
-      console.log("google client id:", clientId);
       if (!clientId || !appUrl) {
         console.error("Google Login environment variables missing!");
         toast.error("Google login is not configured properly.");
@@ -43,7 +41,6 @@ export default function Navbar() {
       const redirectUri = `${appUrl}/api/auth/callback/google`;
       const scope = encodeURIComponent("email profile openid");
       const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
-      console.log(redirectUri);
       window.location.href = googleUrl;
     } catch (error) {
       console.error("Google login error:", error);

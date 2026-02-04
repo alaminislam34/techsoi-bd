@@ -30,8 +30,6 @@ export default function ReviewsSection({
     return { star, count, pct };
   });
 
-  console.log("My reviews", reviews);
-
   return (
     <div className="p-4 sm:p-6 rounded-xl bg-white">
       {/* -------- TABS CONTENT -------- */}
