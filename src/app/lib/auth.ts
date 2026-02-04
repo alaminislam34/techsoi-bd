@@ -8,5 +8,5 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
-  trustedOrigins: ["https://techsoi-trial.vercel.app"],
+  trustedOrigins: ["https://techsoi-trial.vercel.app", "https://techsoibd.com"],
 });

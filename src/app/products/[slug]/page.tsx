@@ -12,7 +12,6 @@ import BlogTitle from "@/components/layout/BlogTitle";
 import BlogCard from "@/components/parts/BlogCard";
 import BuyNowModal from "@/components/ui/BuyNowModal";
 import { useAddToCart } from "@/api/hooks/useCart";
-import { useAddToFavorites } from "@/api/hooks/useFavorites";
 import { useAuth } from "@/Provider/AuthProvider";
 import { toast } from "react-toastify";
 import { apiClient, ApiResponse } from "@/api/apiClient";
@@ -38,7 +37,7 @@ export default function ProductDetails() {
         const res: ApiResponse<any> = await apiClient.get(
           API_ENDPOINTS.REVIEW_GET_SINGLE(productSlug),
         );
-        console.log(res);
+        console.log("Product review", res);
         if (res.status === true) {
           const data = res.data ?? [];
           setReviews(Array.isArray(data) ? data : [data]);
@@ -52,22 +51,18 @@ export default function ProductDetails() {
     };
     fetchReviews(slug);
   }, [slug]);
-  console.log("slug product ", productResponse, "error:", error);
+
   const { mutate: addToCart } = useAddToCart();
 
-  // Note: React Query returns `error` separately when requests fail.
   const apiError = error as any;
-  const { mutate: addToFavorites } = useAddToFavorites();
   const { user } = useAuth();
 
-  // Initialize state hooks before any conditional returns
   const [activeImg, setActiveImg] = useState("");
   const [qty, setQty] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const product = productResponse?.data;
 
-  // Set initial active image when the product is loaded
   useEffect(() => {
     if (product && !activeImg) {
       setActiveImg(product?.main_image as string);
@@ -87,7 +82,7 @@ export default function ProductDetails() {
   } catch (err) {
     specifications = [];
   }
-  console.log("Product details:", product);
+
   const extraImages: string[] = details?.extra_images || [];
   const stockValue = Number(product?.stock);
   const isInStock = Number.isFinite(stockValue) ? stockValue > 0 : true;
@@ -114,9 +109,6 @@ export default function ProductDetails() {
     );
   }
 
-  const totalSalePrice = (product.sale_price || 0) * qty;
-  const totalRegularPrice = (product.regular_price || 0) * qty;
-
   const handleAddToCart = () => {
     if (!user) {
       toast.error("Please login first");
@@ -140,7 +132,7 @@ export default function ProductDetails() {
                 <img
                   src={activeImg || "/images/monitor.jpg"}
                   alt={product.name}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover rounded-2xl"
                   onError={(e) => {
                     e.currentTarget.src = "/images/monitor.jpg";
                   }}
@@ -214,7 +206,7 @@ export default function ProductDetails() {
 
                 <div className="flex flex-col pl-2">
                   {/* Heading */}
-                  <h1 className="text-sm font-semibold text-gray-600 mb-2">
+                  <h1 className="text-sm font-semibold text-left text-gray-600 mb-2">
                     EMI System:
                   </h1>
 
@@ -256,7 +248,7 @@ export default function ProductDetails() {
               {/* Action Buttons */}
               <div className="mt-8 flex gap-4 flex-wrap md:flex-nowrap">
                 <button
-                  className={`px-8 cursor-pointer py-3 rounded-xl bg-primary text-white font-semibold text-lg hover:bg-blue-600 transition ${!isInStock ? "opacity-50 cursor-not-allowed" : ""}`}
+                  className={`px-8 cursor-pointer py-3 rounded-xl bg-primary text-white font-semibold text-lg transition ${!isInStock ? "opacity-50 cursor-not-allowed" : ""}`}
                   onClick={() => setIsModalOpen(true)}
                   disabled={!isInStock}
                 >

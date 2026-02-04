@@ -1,12 +1,17 @@
+"use client";
+
 import CommonWrapper from "@/components/layout/CommonWrapper";
+import axios from "axios";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Footer() {
+  const [info, setInfo] = useState({});
   const quickLinks = [
     { to: "/", label: "Home" },
-    { to: "/about-us", label: "About Us" },
+    { to: "/about", label: "About Us" },
     { to: "/blog", label: "Blog" },
-    { to: "/contact-us", label: "Contact Us" },
+    { to: "/faq", label: "FAQ" },
   ];
 
   const topCategoryLink = [
@@ -15,6 +20,19 @@ export default function Footer() {
     { to: "/monitor", label: "Monitor" },
     { to: "/casing", label: "Casing" },
   ];
+
+  useEffect(() => {
+    const fetch = async () => {
+      const res = await axios.get("https://api.techsoibd.com/api/website-info");
+      if (res.data) {
+        setInfo(res.data.data);
+      } else {
+        setInfo(null);
+      }
+    };
+
+    fetch();
+  }, []);
 
   return (
     <footer className="bg-[#eaf7fc] mt-12 md:mt-30">
@@ -40,7 +58,6 @@ export default function Footer() {
                   xmlns="http://www.w3.org/2000/svg"
                   className="w-40 md:w-46.25 h-auto"
                 >
-                  {/* ... SVG Paths remain exactly the same ... */}
                   <path
                     d="M77.9891 0.273926H84.6235V11.3036C86.1527 8.94812 88.116 6.80388 91.479 6.80388C96.5009 6.80388 99.4277 10.7783 99.4277 17.2125V35.3606H92.7894V19.7226C92.7894 15.9576 91.3039 14.0213 88.7729 14.0213C86.2422 14.0213 84.6235 15.9579 84.6235 19.7226V35.3606H77.9891V0.273926Z"
                     fill="#231F20"
@@ -96,29 +113,7 @@ export default function Footer() {
 
             <div className="flex flex-col gap-4">
               <Link
-                href={"mailto:hellotechsoi@gmail.com"}
-                className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-              >
-                <svg
-                  width={24}
-                  height={24}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  className="w-5 h-5 text-[#2CACE2]"
-                >
-                  <path
-                    d="M3.77762 11.9424C2.8296 10.2893 2.37185 8.93948 2.09584 7.57121C1.68762 5.54758 2.62181 3.57081 4.16938 2.30947C4.82345 1.77638 5.57323 1.95852 5.96 2.6524L6.83318 4.21891C7.52529 5.46057 7.87134 6.08139 7.8027 6.73959C7.73407 7.39779 7.26737 7.93386 6.33397 9.00601L3.77762 11.9424ZM3.77762 11.9424C5.69651 15.2883 8.70784 18.3013 12.0576 20.2224M12.0576 20.2224C13.7107 21.1704 15.0605 21.6282 16.4288 21.9042C18.4524 22.3124 20.4292 21.3782 21.6905 19.8306C22.2236 19.1766 22.0415 18.4268 21.3476 18.04L19.7811 17.1668C18.5394 16.4747 17.9186 16.1287 17.2604 16.1973C16.6022 16.2659 16.0661 16.7326 14.994 17.666L12.0576 20.2224Z"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <p className="text-base md:text-lg text-[#303030]">
-                  hellotechsoi@gmail.com
-                </p>
-              </Link>
-              <Link
-                href={"tel:+8880000000000"}
+                href={`mailto:${info?.email || "technologiestechsoi@gmail.com"}`}
                 className="flex items-center gap-3 hover:opacity-80 transition-opacity"
               >
                 <svg
@@ -141,8 +136,31 @@ export default function Footer() {
                     strokeLinejoin="round"
                   />
                 </svg>
+
                 <p className="text-base md:text-lg text-[#303030]">
-                  +888 0000 000 000
+                  {info?.email || "technologiestechsoi@gmail.com"}
+                </p>
+              </Link>
+              <Link
+                href={`tel:${info?.phone || "+880 1672-224906"}`}
+                className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+              >
+                <svg
+                  width={24}
+                  height={24}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className="w-5 h-5 text-[#2CACE2]"
+                >
+                  <path
+                    d="M3.77762 11.9424C2.8296 10.2893 2.37185 8.93948 2.09584 7.57121C1.68762 5.54758 2.62181 3.57081 4.16938 2.30947C4.82345 1.77638 5.57323 1.95852 5.96 2.6524L6.83318 4.21891C7.52529 5.46057 7.87134 6.08139 7.8027 6.73959C7.73407 7.39779 7.26737 7.93386 6.33397 9.00601L3.77762 11.9424ZM3.77762 11.9424C5.69651 15.2883 8.70784 18.3013 12.0576 20.2224M12.0576 20.2224C13.7107 21.1704 15.0605 21.6282 16.4288 21.9042C18.4524 22.3124 20.4292 21.3782 21.6905 19.8306C22.2236 19.1766 22.0415 18.4268 21.3476 18.04L19.7811 17.1668C18.5394 16.4747 17.9186 16.1287 17.2604 16.1973C16.6022 16.2659 16.0661 16.7326 14.994 17.666L12.0576 20.2224Z"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <p className="text-base md:text-lg text-[#303030]">
+                  {info?.phone || "+880 1672-224906"}
                 </p>
               </Link>
               <div className="flex items-start gap-3">
@@ -165,7 +183,7 @@ export default function Footer() {
                   />
                 </svg>
                 <p className="text-base md:text-lg text-[#303030]">
-                  Mohakhali, Amtoli, Dhaka, Bangladesh.
+                  {info?.address || "Mohakhali, Amtoli, Dhaka, Bangladesh."}
                 </p>
               </div>
             </div>
@@ -197,7 +215,7 @@ export default function Footer() {
                 {topCategoryLink.map((item, index) => (
                   <Link
                     key={index}
-                    href={item.to}
+                    href={`/products?${item.to}`}
                     className="text-sm md:text-lg text-[#303030] hover:text-[#2CACE2] transition-colors"
                   >
                     {item.label}
@@ -212,7 +230,7 @@ export default function Footer() {
               </p>
               <div className="flex flex-col items-start gap-4">
                 <Link
-                  href={"#"}
+                  href={info?.facebook_link || "#"}
                   className="flex items-center gap-2 hover:text-[#2CACE2] transition-colors"
                 >
                   <svg
@@ -233,10 +251,10 @@ export default function Footer() {
                       fill="currentColor"
                     />
                   </svg>
-                  <span className="text-sm md:text-lg">Facebook</span>
+                  <span className="text-sm md:text-lg pb-1.5">Facebook</span>
                 </Link>
                 <Link
-                  href={"#"}
+                  href={info?.instagram_link || "#"}
                   className="flex items-center gap-2 hover:text-[#2CACE2] transition-colors"
                 >
                   <svg
@@ -265,10 +283,10 @@ export default function Footer() {
                       strokeLinejoin="round"
                     />
                   </svg>
-                  <span className="text-sm md:text-lg">Instagram</span>
+                  <span className="text-sm md:text-lg pb-1.5">Instagram</span>
                 </Link>
                 <Link
-                  href={"#"}
+                  href={info?.tiktok_link || "#"}
                   className="flex items-center gap-2 hover:text-[#2CACE2] transition-colors"
                 >
                   <svg
@@ -290,10 +308,10 @@ export default function Footer() {
                     />
                   </svg>
 
-                  <span className="text-sm md:text-lg">Tiktok</span>
+                  <span className="text-sm md:text-lg pb-1.5">Tiktok</span>
                 </Link>
                 <Link
-                  href={"#"}
+                  href={`${info.youtube_link || "https://www.youtube.com/@techsoitechnologies3169"}`}
                   className="flex items-center gap-2 hover:text-[#2CACE2] transition-colors"
                 >
                   <svg
@@ -316,7 +334,7 @@ export default function Footer() {
                     />
                   </svg>
 
-                  <span className="text-sm md:text-lg">Youtube</span>
+                  <span className="text-sm md:text-lg pb-1.5">Youtube</span>
                 </Link>
               </div>
             </div>
@@ -325,7 +343,7 @@ export default function Footer() {
 
         <div className="flex justify-center md:justify-end items-center w-full py-6 border-t border-[#bee5f6]">
           <p className="text-xs md:text-base text-[#808080]">
-            Build by Mr. Jhon &amp; Mr. Don
+            Build by Techsoibd
           </p>
         </div>
       </CommonWrapper>

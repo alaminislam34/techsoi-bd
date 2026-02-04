@@ -1,9 +1,6 @@
 "use client";
 
 import SafeImage from "@/components/ui/SafeImage";
-import ImgA from "@/assets/reviewImg/0bd7b336ee0f46c2c76b65c477da259f0e5150e8.png";
-import ImgB from "@/assets/reviewImg/3dfd7536813e08be8c37daddad937a682336646a.png";
-import ImgC from "@/assets/reviewImg/59dd59bf65ddedbc29d142fbac28b6b94972e288.png";
 import { FaStar } from "react-icons/fa";
 import { Star } from "lucide-react";
 import { useState } from "react";
@@ -33,55 +30,64 @@ export default function ReviewsSection({
     return { star, count, pct };
   });
 
+  console.log("My reviews", reviews);
+
   return (
-    <div className="p-6 rounded-xl bg-white">
+    <div className="p-4 sm:p-6 rounded-xl bg-white">
       {/* -------- TABS CONTENT -------- */}
       <h2 className="text-xl font-semibold mb-6">Customer Review</h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-10">
         {/* ---------- LEFT: REVIEW LIST ----------- */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-2 space-y-6 sm:space-y-8">
           {reviews.length === 0 && (
             <p className="text-gray-600">
               No reviews yet. Be the first to review.
             </p>
           )}
 
-          {reviews.map((rev) => (
-            <div
-              key={rev.id}
-              className="flex gap-4 border-b border-[#BEE5F6] pb-6"
-            >
-              <div className="w-14 h-14 rounded-full overflow-hidden">
-                <SafeImage
-                  src={rev.user_name ? undefined : ImgB}
-                  fallbackSrc={ImgA}
-                  alt={rev.user_name || "User"}
-                  width={55}
-                  height={55}
-                  className="object-cover w-full h-full"
-                />
-              </div>
+          {reviews.map((rev) => {
+            const reviewer = rev.user?.[0];
+            const userName = reviewer?.name;
+            const userImage = reviewer?.image;
 
-              <div className="flex-1 flex items-center justify-between gap-6">
-                <div className="flex items-center gap-4">
-                  <h3 className="font-semibold text-lg">
-                    {rev.user_name || "User"}
-                  </h3>
-
-                  <p className="text-gray-700 leading-relaxed">{rev.message}</p>
+            return (
+              <div
+                key={rev.id}
+                className="flex flex-col sm:flex-row gap-4 border-b border-[#BEE5F6] pb-6"
+              >
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden">
+                  <SafeImage
+                    src={userImage}
+                    alt={userName}
+                    width={55}
+                    height={55}
+                    className="object-cover w-full h-full"
+                  />
                 </div>
-                <div className="flex items-center gap-4">
-                  <p className="text-yellow-400">⭐ {rev.star}.0</p>
-                  <p className="text-gray-400 text-sm">
-                    {new Date(rev.created_at).toLocaleDateString()}
-                  </p>
+
+                <div className="flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                    <h3 className="font-semibold text-base sm:text-lg">
+                      {userName}
+                    </h3>
+
+                    <p className="text-gray-700 leading-relaxed wrap-break-word">
+                      {rev.message}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-4 text-sm sm:text-base">
+                    <p className="text-yellow-400">⭐ {rev.star}.0</p>
+                    <p className="text-gray-400 text-sm">
+                      {new Date(rev.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
-        <div>
+        <div className="space-y-6">
           {/* ----------- SUMMARY / LEFT ----------- */}
           <div className="flex-1 flex flex-col justify-between">
             <div className="space-y-4 md:space-y-6 h-full">
@@ -101,7 +107,7 @@ export default function ReviewsSection({
                   <div className="mt-4 md:mt-6 space-y-2">
                     {distribution.map((s) => (
                       <div key={s.star} className="flex items-center gap-3">
-                        <span className="text-sm text-gray-700 w-12">
+                        <span className="text-sm text-gray-700 w-10 sm:w-12">
                           {s.star} ⭐
                         </span>
 
@@ -123,20 +129,20 @@ export default function ReviewsSection({
             </div>
           </div>
           {/* ----------- ADD REVIEW / RIGHT ----------- */}
-          <div className="flex-1 flex flex-col justify-between mt-6">
-            <div className="space-y-4 md:space-y-6 h-full border-t md:border-t-0  border-[#BEE5F6] pt-4 md:pt-0">
+          <div className="flex-1 flex flex-col justify-between">
+            <div className="space-y-4 md:space-y-6 h-full border-t md:border-t-0 border-[#BEE5F6] pt-4 md:pt-0">
               <div className="flex flex-col gap-2">
                 <h2 className="text-xl md:text-2xl font-semibold mb-2 text-left">
                   Add a review
                 </h2>
 
                 {/* Rating stars */}
-                <div className="flex justify-start gap-1 mb-2">
+                <div className="flex justify-start gap-1 mb-2 flex-wrap">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
                       onClick={() => setRating(star)}
-                      className=" text-orange-400 flex items-center "
+                      className="text-orange-400 flex items-center"
                     >
                       {star <= rating ? (
                         <FaStar className="text-2xl" />

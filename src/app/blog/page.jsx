@@ -56,7 +56,7 @@ function OurBlogs() {
               key={blog.id}
               className="bg-white rounded-2xl border my-2 border-[#bee5f6] p-4 hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_3px_15px_#72C7EC] hover:border-[#72C7EC]"
             >
-              <Link href={`/blog/${blog.id}`}>
+              <Link href={`/blog/${blog.slug}`}>
                 <div className="rounded-xl overflow-hidden h-48 bg-gray-200">
                   <img
                     src={blog.image}
@@ -77,7 +77,7 @@ function OurBlogs() {
               </div>
 
               <h3 className="text-lg font-semibold mt-3 line-clamp-2">
-                {blog.title}
+                {blog.title_bn}
               </h3>
 
               <p className="text-gray-600 text-sm mt-2 leading-relaxed line-clamp-2">
@@ -85,7 +85,7 @@ function OurBlogs() {
               </p>
 
               <Link
-                href={`/blog/${blog.id}`}
+                href={`/blog/${blog.slug}`}
                 className="inline-block mt-4 text-sm text-sky-700 font-semibold"
               >
                 Read more →

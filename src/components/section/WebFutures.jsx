@@ -3,7 +3,7 @@ import CommonWrapper from "@/components/layout/CommonWrapper";
 export default function WebFutures() {
   return (
     <>
-      <div className="bg-[#eaf7fc] mt-12 md:mt-[120px]">
+      <div className="bg-[#eaf7fc] mt-12 md:mt-30">
         <CommonWrapper>
           <div className="grid grid-cols-2 md:grid-cols-4 py-10 gap-4 md:gap-0">
             <div className="flex flex-col items-center gap-3 border-r border-[#9ed9f2]">
@@ -13,7 +13,7 @@ export default function WebFutures() {
                 viewBox="0 0 100 100"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-16 md:w-[100px] h-16 md:h-[100px]"
+                className="w-16 md:w-25 h-16 md:h-25"
                 preserveAspectRatio="none"
               >
                 <rect width={100} height={100} rx={50} fill="#12485F" />
@@ -40,7 +40,7 @@ export default function WebFutures() {
                   Free Shipping
                 </p>
                 <p className="text-[12px] md:text-base text-center text-[#505050]">
-                  From all orders over ৳100
+                  From all orders over ৳1000
                 </p>
               </div>
             </div>
@@ -51,7 +51,7 @@ export default function WebFutures() {
                 viewBox="0 0 100 100"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-16 md:w-[100px] h-16 md:h-[100px]"
+                className="w-16 md:w-25 h-16 md:h-25"
                 preserveAspectRatio="none"
               >
                 <rect width={100} height={100} rx={50} fill="#12485F" />
@@ -96,7 +96,7 @@ export default function WebFutures() {
                 viewBox="0 0 100 100"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-16 md:w-[100px] h-16 md:h-[100px]"
+                className="w-16 md:w-25 h-16 md:h-25"
                 preserveAspectRatio="none"
               >
                 <rect width={100} height={100} rx={50} fill="#12485F" />
@@ -128,7 +128,7 @@ export default function WebFutures() {
                   Return &amp; Refund
                 </p>
                 <p className="text-[12px] md:text-base text-center text-[#505050]">
-                  Free return over ৳100
+                  Free return over ৳1000
                 </p>
               </div>
             </div>
@@ -139,7 +139,7 @@ export default function WebFutures() {
                 viewBox="0 0 100 100"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-16 md:w-[100px] h-16 md:h-[100px]"
+                className="w-16 md:w-25 h-16 md:h-25"
                 preserveAspectRatio="none"
               >
                 <rect width={100} height={100} rx={50} fill="#12485F" />

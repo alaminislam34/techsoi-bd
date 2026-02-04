@@ -8,10 +8,9 @@ import { CalendarDays } from "lucide-react";
 import { useParams } from "next/navigation";
 
 export default function BlogPage() {
-  const { id } = useParams();
-  const blogId = Number(id);
+  const { slug } = useParams();
 
-  const { data: blogResponse, isLoading, isError } = useGetBlog(blogId);
+  const { data: blogResponse, isLoading, isError } = useGetBlog(slug);
   const blog = blogResponse?.data;
 
   // Format date helper
@@ -48,18 +47,20 @@ export default function BlogPage() {
   return (
     <CommonWrapper>
       <section className="container mx-auto px-4 py-10">
-        <h1 className="text-3xl font-bold mb-4 text-[#2CACE2]">{blog.title}</h1>
+        <h1 className="text-3xl font-bold mb-4 text-[#2CACE2]">
+          {blog.title_bn}
+        </h1>
 
         <div className="flex items-center gap-2 text-sm text-sky-600 mb-6">
           <CalendarDays size={18} />
           <span className="font-medium">{formatDate(blog.created_at)}</span>
         </div>
 
-        <div className="mb-6 rounded-xl overflow-hidden h-96 bg-gray-200">
+        <div className="mb-6 rounded-xl overflow-hidden bg-gray-200">
           <img
             src={blog.image}
             alt={blog.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover aspect-5/2"
             onError={(e) => {
               e.target.src = "/icons/logo.png";
             }}

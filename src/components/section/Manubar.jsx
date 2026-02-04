@@ -42,13 +42,13 @@ export default function Manubar() {
             <div className="flex flex-row gap-2">
               <Link
                 href={"/compare"}
-                className="sm:px-4 px-3 cursor-pointer text-sm md:text-base truncate py-2 rounded-lg text-white border border-white"
+                className="sm:px-4 px-3 cursor-pointer text-sm md:text-base truncate py-2 rounded-lg bg-black text-[#D0FF00] border-2 border-[#D0FF00] "
               >
                 Compare
               </Link>
               <Link
                 href={"/pcbuilder"}
-                className="sm:px-4 px-3 cursor-pointer py-2 text-sm md:text-base truncate rounded-lg text-white border border-white"
+                className="sm:px-4 px-3 cursor-pointer py-2 text-sm md:text-base truncate rounded-lg bg-black text-[#D0FF00] border-2 border-[#D0FF00] "
               >
                 PC Builder
               </Link>

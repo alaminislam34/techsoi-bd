@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../apiClient";
 import { API_ENDPOINTS } from "../ApiEndPoint";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 
 export interface Review {
   id: number;
@@ -13,12 +14,26 @@ export interface Review {
   user_name?: string;
 }
 
+const getClientToken = () => {
+  if (typeof window === "undefined") {
+    return undefined;
+  }
+
+  return (
+    window.localStorage.getItem("accessToken") ||
+    Cookies.get("accessTokenClient") ||
+    Cookies.get("accessToken")
+  );
+};
+
 // Get all reviews for a product
 export const useGetProductReviews = (productId: number) => {
   return useQuery({
     queryKey: ["reviews", productId],
     queryFn: () =>
-      apiClient.get<Review[]>(`${API_ENDPOINTS.REVIEW_GET_ALL}?product_id=${productId}`),
+      apiClient.get<Review[]>(
+        `${API_ENDPOINTS.REVIEW_GET_ALL}?product_id=${productId}`,
+      ),
     enabled: !!productId,
     staleTime: 5 * 60 * 1000,
   });
@@ -39,20 +54,25 @@ export const useCreateReview = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { product_id: number; star: number; message: string }) => {
-      const token =
-        typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    mutationFn: (data: {
+      product_id: number;
+      star: number;
+      message: string;
+    }) => {
+      const token = getClientToken();
       if (!token) {
         throw new Error("Please login to add a review");
       }
       return apiClient.request<Review>(API_ENDPOINTS.REVIEW_STORE, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+        auth: true,
         body: JSON.stringify(data),
       });
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["reviews", variables.product_id] });
+      queryClient.invalidateQueries({
+        queryKey: ["reviews", variables.product_id],
+      });
       toast.success("Review added successfully");
     },
     onError: (error: any) => {

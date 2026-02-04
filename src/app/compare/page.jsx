@@ -82,7 +82,7 @@ const CompareProduct = () => {
 
   return (
     <CommonWrapper>
-      <div className="py-12 bg-linear-to-b from-gray-50 to-white min-h-screen">
+      <div className="py-12 min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header Section */}
           <div className="mb-12">

@@ -47,7 +47,6 @@ const PcBuilder = () => {
   const [selectedProducts, setSelectedProducts] = useState({});
   const [viewMode, setViewMode] = useState("build");
 
-  // প্রোডাক্ট কন্টেইনারের জন্য রেফারেন্স
   const productViewRef = useRef(null);
 
   const {
@@ -75,7 +74,7 @@ const PcBuilder = () => {
       slug: p.slug,
       salePrice: p.sale_price ?? p.regular_price ?? 0,
       regularPrice: p.regular_price ?? p.sale_price ?? 0,
-      image: p.main_image || "/images/placeholder-product.png",
+      image: p.main_image,
       category: activeCategory,
     }));
   }, [rawProducts, activeCategory]);
@@ -84,7 +83,6 @@ const PcBuilder = () => {
     setActiveCategory(category);
     setViewMode("list");
 
-    // স্ক্রল লজিক: ক্লিক করার সাথে সাথে কন্টেইনার ভিউতে নিয়ে যাবে
     setTimeout(() => {
       productViewRef.current?.scrollIntoView({
         behavior: "smooth",
@@ -112,7 +110,7 @@ const PcBuilder = () => {
     0,
   );
 
-  const exportToPDF = () => {
+  const exportToPDF = async () => {
     if (totalPrice === 0) {
       alert("Please add at least one component!");
       return;
@@ -129,7 +127,7 @@ const PcBuilder = () => {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(22);
     doc.setTextColor(30, 41, 59);
-    doc.text("TechsoiBD", margin, 20);
+    doc.text("Techsoibd", margin, 20);
 
     doc.setFontSize(9);
     doc.setFont("helvetica", "normal");
@@ -159,6 +157,25 @@ const PcBuilder = () => {
       },
     );
 
+    const drawFooter = () => {
+      const pageHeight = doc.internal.pageSize.getHeight();
+      doc.setFontSize(8);
+      doc.setTextColor(150);
+      doc.setFont("helvetica", "normal");
+      doc.text(
+        "This is a computer-generated quote. Prices may vary at the time of purchase.",
+        pageWidth / 2,
+        pageHeight - 15,
+        { align: "center" },
+      );
+      doc.text(
+        "techsoibd.com | support@techsoibd.com",
+        pageWidth / 2,
+        pageHeight - 10,
+        { align: "center" },
+      );
+    };
+
     autoTable(doc, {
       startY: 35,
       head: [["CATEGORY", "PRODUCT NAME", "PRICE"]],
@@ -181,6 +198,9 @@ const PcBuilder = () => {
         2: { cellWidth: 35, halign: "right" },
       },
       margin: { left: margin, right: margin },
+      didDrawPage: () => {
+        drawFooter();
+      },
     });
 
     const finalY = doc.lastAutoTable.finalY + 10;
@@ -198,23 +218,6 @@ const PcBuilder = () => {
       pageWidth - margin - 5,
       finalY + 7.8,
       { align: "right" },
-    );
-
-    const pageHeight = doc.internal.pageSize.getHeight();
-    doc.setFontSize(8);
-    doc.setTextColor(150);
-    doc.setFont("helvetica", "normal");
-    doc.text(
-      "This is a computer-generated quote. Prices may vary at the time of purchase.",
-      pageWidth / 2,
-      pageHeight - 15,
-      { align: "center" },
-    );
-    doc.text(
-      "techsoi.com | support@techsoi.com",
-      pageWidth / 2,
-      pageHeight - 10,
-      { align: "center" },
     );
 
     doc.save(`Techsoibd_Build_${new Date().toISOString().split("T")[0]}.pdf`);
@@ -356,34 +359,44 @@ const PcBuilder = () => {
                   </div>
                 ) : (
                   <div className="grid sm:grid-cols-2 gap-5 max-h-[65vh] overflow-y-auto">
-                    {currentProducts.map((item) => (
-                      <div
-                        key={item.id}
-                        className="border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all bg-gray-50/70"
-                      >
-                        <div className="aspect-square relative mb-3 bg-white rounded-lg overflow-hidden border border-gray-100">
-                          <SafeImage
-                            src={item.image}
-                            fallbackSrc="/images/monitor.jpg"
-                            alt={item.name}
-                            fill
-                            className="object-contain p-3"
-                          />
-                        </div>
-                        <h3 className="font-medium text-gray-800 mb-2 line-clamp-2 h-11">
-                          {item.name}
-                        </h3>
-                        <div className="text-xl font-bold text-primary mb-3">
-                          ৳{Number(item.salePrice).toLocaleString()}
-                        </div>
-                        <button
-                          onClick={() => addToBuild(item)}
-                          className="w-full py-2.5 bg-primary hover:bg-primary text-white rounded-lg font-medium transition-colors"
+                    {currentProducts.map((item) => {
+                      const isSelectedItem =
+                        selectedProducts[activeCategory]?.id === item.id;
+
+                      return (
+                        <div
+                          key={item.id}
+                          className="border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all bg-gray-50/70"
                         >
-                          Add to Build
-                        </button>
-                      </div>
-                    ))}
+                          <div className="aspect-4/3 relative mb-3 bg-white rounded-lg overflow-hidden border border-gray-100">
+                            <SafeImage
+                              src={item.image}
+                              fallbackSrc="/images/monitor.jpg"
+                              alt={item.name}
+                              fill
+                              className="object-cover w-full h-full"
+                            />
+                          </div>
+                          <h3 className="font-medium text-gray-800 mb-2 line-clamp-2 h-11">
+                            {item.name}
+                          </h3>
+                          <div className="text-xl font-bold text-primary mb-3">
+                            ৳{Number(item.salePrice).toLocaleString()}
+                          </div>
+                          <button
+                            onClick={() => addToBuild(item)}
+                            disabled={isSelectedItem}
+                            className={`w-full py-2.5 rounded-lg font-medium transition-colors ${
+                              isSelectedItem
+                                ? "bg-gray-200 text-gray-600 cursor-not-allowed"
+                                : "bg-primary hover:bg-primary text-white"
+                            }`}
+                          >
+                            {isSelectedItem ? "Selected" : "Add to Build"}
+                          </button>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </>

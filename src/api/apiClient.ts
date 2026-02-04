@@ -10,20 +10,53 @@ export interface ApiErrorResponse {
   message: string;
 }
 
+export interface ApiRequestOptions extends RequestInit {
+  auth?: boolean;
+  authToken?: string;
+  _isRetry?: boolean; // Internal flag to prevent infinite loops
+}
+
 class ApiClient {
   private baseURL = "https://api.techsoibd.com/api";
 
+  private async resolveAuthToken(
+    auth: boolean | undefined,
+    authToken?: string,
+  ): Promise<string | undefined> {
+    if (authToken) {
+      return authToken;
+    }
+
+    if (!auth || typeof window === "undefined") {
+      return undefined;
+    }
+
+    try {
+      const localToken = window.localStorage.getItem("accessToken");
+      if (localToken) {
+        return localToken;
+      }
+      const { default: Cookies } = await import("js-cookie");
+      return Cookies.get("accessToken") || Cookies.get("accessTokenClient");
+    } catch {
+      return undefined;
+    }
+  }
+
   async request<T>(
     url: string,
-    options: RequestInit = {},
+    options: ApiRequestOptions = {},
   ): Promise<ApiResponse<T>> {
-    const headers = new Headers(options.headers || {});
-    const hasBody = options.body !== undefined && options.body !== null;
+    const { auth, authToken, ...requestOptions } = options;
+    const headers = new Headers(requestOptions.headers || {});
+    const hasBody =
+      requestOptions.body !== undefined && requestOptions.body !== null;
     const isFormData =
-      typeof FormData !== "undefined" && options.body instanceof FormData;
+      typeof FormData !== "undefined" &&
+      requestOptions.body instanceof FormData;
     const isUrlEncoded =
       typeof URLSearchParams !== "undefined" &&
-      options.body instanceof URLSearchParams;
+      requestOptions.body instanceof URLSearchParams;
 
     if (
       hasBody &&
@@ -34,12 +67,17 @@ class ApiClient {
       headers.set("Content-Type", "application/json");
     }
 
+    const token = await this.resolveAuthToken(auth, authToken);
+    if (auth && token && !headers.has("Authorization")) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+
     const fullUrl = /^https?:\/\//i.test(url)
       ? url
       : `${this.baseURL}${url.startsWith("/") ? "" : "/"}${url}`;
 
     const config: RequestInit = {
-      ...options,
+      ...requestOptions,
       headers,
     };
 
@@ -63,41 +101,87 @@ class ApiClient {
         } catch {
           data = null;
         }
-
-        let errorMessage = "API Error";
-        if (response.status === 401) {
-          errorMessage = "Unauthorized - Please login to continue";
-        } else if (response.status === 403) {
-          errorMessage = "Forbidden - You don't have permission";
-        } else if (response.status === 404) {
-          errorMessage = "Not Found - Resource doesn't exist";
-        } else if (response.status >= 500) {
-          errorMessage = "Server Error - Please try again later";
-        } else {
-          errorMessage = `HTTP ${response.status} - ${response.statusText}`;
-        }
-
-        throw new Error(errorMessage);
       }
 
       if (!response.ok) {
-        const errorMsg = data.message || `HTTP ${response.status} Error`;
-
-        throw new Error(errorMsg);
+        const errorMessage =
+          data?.message ||
+          data?.error ||
+          `Request failed with status ${response.status}`;
+        const error = new Error(errorMessage);
+        (error as any).status = response.status;
+        (error as any).data = data;
+        // Log only in development
+        if (process.env.NODE_ENV === "development") {
+          console.error(
+            `[API Error] ${fullUrl} ${response.status} ${response.statusText}`,
+            data,
+          );
+        }
+        throw error;
       }
 
       return data;
     } catch (error: any) {
+      // Handle 401 Unauthorized - Token expired
+      if (error.status === 401 && !options._isRetry) {
+        try {
+          const refreshResponse = await fetch(`${this.baseURL}/refresh`, {
+            method: "POST",
+            credentials: "include",
+          });
+
+          if (refreshResponse.ok) {
+            const refreshData = await refreshResponse.json();
+
+            const newAccessToken =
+              refreshData.new_token ||
+              refreshData.token ||
+              refreshData.data?.token;
+
+            if (newAccessToken) {
+              localStorage.setItem("accessToken", newAccessToken);
+
+              try {
+                const { default: Cookies } = await import("js-cookie");
+                Cookies.set("accessToken", newAccessToken);
+              } catch {}
+
+              return this.request<T>(url, {
+                ...options,
+                authToken: newAccessToken,
+                _isRetry: true,
+              });
+            }
+          }
+        } catch (refreshError) {
+          // Refresh failed, throw original error
+          if (process.env.NODE_ENV === "development") {
+            console.error("Token refresh failed:", refreshError);
+          }
+        }
+      }
+
       // If it's a network error
       if (error instanceof TypeError && error.message === "Failed to fetch") {
-        console.error(
-          "[Network Error] Check if API server is running and CORS is enabled",
-          { url: fullUrl },
-        );
-        throw new Error("Network Error - Unable to connect to server");
+        if (process.env.NODE_ENV === "development") {
+          console.error(
+            "[Network Error] Check if API server is running and CORS is enabled",
+            { url: fullUrl },
+          );
+        }
+        throw new Error("Something went wrong");
       }
-      console.error("API Request Failed:", error);
-      throw error;
+
+      // If it's already a formatted error from above, just re-throw
+      if (error instanceof Error) {
+        throw error;
+      }
+
+      if (process.env.NODE_ENV === "development") {
+        console.error("API Request Failed:", error);
+      }
+      throw new Error("Something went wrong");
     }
   }
 

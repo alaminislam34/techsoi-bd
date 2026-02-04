@@ -12,6 +12,7 @@ import { useAddToCart } from "@/api/hooks/useCart";
 import { useAddToFavorites } from "@/api/hooks/useFavorites";
 import { useAuth } from "@/Provider/AuthProvider";
 import { toast } from "react-toastify";
+import SafeImage from "@/components/ui/SafeImage";
 
 // Loading fallback for Suspense
 function ProductsLoading() {
@@ -307,25 +308,25 @@ function ProductListContent() {
             {paginatedProducts.map((p) => (
               <div className="h-full" key={p.id}>
                 <div className="flex flex-col gap-2 justify-between md:gap-5 p-1.5 md:p-4 rounded-xl md:rounded-[20px] bg-white border border-[#bee5f6] hover:-translate-y-3 duration-100 ease-linear hover:shadow-[0_2px_10px_#72C7EC] hover:border-[#72C7EC] h-full">
-                  <div className="relative w-full h-56 md:h-62 rounded-lg md:rounded-4.5 overflow-hidden">
+                  <div className="space-y-4">
                     <Link href={`/products/${p.slug}`}>
-                      <img
-                        src={p.main_image || "/images/monitor.jpg"}
+                      <SafeImage
+                        src={p.main_image}
                         alt={p.name}
-                        className="w-full h-full object-contain"
-                        onError={(e) => {
-                          e.currentTarget.src = "/images/monitor.jpg";
-                        }}
+                        width={400}
+                        height={400}
+                        unoptimized
+                        className="w-full rounded-lg md:rounded-4.5 h-fit aspect-4/3 object-cover"
                       />
                     </Link>
+                    <br />
+                    <p className="w-full text-[14px] md:text-[16px] lg:text-4.5 font-medium text-[#303030] line-clamp-2">
+                      {p.name}
+                    </p>
                   </div>
 
                   <div className="flex flex-col justify-between gap-2 md:gap-4">
                     <div className="flex flex-col gap-2 md:gap-6 overflow-hidden">
-                      <p className="w-full text-[14px] md:text-[16px] lg:text-4.5 font-medium text-[#303030] line-clamp-2">
-                        {p.name}
-                      </p>
-
                       <div className="flex flex-col md:flex-wrap md:flex-row justify-between">
                         <div className="flex items-center gap-2">
                           <p className="text-[14px] md:text-lg xl:text-xl font-semibold text-primary">
@@ -351,10 +352,12 @@ function ProductListContent() {
                           </svg>
 
                           <p className="text-[12px] lg:text-sm text-[#505050]">
-                            4.5
+                            {p.average_rating
+                              ? p.average_rating.toFixed(1)
+                              : "0"}
                           </p>
                           <p className="text-[12px] lg:text-sm text-[#505050]">
-                            (24)
+                            ({p.total_reviews || 0})
                           </p>
                         </div>
                       </div>
@@ -423,7 +426,6 @@ function ProductListContent() {
   );
 }
 
-// 2. Main export component (Design-neutral wrapper)
 export default function ProductPage() {
   return (
     <CommonWrapper>

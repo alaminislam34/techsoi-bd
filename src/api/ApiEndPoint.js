@@ -112,7 +112,7 @@ export const API_ENDPOINTS = {
   // --- Blog Requests ---
   BLOG_GET_ALL: `${BASE_URL}/blog`,
   BLOG_LIMIT: (limit) => `${BASE_URL}/blog-limit/${limit}`,
-  BLOG_GET_SINGLE: (id) => `${BASE_URL}/blog/${id}`,
+  BLOG_GET_SINGLE: (slug) => `${BASE_URL}/blog-details/${slug}`,
   BLOG_STORE: `${BASE_URL}/blog`, // Body: { "title": "", "image": "", "short_description": "", "full_description": "" }
   BLOG_UPDATE: (id) => `${BASE_URL}/blog/${id}`, // Body: { "title": "", "image": "", "short_description": "", "full_description": "" }
   BLOG_DELETE: (id) => `${BASE_URL}/blog/${id}`,

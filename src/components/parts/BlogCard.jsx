@@ -60,7 +60,7 @@ export default function BlogCard({ limit = 6 }) {
           {blogs.map((blog) => (
             <SwiperSlide key={blog.id}>
               <Link
-                href={`/blog/${blog.id}`}
+                href={`/blog/${blog.slug}`}
                 className="flex flex-col gap-2 md:gap-3 p-3 md:p-4 rounded-2xl border border-[#bee5f6] hover:border-[#2CACE2] transition-all"
               >
                 <div className="w-full h-48 md:h-56 rounded-xl overflow-hidden bg-gray-200">
@@ -70,7 +70,7 @@ export default function BlogCard({ limit = 6 }) {
                     alt={blog.title}
                     width={400}
                     height={224}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform"
+                    className="w-full h-full object-cover aspect-4/3 hover:scale-105 transition-transform"
                   />
                 </div>
                 <div className="flex items-center gap-1 md:gap-1.5 rounded-lg">
@@ -125,22 +125,22 @@ export default function BlogCard({ limit = 6 }) {
                 </div>
                 <div className="flex flex-col gap-2 md:gap-3">
                   <p className="text-[14px] md:text-xl font-medium text-left text-[#303030] line-clamp-2">
-                    {blog.title}
+                    {blog.title_bn}
                   </p>
                   <p className="text-[10px] md:text-base text-left text-[#505050] line-clamp-2">
                     {blog.short_description}
                   </p>
-                  <div className="flex items-center gap-2">
-                    <p className="text-[12px] md:text-lg text-left text-[#303030]">
+                  <div className="flex items-center gap-2 text-[#2CACE2] group cursor-pointer">
+                    <span className="text-[12px] md:text-lg inline-block text-left text-[#303030] group-hover:text-[#2CACE2] transition-colors">
                       Read more
-                    </p>
+                    </span>
                     <svg
                       width={24}
                       height={24}
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className="w-3 md:w-6 h-3 md:h-6 relative"
+                      className="w-3 md:w-6 h-3 md:h-6 relative group-hover:translate-x-1 transition-transform"
                       preserveAspectRatio="none"
                     >
                       <path
@@ -148,6 +148,7 @@ export default function BlogCard({ limit = 6 }) {
                         stroke="#303030"
                         strokeWidth="1.5"
                         strokeLinecap="round"
+                        className="group-hover:stroke-[#2CACE2] transition-colors"
                       />
                       <path
                         d="M11 6H17C17.4714 6 17.7071 6 17.8536 6.14645C18 6.29289 18 6.5286 18 7V13"
@@ -155,6 +156,7 @@ export default function BlogCard({ limit = 6 }) {
                         strokeWidth="1.5"
                         strokeLinecap="round"
                         strokeLinejoin="round"
+                        className="group-hover:stroke-[#2CACE2] transition-colors"
                       />
                     </svg>
                   </div>

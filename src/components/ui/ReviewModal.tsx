@@ -27,7 +27,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
       return;
     }
     if (!message.trim()) {
-      toast.error("Please লিখে দিন review message");
+      toast.error("Please enter a review message");
       return;
     }
 

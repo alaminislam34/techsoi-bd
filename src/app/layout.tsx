@@ -28,7 +28,7 @@ export default function RootLayout({
         <QueryProvider>
           <AuthProvider>
             {/* Global Navbar */}
-            <NavbarTop />
+            {/* <NavbarTop /> */}
             <Navbar />
             <Manubar />
             <NavbarCategory />

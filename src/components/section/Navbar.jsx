@@ -1,11 +1,7 @@
 "use client";
 import CommonWrapper from "@/components/layout/CommonWrapper";
 import { useAuth } from "@/Provider/AuthProvider";
-import {
-  User,
-  LogOut,
-  Handbag,
-} from "lucide-react";
+import { User, LogOut, Handbag, Heart } from "lucide-react";
 import SafeImage from "@/components/ui/SafeImage";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -13,16 +9,61 @@ import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 import { useSearchProducts } from "@/api/hooks";
 import Image from "next/image";
+import axios from "axios";
+import { MdWhatsapp } from "react-icons/md";
 
 export default function Navbar() {
   const [openDropdown, setOpenDropdown] = useState(false);
-  const { user, logout, loginWithGoogle, isLoggingOut } = useAuth();
+  const { user, logout, isLoggingOut } = useAuth();
   const router = useRouter();
-
+  const [websiteInfo, setWebsiteInfo] = useState(null);
+  const [isHydrated, setIsHydrated] = useState(false);
+  console.log(user);
   // Search state
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+
+  // Ensure hydration is complete before rendering dynamic content
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  const loginWithGoogle = async () => {
+    try {
+      const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+      console.log("google client id:", clientId);
+      if (!clientId || !appUrl) {
+        console.error("Google Login environment variables missing!");
+        toast.error("Google login is not configured properly.");
+        return;
+      }
+
+      const redirectUri = `${appUrl}/api/auth/callback/google`;
+      const scope = encodeURIComponent("email profile openid");
+      const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
+      console.log(redirectUri);
+      window.location.href = googleUrl;
+    } catch (error) {
+      console.error("Google login error:", error);
+      toast.error("Failed to initiate Google login. Please try again.");
+    }
+  };
+  // Fetch Website Info for Top Bar
+  useEffect(() => {
+    const fetchInfo = async () => {
+      try {
+        const res = await axios.get(
+          `https://api.techsoibd.com/api/website-info`,
+        );
+        setWebsiteInfo(res.data);
+      } catch (error) {
+        console.error("Error fetching website info:", error);
+      }
+    };
+    fetchInfo();
+  }, []);
 
   // Debounce input
   useEffect(() => {
@@ -36,25 +77,24 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="bg-white sticky top-0 z-50 shadow-xs">
+      {/* ---------- MAIN NAVBAR ---------- */}
+      <div className="bg-[#303030] backdrop-blur-[50px] sticky top-0 z-50 shadow-xs">
         <CommonWrapper>
           <div className="flex justify-between items-center relative py-2.5 md:py-4">
             {/* ---------- LOGO ---------- */}
-            <Link href={"/"}>
-              <div className="sm:block md:block mr-1 py-2">
-                <Image
-                  src={"/icons/logo.png"}
-                  height={400}
-                  width={800}
-                  alt="Website logo"
-                  className="h-10 md:h-14 w-auto object-contain"
-                />
-              </div>
+            <Link href="/" className="sm:block md:block mr-1 py-2">
+              <Image
+                src="/icons/logo.jpg"
+                height={400}
+                width={800}
+                alt="Website logo"
+                className="h-10 md:h-14 w-auto object-contain"
+              />
             </Link>
 
-            {/* ---------- SEARCH ---------- */}
-            <div className="hidden px-2 md:flex justify-between items-center md:w-xs lg:w-2xl relative mx-4 sm:mx-0 lg:mx-3 md:mx-4 py-2 rounded-xl bg-white border border-primary">
-              <div className="relative flex-1">
+            {/* ---------- SEARCH BAR ---------- */}
+            <div className="hidden px-2 md:flex justify-between items-center md:w-xs lg:w-2xl relative mx-4 sm:mx-0 lg:mx-3 md:mx-4 py-2 rounded-xl bg-white border-2 border-primary">
+              <div className="relative flex-1 ">
                 <input
                   required
                   value={searchTerm}
@@ -66,7 +106,7 @@ export default function Navbar() {
                   onBlur={() =>
                     setTimeout(() => setShowSuggestions(false), 150)
                   }
-                  className="lg:text-lg w-full focus:outline-none"
+                  className="lg:text-lg w-full focus:outline-none "
                   placeholder="Search products.."
                 />
 
@@ -81,7 +121,6 @@ export default function Navbar() {
                         <div
                           key={s.id}
                           onMouseDown={() => {
-                            // navigate to product page (by slug)
                             router.push(`/products/${s.slug}`);
                             setSearchTerm("");
                             setShowSuggestions(false);
@@ -111,13 +150,7 @@ export default function Navbar() {
                 )}
               </div>
               <button className="flex items-center relative gap-2.5 pl-3 border-l border-[#9ed9f2] cursor-pointer">
-                <svg
-                  width={24}
-                  height={24}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
+                <svg width={24} height={24} viewBox="0 0 24 24" fill="none">
                   <path
                     d="M17.5 17.5L22 22"
                     stroke="#303030"
@@ -134,14 +167,15 @@ export default function Navbar() {
               </button>
             </div>
 
+            {/* ---------- ACTIONS ---------- */}
             <div className="flex items-center gap-2 md:gap-4">
-              {user && (
+              {isHydrated && user && (
                 <>
                   <Link
-                    href={"/favourite"}
+                    href="/favourite"
                     className="hidden md:flex items-center relative gap-2"
                   >
-                    <div className="w-10 h-10 flex items-center justify-center relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
+                    <span className="w-10 h-10 flex items-center justify-center relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
                       <SafeImage
                         src="/icons/heart.png"
                         fallbackSrc="/icons/heart.png"
@@ -150,25 +184,23 @@ export default function Navbar() {
                         alt="Favourite icon"
                         className="w-5 h-auto"
                       />
-                      <div className="flex flex-col justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
-                        <p className="text-[10px] text-white">0</p>
-                      </div>
-                    </div>
-
-                    <div className="md:block hidden">
-                      <p className="text-base font-medium text-primary">
+                      <span className="flex flex-col justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
+                        <span className="text-[10px] text-white">0</span>
+                      </span>
+                    </span>
+                    <span className="md:block hidden">
+                      <span className="block text-base font-medium text-primary">
                         Favourites
-                      </p>
-                      <p className="text-sm text-[#505050]">৳0</p>
-                    </div>
+                      </span>
+                      <span className="block text-sm text-white">৳0</span>
+                    </span>
                   </Link>
 
-                  {/* Cart Icon */}
                   <Link
-                    href={"/mycart"}
+                    href="/mycart"
                     className="hidden md:flex items-center relative gap-2"
                   >
-                    <div className="w-10 h-10 flex items-center justify-center relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
+                    <span className="w-10 h-10 flex items-center justify-center relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
                       <SafeImage
                         src="/icons/cart.png"
                         fallbackSrc="/icons/cart.png"
@@ -177,44 +209,47 @@ export default function Navbar() {
                         alt="Cart icon"
                         className="w-5 h-auto"
                       />
-                      <div className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
-                        <p className="text-[10px] text-white">0</p>
-                      </div>
-                    </div>
-
-                    <div className="md:block hidden">
-                      <p className="text-sm font-medium text-primary">Cart</p>
-                      <p className="text-sm text-[#505050]">৳0</p>
-                    </div>
+                      <span className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
+                        <span className="text-[10px] text-white">0</span>
+                      </span>
+                    </span>
+                    <span className="md:block hidden">
+                      <span className="block text-sm font-medium text-primary">
+                        Cart
+                      </span>
+                      <span className="block text-sm text-white">৳0</span>
+                    </span>
                   </Link>
 
                   <Link
-                    href={"/myorders"}
+                    href="/myorders"
                     className="hidden md:flex items-center relative gap-2"
                   >
-                    <div className="w-10 h-10 relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
-                      <div className="flex items-center mt-2 justify-center">
+                    <span className="w-10 h-10 relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
+                      <span className="flex items-center mt-2 justify-center">
                         <Handbag size={20} />
-                      </div>
-                      <div className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
-                        <p className="text-[10px] text-white">0</p>
-                      </div>
-                    </div>
-
-                    <div className="md:block hidden">
-                      <p className="text-sm font-medium text-primary">Orders</p>
-                      <p className="text-sm text-[#505050]">৳0</p>
-                    </div>
+                      </span>
+                      <span className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
+                        <span className="text-[10px] text-white">0</span>
+                      </span>
+                    </span>
+                    <span className="md:block hidden">
+                      <span className="block text-sm font-medium text-primary">
+                        Orders
+                      </span>
+                      <span className="block text-sm text-white">৳0</span>
+                    </span>
                   </Link>
                 </>
               )}
 
+              {/* USER DROPDOWN */}
               <div className="relative ml-1">
                 <button
                   onClick={() => setOpenDropdown(!openDropdown)}
                   className="w-10 h-10 rounded-full bg-[#d8f1fb] flex items-center justify-center overflow-hidden border border-[#bee5f6]"
                 >
-                  {user?.image ? (
+                  {isHydrated && user?.image ? (
                     <img
                       src={user.image}
                       alt="user"
@@ -250,9 +285,7 @@ export default function Navbar() {
                         <div className="flex flex-col gap-4">
                           <div className="flex items-center gap-3">
                             <img
-                              src={
-                                user?.image ? user?.image : "/images/user.jpg"
-                              }
+                              src={user?.image || "/images/user.jpg"}
                               className="w-10 h-10 rounded-full"
                               alt="avatar"
                             />
@@ -266,23 +299,6 @@ export default function Navbar() {
                             </div>
                           </div>
                           <hr className="border-gray-100" />
-                          <Link
-                            href={"/myorders"}
-                            className="hidden md:flex items-center relative gap-2"
-                          >
-                            <div className="w-10 h-10 relative overflow-hidden rounded-[99px] bg-[#eaf7fc]">
-                              <div className="flex items-center mt-2 justify-center">
-                                <Handbag size={20} />
-                              </div>
-                              <div className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
-                                <p className="text-[10px] text-white">0</p>
-                              </div>
-                            </div>
-
-                            <div>
-                              <p className="font-medium text-primary">Orders</p>
-                            </div>
-                          </Link>
                           <Link
                             href={"/profile"}
                             onClick={() => setOpenDropdown(false)}
@@ -301,7 +317,7 @@ export default function Navbar() {
                               setOpenDropdown(false);
                             }}
                             disabled={isLoggingOut}
-                            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg border border-red-100 text-red-500 hover:bg-red-50 transition-all font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg border border-red-100 text-red-500 hover:bg-red-50 font-medium text-sm"
                           >
                             <LogOut size={16} />{" "}
                             {isLoggingOut ? "Logging out..." : "Logout"}
@@ -309,17 +325,15 @@ export default function Navbar() {
                         </div>
                       ) : (
                         <div className="flex flex-col items-center text-center py-2">
-                          <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mb-3">
-                            <User size={24} className="text-gray-400" />
-                          </div>
+                          <User size={24} className="text-gray-400 mb-3" />
                           <p className="text-sm font-bold text-gray-800">
                             Welcome Guest
                           </p>
                           <button
                             onClick={loginWithGoogle}
-                            className="w-full mt-4 flex items-center justify-center gap-3 border border-gray-200 py-2.5 rounded-xl hover:bg-gray-50 transition-all active:scale-95"
+                            className="w-full mt-4 flex items-center justify-center gap-3 border border-gray-200 py-2.5 rounded-xl hover:bg-gray-50 transition-all"
                           >
-                            <FcGoogle />
+                            <FcGoogle />{" "}
                             <span className="text-sm font-semibold text-gray-700">
                               Continue with Google
                             </span>
@@ -334,6 +348,59 @@ export default function Navbar() {
           </div>
         </CommonWrapper>
       </div>
+
+      {/* ---------- MOBILE BOTTOM NAVIGATION (FIX FOR SMALL DEVICES) ---------- */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 px-4 flex justify-between items-center z-100 shadow-lg">
+        <Link href="/" className="flex flex-col items-center gap-1">
+          <span className="p-1.5 inline-block">
+            <User size={20} className="text-gray-600" />
+          </span>
+          <span className="text-[10px] text-gray-600">Home</span>
+        </Link>
+        <Link
+          href="/favourite"
+          className="flex flex-col items-center gap-1 relative"
+        >
+          <span className="p-1.5 inline-block">
+            <Heart size={20} className="text-gray-600" />
+          </span>
+          <span className="absolute top-1 right-2 bg-primary text-white text-[8px] w-3.5 h-3.5 flex items-center justify-center rounded-full">
+            0
+          </span>
+          <span className="text-[10px] text-gray-600">Wishlist</span>
+        </Link>
+        <Link
+          href="/mycart"
+          className="flex flex-col items-center gap-1 relative"
+        >
+          <span className="p-1.5 inline-block">
+            <Handbag size={20} className="text-gray-600" />
+          </span>
+          <span className="absolute top-1 right-1.5 bg-primary text-white text-[8px] w-3.5 h-3.5 flex items-center justify-center rounded-full">
+            0
+          </span>
+          <span className="text-[10px] text-gray-600">Cart</span>
+        </Link>
+        <Link href="/myorders" className="flex flex-col items-center gap-1">
+          <span className="p-1.5 inline-block">
+            <Handbag size={20} className="text-gray-600" />
+          </span>
+          <span className="text-[10px] text-gray-600">Orders</span>
+        </Link>
+      </div>
+
+      {/* WhatsApp Floating Button */}
+      {websiteInfo?.whatsapp_link && (
+        <div className="fixed z-50 bottom-20 lg:bottom-8 lg:right-8 right-4">
+          <a
+            href={websiteInfo.whatsapp_link}
+            target="_blank"
+            className="flex p-3 rounded-full bg-[#25D366] text-white shadow-xl hover:scale-110 transition-transform"
+          >
+            <MdWhatsapp className="text-2xl lg:text-3xl" />
+          </a>
+        </div>
+      )}
     </>
   );
 }

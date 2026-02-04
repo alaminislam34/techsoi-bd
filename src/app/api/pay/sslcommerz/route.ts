@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   try {
     const storeId = process.env.SSLCOMMERZ_STORE_ID;
     const storePassword = process.env.SSLCOMMERZ_STORE_PASSWORD;
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
 
     if (!storeId || !storePassword) {
       return NextResponse.json(
@@ -18,7 +18,15 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { name, phone, email, address, city, postcode, products = [] } = body || {};
+    const {
+      name,
+      phone,
+      email,
+      address,
+      city,
+      postcode,
+      products = [],
+    } = body || {};
 
     if (!name || !phone || !address || !city || !postcode) {
       return NextResponse.json(
@@ -73,7 +81,8 @@ export async function POST(req: NextRequest) {
     let gatewayBody: string | null = null;
 
     if (response.status >= 300 && response.status < 400) {
-      redirectUrl = response.headers.get("location") || response.headers.get("Location");
+      redirectUrl =
+        response.headers.get("location") || response.headers.get("Location");
     }
 
     try {
