@@ -28,7 +28,7 @@ const categoryIcons = {
   Mouse: "mouse.png",
   Keyboard: "keyboard.png",
   Headphone: "headphone.png",
-  "Speaker & home Theater": "speaker.png",
+  Speaker: "speaker.png",
 };
 
 const mainComponents = [
@@ -231,8 +231,8 @@ const PcBuilder = () => {
       <div
         className={`py-2 border-b transition-all cursor-pointer ${
           activeCategory === name && viewMode === "list"
-            ? "border-b-primary bg-blue-50 shadow-sm"
-            : "border-b-gray-200 hover:bg-gray-50"
+            ? "border-b-primary"
+            : "border-b-gray-200"
         }`}
         onClick={() => handleChooseCategory(name)}
       >

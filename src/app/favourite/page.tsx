@@ -56,7 +56,7 @@ export default function FavouritePage() {
           method: "GET",
         },
       );
-    
+
       setFavorites(response?.data || []);
     } catch (error: any) {
       console.error("Failed to load favourites:", error);
@@ -183,7 +183,7 @@ export default function FavouritePage() {
                           return (
                             <tr
                               key={fav.id}
-                              className="group hover:bg-gray-50 transition-colors "
+                              className="group hover:bg-gray-50 transition-colors flex flex-row gap-4 items-center"
                             >
                               {/* Action - Delete */}
                               <td className="py-2">
@@ -199,29 +199,31 @@ export default function FavouritePage() {
                               {/* Product Details */}
                               <td className="py-2">
                                 <div className="flex items-center gap-4">
-                                  <div className="w-8 h-8 rounded-xl border border-gray-100 p-2 relative overflow-hidden bg-gray-50 shrink-0">
+                                  <div className="w-12 h-12 rounded-xl border border-gray-100 relative overflow-hidden bg-gray-50 shrink-0">
                                     {product?.main_image ? (
                                       <SafeImage
                                         src={product?.main_image}
-                                        alt={product?.name || "Product"}
+                                        alt={product?.name}
                                         fill
-                                        className="object-contain p-1"
+                                        className="object-contain"
                                       />
                                     ) : (
                                       <div className="w-full h-full "></div>
                                     )}
                                   </div>
-                                  <h3 className="font-semibold text-gray-800 text-sm md:text-base leading-tight">
-                                    {product?.name || "Product"}
+                                  <h3 className="font-semibold text-gray-500 text-xs md:text-sm lg:text-base leading-tight">
+                                    {product?.name}
                                   </h3>
                                 </div>
                               </td>
 
                               {/* Status */}
                               <td className="py-2 text-center">
-                                <span className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold">
-                                  {product?.stock_status || "In Stock"}
-                                </span>
+                                <p className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs min-w-10 font-bold truncate">
+                                  {product?.stock > 0
+                                    ? "In Stock"
+                                    : "Out of Stock"}
+                                </p>
                               </td>
 
                               {/* Quantity */}
@@ -234,7 +236,7 @@ export default function FavouritePage() {
                                     >
                                       <Minus size={14} />
                                     </button>
-                                    <span className="flex-1 text-center font-bold text-sm">
+                                    <span className="flex-1 text-center text-sm">
                                       {String(currentQty).padStart(2, "0")}
                                     </span>
                                     <button
@@ -268,7 +270,7 @@ export default function FavouritePage() {
                                       )
                                     }
                                     disabled={isAddingToCart}
-                                    className="flex items-center justify-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-opacity-90 transition-all w-full md:w-auto disabled:opacity-60"
+                                    className="flex items-center justify-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-opacity-90 transition-all w-full md:w-auto disabled:opacity-60 truncate"
                                   >
                                     <ShoppingCart size={14} />
                                     Add to Cart

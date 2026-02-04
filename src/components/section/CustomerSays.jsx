@@ -7,11 +7,12 @@ import "swiper/css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "motion/react";
+import { apiClient } from "@/api/apiClient";
 
 const ReviewCard = ({ review }) => {
   const user = review.user && review.user.length > 0 ? review.user[0] : null;
-  const userName = user?.name || "Anonymous";
-  const userImage = user?.image || CustomerImage.src || "/images/customer.png";
+  const userName = user?.name;
+  const userImage = user?.image;
   const star = review.star || 5;
   const message = review.message || "";
 
@@ -22,7 +23,7 @@ const ReviewCard = ({ review }) => {
       exit={{ opacity: 0, scale: 0.8 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
       viewport={{ once: false, amount: 0.3 }}
-      className="flex flex-col overflow-hidden px-4 md:px-6.75 py-4 md:py-8 rounded-4 md:rounded-2xl bg-white border border-[#bee5f6]"
+      className="flex flex-col overflow-hidden px-2 md:px-6.75 py-2 md:py-8 rounded-2xl bg-white border border-[#bee5f6]"
       style={{ boxShadow: "0px 5px 15px 0 rgba(44,172,226,0.2)" }}
     >
       <div className="flex flex-col relative gap-8">
@@ -30,7 +31,6 @@ const ReviewCard = ({ review }) => {
           <div className="flex items-center relative gap-2.5">
             <SafeImage
               src={userImage}
-              fallbackSrc={CustomerImage.src || "/images/customer.png"}
               alt="customer"
               width={48}
               height={48}
@@ -65,7 +65,9 @@ const ReviewCard = ({ review }) => {
             </div>
           </div>
         </div>
-        <p className="text-[14px] md:text-xl text-[#4b5565]">{message}</p>
+        <p className="text-sm md:text-xl text-[#4b5565] wrap-break-word">
+          {message}
+        </p>
       </div>
     </motion.div>
   );
@@ -77,7 +79,9 @@ export default function CustomerSays() {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await axios.get("https://api.techsoibd.com/api/reviews");
+        const res = await apiClient.get(
+          "https://api.techsoibd.com/api/reviews",
+        );
         if (res.data.status === true && res.data.data) {
           setReviews(res.data.data);
         }
@@ -88,19 +92,13 @@ export default function CustomerSays() {
     fetchReviews();
   }, []);
 
-  // Fallback to dummy data if no reviews fetched
-  const displayReviews =
-    reviews.length > 0
-      ? reviews
-      : [
-          {
-            id: 1,
-            star: 5,
-            message:
-              "আমি TechSoi থেকে একটা গেমিং ল্যাপটপ কিনেছি দামটা একদম জাস্টিফায়েড, প্রোডাক্ট একেবারে অরিজিনাল আর প্যাকেজিংও সেফ ছিল। কাস্টমার সাপোর্টও খুব দ্রুত রিপ্লাই দিয়েছে। আমি ভীষণ খুশি",
-            user: [{ name: "Nusrat Ahmed", image: CustomerImage }],
-          },
-        ];
+  if (reviews.length === 0) {
+    return (
+      <div className="flex items-center justify-center py-6">
+        <p>No reviews available at the moment.</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -137,8 +135,8 @@ export default function CustomerSays() {
               },
             }}
           >
-            {displayReviews.map((review) => (
-              <SwiperSlide key={review.id}>
+            {reviews.map((review) => (
+              <SwiperSlide key={review.id} className="py-4">
                 <ReviewCard review={review} />
               </SwiperSlide>
             ))}
@@ -175,8 +173,8 @@ export default function CustomerSays() {
               },
             }}
           >
-            {displayReviews.map((review) => (
-              <SwiperSlide key={`reverse-${review.id}`}>
+            {reviews.map((review) => (
+              <SwiperSlide key={`reverse-${review.id}`} className="py-4">
                 <ReviewCard review={review} />
               </SwiperSlide>
             ))}
