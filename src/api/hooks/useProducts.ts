@@ -25,7 +25,7 @@ interface Product {
   stock?: number;
   emi_status?: boolean;
   details?: ProductDetails | any;
-} 
+}
 
 interface ProductDetails {
   product_id?: number;
@@ -80,60 +80,54 @@ export const useFilterProducts = (opts: {
   categories?: string[];
   subCategories?: string[];
   brands?: string[];
-  priceRange?: [number, number];
-  sort?: string;
 }) => {
   const {
     query = "",
     categories = [],
     subCategories = [],
     brands = [],
-    priceRange,
-    sort = "",
   } = opts || {};
 
+  const normalizedQuery = query?.trim() || "";
+  // categories/brands/sub-categories as comma-separated values
+  const categoryIds = (categories || [])
+    .map((c) => String(c))
+    .filter((c) => c.length > 0)
+    .join(",");
+
+  const subCategoryIds = (subCategories || [])
+    .map((s) => String(s))
+    .filter((s) => s.length > 0)
+    .join(",");
+
+  const brandIds = (brands || [])
+    .map((b) => String(b))
+    .filter((b) => b.length > 0)
+    .join(",");
+
+  const baseUrl = API_ENDPOINTS.PRODUCT_FILTER(
+    categoryIds,
+    subCategoryIds,
+    brandIds,
+  );
+
   const params = new URLSearchParams();
-  // name/query
-  if (query && query.trim().length > 0) params.append("filter[name]", query.trim());
-  // categories/brands/sub-categories as repeated params (per API sample)
-  (categories || []).forEach((c) => {
-    if (c !== undefined && c !== null && String(c).length > 0) {
-      params.append("filter[category_id]", String(c));
-    }
-  });
-  (subCategories || []).forEach((s) => {
-    if (s !== undefined && s !== null && String(s).length > 0) {
-      params.append("filter[sub_category_id]", String(s));
-    }
-  });
-  (brands || []).forEach((b) => {
-    if (b !== undefined && b !== null && String(b).length > 0) {
-      params.append("filter[brand_id]", String(b));
-    }
-  });
-  // price range (only if valid)
-  if (priceRange && typeof priceRange[0] === "number" && typeof priceRange[1] === "number") {
-    const [minP, maxP] = priceRange;
-    if (minP >= 0 && maxP > 0 && maxP >= minP) {
-      params.append("filter[price_min]", String(minP));
-      params.append("filter[price_max]", String(maxP));
-    }
+  if (normalizedQuery.length > 0) {
+    params.append("filter[name]", normalizedQuery);
   }
-  // sort: pass through as provided (API supports `sort=` per docs)
-  if (sort && sort.trim().length > 0) params.append("sort", sort.trim());
 
-  const url = `${API_ENDPOINTS.PRODUCT_FILTER}${params.toString() ? `?${params.toString()}` : ""}`;
-
+  const extraParams = params.toString();
+  const url = `${baseUrl}${extraParams ? `${baseUrl.includes("?") ? "&" : "?"}${extraParams}` : ""}`;
+  // Only enable if there are actual filters/parameters to apply
+  console.log(url);
   const enabledFlag =
-    Boolean(query) ||
+    normalizedQuery.length > 0 ||
     (categories && categories.length > 0) ||
     (subCategories && subCategories.length > 0) ||
-    (brands && brands.length > 0) ||
-    Boolean(priceRange) ||
-    Boolean(sort);
+    (brands && brands.length > 0);
 
   return useQuery({
-    queryKey: ["products", "filter", query, categories, subCategories, brands, priceRange, sort],
+    queryKey: ["products", "filter", query, categories, subCategories, brands],
     queryFn: () => apiClient.get<Product[]>(url),
     // only run when there's at least one filter or query
     enabled: enabledFlag,

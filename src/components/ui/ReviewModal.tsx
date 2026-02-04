@@ -3,14 +3,47 @@
 import { Star } from "lucide-react";
 import React, { useState } from "react";
 import { FaStar } from "react-icons/fa";
+import { useCreateReview } from "@/api/hooks/useReviews";
+import { toast } from "react-toastify";
 
 type ReviewModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  productId?: number;
 };
 
-const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose }) => {
+const ReviewModal: React.FC<ReviewModalProps> = ({
+  isOpen,
+  onClose,
+  productId,
+}) => {
   const [rating, setRating] = useState(3);
+  const [message, setMessage] = useState("");
+  const { mutateAsync: createReview, isPending } = useCreateReview();
+
+  const handleSubmit = async () => {
+    if (!productId) {
+      toast.error("No product selected for review");
+      return;
+    }
+    if (!message.trim()) {
+      toast.error("Please লিখে দিন review message");
+      return;
+    }
+
+    try {
+      await createReview({
+        product_id: productId,
+        star: rating,
+        message: message.trim(),
+      });
+      setMessage("");
+      setRating(3);
+      onClose();
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to add review");
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -63,10 +96,18 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose }) => {
                 rows={5}
                 placeholder="Write your comment"
                 className="w-full mt-1 px-4 py-2 border border-[#9ED9F2] rounded-lg outline-none focus:ring-2 focus:ring-[#9ED9F2]"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
               />
 
-              <button className="mt-3 w-full py-3 bg-[#2CACE2] cursor-pointer text-white rounded-xl font-medium">
-                Add Review
+              <button
+                onClick={handleSubmit}
+                disabled={isPending}
+                className={`mt-3 w-full py-3 bg-[#2CACE2] cursor-pointer text-white rounded-xl font-medium ${
+                  isPending ? "opacity-60 cursor-not-allowed" : ""
+                }`}
+              >
+                {isPending ? "Submitting..." : "Add Review"}
               </button>
             </div>
           </div>

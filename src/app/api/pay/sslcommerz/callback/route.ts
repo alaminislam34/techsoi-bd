@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { API_ENDPOINTS } from "@/api/ApiEndPoint";
 
 // Handles SSLCommerz redirect callbacks (success/fail/cancel)
 export async function GET(req: NextRequest) {
@@ -64,6 +65,22 @@ export async function POST(req: NextRequest) {
 
   // Redirect based on status (same as GET)
   if (status === "success") {
+    if (tranId) {
+      try {
+        await fetch(API_ENDPOINTS.ORDER_SUCCESS, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            transaction_id: tranId || "h2h6lkhlk62hlkh26",
+          }),
+        });
+      } catch (err) {
+        console.error("Order success notify failed:", err);
+      }
+    }
     const successUrl = new URL("/payment-success", req.nextUrl.origin);
     successUrl.searchParams.set("status", "success");
     successUrl.searchParams.set("tran_id", tranId);

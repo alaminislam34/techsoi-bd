@@ -24,6 +24,9 @@ const mapApiStatusToDisplay = (status: number) => {
 
 export default function MyOrdersPage() {
   const [openReview, setOpenReview] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(
+    null,
+  );
 
   const {
     data: ordersResponse,
@@ -36,6 +39,7 @@ export default function MyOrdersPage() {
     const { text: statusText, className: statusClass } = mapApiStatusToDisplay(
       order.status || 0,
     );
+    const product = order.product;
 
     return {
       id: order.id,
@@ -48,17 +52,12 @@ export default function MyOrdersPage() {
           day: "numeric",
         },
       ),
-      qty:
-        order.order_details?.reduce(
-          (sum: number, d: any) => sum + (d.quantity || 0),
-          0,
-        ) || 1,
-      price: order.total_amount || 0,
+      qty: Number(order.product_count) || 1,
+      price: Number(order.total_amount) || 0,
       status: statusText,
       statusClass,
-      img:
-        order.order_details?.[0]?.product?.main_image ||
-        "/images/fallback-image.png",
+      productId: product?.id,
+      img: product?.main_image || "/images/fallback-image.png",
     };
   });
 
@@ -155,19 +154,19 @@ export default function MyOrdersPage() {
                   {orders.map((order) => (
                     <tr
                       key={order.id}
-                      className="border-b hover:bg-gray-50 transition-colors"
+                      className="border-b transition-colors"
                       style={{ borderColor: "#E6E6E6" }}
                     >
                       {/* Product */}
                       <td className="py-6">
                         <div className="flex items-center gap-4">
-                          <div className="w-20 h-20 rounded-xl border border-gray-200 overflow-hidden relative shrink-0">
+                          <div className=" rounded-xl border border-gray-200 overflow-hidden relative shrink-0">
                             <SafeImage
-                              src={order.img}
+                              src={order?.img}
                               alt={order.name}
                               width={80}
                               height={80}
-                              className="object-cover border border-black"
+                              className="object-cover max-w-15 aspect-square"
                             />
                           </div>
                           <p className="text-sm sm:text-base font-medium text-gray-700">
@@ -206,7 +205,10 @@ export default function MyOrdersPage() {
                       {/* Review */}
                       <td className="py-6">
                         <button
-                          onClick={() => setOpenReview(true)}
+                          onClick={() => {
+                            setSelectedProductId(order.productId || null);
+                            setOpenReview(true);
+                          }}
                           className="text-sm font-medium cursor-pointer text-[#2CACE2] border border-[#2CACE2] px-4 py-1.5 rounded-lg hover:bg-blue-50 transition"
                         >
                           Review
@@ -234,6 +236,7 @@ export default function MyOrdersPage() {
           <ReviewModal
             isOpen={openReview}
             onClose={() => setOpenReview(false)}
+            productId={selectedProductId || undefined}
           />
         </div>
       </section>

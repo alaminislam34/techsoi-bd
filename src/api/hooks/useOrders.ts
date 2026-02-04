@@ -57,7 +57,17 @@ export const useGetUserOrders = () => {
     queryKey: ["orders"],
     queryFn: async () => {
       try {
-        const response = await apiClient.get<Order[]>(API_ENDPOINTS.USER_ORDER);
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("Unauthorized access");
+        }
+        const response = await apiClient.request<Order[]>(
+          API_ENDPOINTS.USER_ORDER,
+          {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
         return response;
       } catch (error: any) {
         console.error("Failed to fetch orders:", error.message);
@@ -100,7 +110,18 @@ export const useCreateOrder = () => {
       city: string;
       postcode: string;
       products: Array<{ product_id: number; quantity: number; amount: number }>;
-    }) => apiClient.post(API_ENDPOINTS.PAY_SSLCOMMERZ, data),
+    }) => {
+      const token =
+        typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      if (!token) {
+        throw new Error("Please login to place an order");
+      }
+      return apiClient.request(API_ENDPOINTS.ORDER_CREATE, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify(data),
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
       toast.success("Order created successfully");

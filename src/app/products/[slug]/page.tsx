@@ -15,9 +15,12 @@ import { useAddToCart } from "@/api/hooks/useCart";
 import { useAddToFavorites } from "@/api/hooks/useFavorites";
 import { useAuth } from "@/Provider/AuthProvider";
 import { toast } from "react-toastify";
+import { apiClient, ApiResponse } from "@/api/apiClient";
+import { API_ENDPOINTS } from "@/api/ApiEndPoint";
 
 export default function ProductDetails() {
   const routeParams = useParams() as { slug?: string };
+  const [reviews, setReviews] = useState<any[]>([]);
   const slug = routeParams?.slug ?? "";
 
   // Call hook to fetch product by slug
@@ -27,6 +30,28 @@ export default function ProductDetails() {
     isError,
     error,
   } = useGetProductBySlug(slug);
+
+  useEffect(() => {
+    const fetchReviews = async (productSlug?: string) => {
+      if (!productSlug) return;
+      try {
+        const res: ApiResponse<any> = await apiClient.get(
+          API_ENDPOINTS.REVIEW_GET_SINGLE(productSlug),
+        );
+        console.log(res);
+        if (res.status === true) {
+          const data = res.data ?? [];
+          setReviews(Array.isArray(data) ? data : [data]);
+        } else {
+          setReviews([]);
+        }
+      } catch (err: any) {
+        console.error("Failed to fetch reviews:", err?.message);
+        setReviews([]);
+      }
+    };
+    fetchReviews(slug);
+  }, [slug]);
   console.log("slug product ", productResponse, "error:", error);
   const { mutate: addToCart } = useAddToCart();
 
@@ -45,7 +70,7 @@ export default function ProductDetails() {
   // Set initial active image when the product is loaded
   useEffect(() => {
     if (product && !activeImg) {
-      setActiveImg(product.main_image || "/images/monitor.jpg");
+      setActiveImg(product?.main_image as string);
     }
   }, [product, activeImg]);
 
@@ -64,10 +89,10 @@ export default function ProductDetails() {
   }
   console.log("Product details:", product);
   const extraImages: string[] = details?.extra_images || [];
-  const isInStock = Number(product?.stock) > 0;
-  const maxQty = Number(product?.stock) || 1;
+  const stockValue = Number(product?.stock);
+  const isInStock = Number.isFinite(stockValue) ? stockValue > 0 : true;
+  const maxQty = Number.isFinite(stockValue) && stockValue > 0 ? stockValue : 1;
 
-  // If slug isn't ready yet (client component hydration) or the query is loading, show loader
   if (isLoading || !slug) {
     return (
       <CommonWrapper>
@@ -78,7 +103,6 @@ export default function ProductDetails() {
     );
   }
 
-  // If the request errored, show a helpful message; otherwise show a not-found message
   if (isError || !product) {
     const message = isError
       ? `Error: ${apiError?.message ?? "Failed to load product"}`
@@ -123,7 +147,6 @@ export default function ProductDetails() {
                 />
               </div>
 
-              {/* Variant Images - Show main image and extra images */}
               <div className="flex gap-4 mt-4">
                 {(
                   ([product.main_image, ...extraImages].filter(
@@ -177,9 +200,7 @@ export default function ProductDetails() {
                 )}
               </p>
 
-              {/* Prices dynamically based on quantity */}
               <div className="mt-4 flex items-center">
-                {/* Price section */}
                 <div className="pr-8">
                   <p className="line-through text-gray-400 text-lg">
                     ৳{(product.regular_price ?? 0).toLocaleString()}
@@ -189,24 +210,15 @@ export default function ProductDetails() {
                   </p>
                 </div>
 
-                {/* Vertical divider */}
                 <div className="h-12 w-px bg-gray-300 mx-6"></div>
 
-                {/* EMI system */}
-                <div className="flex flex-col items-center justify-center text-center pl-2">
+                <div className="flex flex-col pl-2">
                   {/* Heading */}
                   <h1 className="text-sm font-semibold text-gray-600 mb-2">
                     EMI System:
                   </h1>
 
-                  {/* Price row */}
-                  <div className="flex items-center gap-2">
-                    <div className="relative -translate-y-0.5">
-                      <div className="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
-                        <div className="w-3 h-3 rounded-full bg-primary"></div>
-                      </div>
-                    </div>
-
+                  <div className="flex gap-2">
                     {product.emi_status ? (
                       <span className="text-primary text-lg font-bold leading-none">
                         EMI Available
@@ -264,13 +276,13 @@ export default function ProductDetails() {
           <ProductTabs
             fullDescription={details?.full_description}
             specifications={specifications}
-            reviews={product.reviews || []}
+            reviews={reviews}
             averageRating={product.rating}
             reviewCount={product.review_count}
-            productId={Number(product.id)}
+            productId={Number(product.details?.id)}
           />
 
-          <RelevantProducts currentProductId={Number(product.id)} />
+          <RelevantProducts currentProductId={Number(product.details?.id)} />
         </div>
       </CommonWrapper>
 

@@ -3,6 +3,8 @@
 import { X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useCreateOrder } from "@/api/hooks/useOrders";
+import { useSslcommerzPayment } from "@/api/hooks/useSslcommerzPayment";
 
 type ProductItem = {
   product_id: number;
@@ -21,6 +23,10 @@ export default function BuyNowModal({
   onClose,
   products,
 }: BuyNowModalProps) {
+    const { mutateAsync: createOrder, isPending: isCreatingOrder } =
+      useCreateOrder();
+    const { mutateAsync: startPayment, isPending: isPaying } =
+      useSslcommerzPayment();
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -53,25 +59,9 @@ export default function BuyNowModal({
           amount: p.amount,
         })),
       };
-      console.log(payload);
-      console.log("Payload to send:", payload);
+      await createOrder(payload);
 
-      const response = await fetch("/api/pay/sslcommerz", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        const message = data?.message || "Payment initialization failed";
-        toast.error(message);
-        return;
-      }
+      const data: any = await startPayment(payload);
 
       const redirectUrl =
         data?.redirectUrl ||
@@ -89,7 +79,7 @@ export default function BuyNowModal({
       }
     } catch (err: any) {
       console.error("API Error:", err.message);
-      toast.error("Failed to place order");
+      toast.error(err?.message || "Failed to place order");
     }
   };
 
@@ -153,9 +143,12 @@ export default function BuyNowModal({
 
             <button
               type="submit"
-              className="w-full cursor-pointer mt-4 bg-primary hover:bg-[#25a1d3] text-white py-3 rounded-xl font-medium"
+              className={`w-full cursor-pointer mt-4 bg-primary hover:bg-[#25a1d3] text-white py-3 rounded-xl font-medium ${
+                isCreatingOrder || isPaying ? "opacity-60 cursor-not-allowed" : ""
+              }`}
+              disabled={isCreatingOrder || isPaying}
             >
-              Place Order
+              {isCreatingOrder || isPaying ? "Processing..." : "Place Order"}
             </button>
           </form>
         </div>

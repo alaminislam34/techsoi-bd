@@ -11,9 +11,17 @@ interface FavoriteProduct {
 
 // Get favorites list
 export const useGetFavorites = () => {
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
   return useQuery({
     queryKey: ["favorites"],
-    queryFn: () => apiClient.get<FavoriteProduct[]>(API_ENDPOINTS.FAV_LIST_GET),
+    queryFn: () =>
+      apiClient.request<FavoriteProduct[]>(API_ENDPOINTS.FAV_LIST_GET, {
+        method: "GET",
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      }),
+    enabled: !!token,
     staleTime: 2 * 60 * 1000,
   });
 };
@@ -23,8 +31,18 @@ export const useAddToFavorites = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { product_id: number }) =>
-      apiClient.post<FavoriteProduct>(API_ENDPOINTS.FAV_LIST_ADD, data),
+    mutationFn: (data: { product_id: number }) => {
+      const token =
+        typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      if (!token) {
+        throw new Error("Please login to add to favorites");
+      }
+      return apiClient.request<FavoriteProduct>(API_ENDPOINTS.FAV_LIST_ADD, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify(data),
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
       toast.success("Added to favorites");
@@ -40,8 +58,17 @@ export const useDeleteFromFavorites = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: number) =>
-      apiClient.delete(API_ENDPOINTS.FAV_LIST_DELETE(id)),
+    mutationFn: (id: number) => {
+      const token =
+        typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      if (!token) {
+        throw new Error("Please login to remove favorites");
+      }
+      return apiClient.request(API_ENDPOINTS.FAV_LIST_DELETE(id), {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
       toast.success("Removed from favorites");

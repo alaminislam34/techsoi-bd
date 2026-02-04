@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 // import NavbarTop from "@/components/section/NavbarTop";
 import Navbar from "@/components/section/Navbar";
+import NavbarTop from "@/components/section/NavbarTop";
 import Manubar from "@/components/section/Manubar";
 import NavbarCategory from "@/components/section/NavbarCategory";
 import Footer from "@/components/section/Footer";
@@ -23,11 +24,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <QueryProvider>
-        <AuthProvider>
-          <body>
+      <body suppressHydrationWarning>
+        <QueryProvider>
+          <AuthProvider>
             {/* Global Navbar */}
-            {/* <NavbarTop /> */}
+            <NavbarTop />
             <Navbar />
             <Manubar />
             <NavbarCategory />
@@ -40,9 +41,9 @@ export default function RootLayout({
               autoClose={2000}
               hideProgressBar={false}
             />{" "}
-          </body>
-        </AuthProvider>
-      </QueryProvider>
+          </AuthProvider>
+        </QueryProvider>
+      </body>
     </html>
   );
 }

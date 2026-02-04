@@ -1,14 +1,25 @@
 "use client";
 
 import CommonWrapper from "@/components/layout/CommonWrapper";
-import { Autoplay } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
 import SafeImage from "@/components/ui/SafeImage";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/api/apiClient";
 import { API_ENDPOINTS } from "@/api/ApiEndPoint";
-
+import { motion } from "motion/react";
+const brandsImages = [
+  {
+    image: "/brandslogo/brand1.png",
+  },
+  {
+    image: "/brandslogo/brand2.png",
+  },
+  {
+    image: "/brandslogo/brand3.png",
+  },
+  {
+    image: "/brandslogo/brand4.png",
+  },
+];
 export default function AllBrands() {
   const [allBrands, setAllBrands] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +28,7 @@ export default function AllBrands() {
     const fetchBrands = async () => {
       try {
         const res = await apiClient.get(API_ENDPOINTS.SPECIAL_BRAND);
-
+        console.log(res);
         if (res.status) {
           setAllBrands(res.data);
         } else {
@@ -33,8 +44,8 @@ export default function AllBrands() {
     fetchBrands();
   }, []);
 
-  // For infinite smooth marquee (fixes loop warning)
-  const duplicatedBrands = [...allBrands, ...allBrands, ...allBrands];
+  const brandList = allBrands.length > 0 ? allBrands : brandsImages;
+  const marqueeItems = brandList.length > 0 ? [...brandList, ...brandList] : [];
 
   if (loading) {
     return (
@@ -48,13 +59,6 @@ export default function AllBrands() {
 
   return (
     <>
-      <style jsx global>{`
-        /* Force linear motion for the marquee effect */
-        .swiper-wrapper {
-          transition-timing-function: linear !important;
-        }
-      `}</style>
-
       <div className="py-10">
         <CommonWrapper>
           <div className="flex flex-col md:flex-row items-center relative gap-3 md:gap-12 mx-5 xl:mx-25">
@@ -70,28 +74,18 @@ export default function AllBrands() {
             <div className="relative overflow-hidden w-full">
               <div className="absolute top-0 left-0 w-10 lg:w-25 h-full bg-linear-to-r from-white to-transparent z-10 pointer-events-none"></div>
               <div className="absolute top-0 right-0 w-10 lg:w-25 h-full bg-linear-to-l from-white to-transparent z-10 pointer-events-none"></div>
-
-              <Swiper
-                modules={[Autoplay]}
-                spaceBetween={25}
-                slidesPerView={3}
-                loop={true}
-                speed={4000}
-                allowTouchMove={false}
-                autoplay={{
-                  delay: 0,
-                  disableOnInteraction: false,
-                }}
-                className="w-full"
-                breakpoints={{
-                  0: { slidesPerView: 3, spaceBetween: 20 },
-                  768: { slidesPerView: 3, spaceBetween: 25 },
-                  1024: { slidesPerView: 4, spaceBetween: 25 },
+              <motion.div
+                className="flex items-center gap-6 w-max"
+                animate={{ x: ["0%", "-50%"] }}
+                transition={{
+                  duration: 30,
+                  repeat: Infinity,
+                  ease: "linear",
                 }}
               >
-                {duplicatedBrands.map((item, index) => (
-                  <SwiperSlide
-                    key={`${item.id}-${index}`}
+                {marqueeItems.map((item, index) => (
+                  <div
+                    key={`${item.id || "brand"}-${index}`}
                     className="flex justify-center items-center"
                   >
                     <div className="grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer py-4">
@@ -102,12 +96,12 @@ export default function AllBrands() {
                         height={80}
                         width={200}
                         alt={`Brand ${item?.id || index + 1}`}
-                        className="object-contain h-8 sm:h-12 md:h-16 w-full min-w-20 md:py-1"
+                        className="object-contain h-8 sm:h-12 md:h-16 min-w-20 md:py-1"
                       />
                     </div>
-                  </SwiperSlide>
+                  </div>
                 ))}
-              </Swiper>
+              </motion.div>
             </div>
           </div>
         </CommonWrapper>

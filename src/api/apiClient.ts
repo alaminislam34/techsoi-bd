@@ -1,5 +1,3 @@
-import { API_ENDPOINTS } from "./ApiEndPoint";
-
 export interface ApiResponse<T> {
   status: boolean;
   message: string;
@@ -17,40 +15,55 @@ class ApiClient {
 
   async request<T>(
     url: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<ApiResponse<T>> {
-    const defaultHeaders: HeadersInit = {
-      "Content-Type": "application/json",
-    };
+    const headers = new Headers(options.headers || {});
+    const hasBody = options.body !== undefined && options.body !== null;
+    const isFormData =
+      typeof FormData !== "undefined" && options.body instanceof FormData;
+    const isUrlEncoded =
+      typeof URLSearchParams !== "undefined" &&
+      options.body instanceof URLSearchParams;
 
-    // Add token from localStorage if available
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    if (token) {
-      defaultHeaders["Authorization"] = `Bearer ${token}`;
+    if (
+      hasBody &&
+      !isFormData &&
+      !isUrlEncoded &&
+      !headers.has("Content-Type")
+    ) {
+      headers.set("Content-Type", "application/json");
     }
+
+    const fullUrl = /^https?:\/\//i.test(url)
+      ? url
+      : `${this.baseURL}${url.startsWith("/") ? "" : "/"}${url}`;
 
     const config: RequestInit = {
       ...options,
-      headers: {
-        ...defaultHeaders,
-        ...(options.headers || {}),
-      },
+      headers,
     };
 
     try {
-      const response = await fetch(url, config);
+      const response = await fetch(fullUrl, config);
       const contentType = response.headers.get("content-type");
-      
+
       let data: any;
-      
+
       // Check if response is JSON before parsing
       if (contentType && contentType.includes("application/json")) {
-        data = await response.json();
+        try {
+          data = await response.json();
+        } catch {
+          data = null;
+        }
       } else {
-        // If not JSON, get the text and create error message
         const text = await response.text();
-        
-        // Determine error message based on status
+        try {
+          data = text ? JSON.parse(text) : null;
+        } catch {
+          data = null;
+        }
+
         let errorMessage = "API Error";
         if (response.status === 401) {
           errorMessage = "Unauthorized - Please login to continue";
@@ -63,14 +76,13 @@ class ApiClient {
         } else {
           errorMessage = `HTTP ${response.status} - ${response.statusText}`;
         }
-        
-        console.error(`[API Error] ${response.status} ${response.statusText}`, { url, text });
+
         throw new Error(errorMessage);
       }
 
       if (!response.ok) {
         const errorMsg = data.message || `HTTP ${response.status} Error`;
-        console.error(`[API Error] ${response.status}`, { url, message: errorMsg, data });
+
         throw new Error(errorMsg);
       }
 
@@ -78,7 +90,10 @@ class ApiClient {
     } catch (error: any) {
       // If it's a network error
       if (error instanceof TypeError && error.message === "Failed to fetch") {
-        console.error("[Network Error] Check if API server is running and CORS is enabled", { url });
+        console.error(
+          "[Network Error] Check if API server is running and CORS is enabled",
+          { url: fullUrl },
+        );
         throw new Error("Network Error - Unable to connect to server");
       }
       console.error("API Request Failed:", error);
@@ -94,7 +109,10 @@ class ApiClient {
   }
 
   // POST Request
-  async post<T>(endpoint: string, body?: Record<string, any>): Promise<ApiResponse<T>> {
+  async post<T>(
+    endpoint: string,
+    body?: Record<string, any>,
+  ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: "POST",
       body: body ? JSON.stringify(body) : undefined,
@@ -102,7 +120,10 @@ class ApiClient {
   }
 
   // PUT Request
-  async put<T>(endpoint: string, body?: Record<string, any>): Promise<ApiResponse<T>> {
+  async put<T>(
+    endpoint: string,
+    body?: Record<string, any>,
+  ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: "PUT",
       body: body ? JSON.stringify(body) : undefined,
@@ -110,7 +131,10 @@ class ApiClient {
   }
 
   // PATCH Request
-  async patch<T>(endpoint: string, body?: Record<string, any>): Promise<ApiResponse<T>> {
+  async patch<T>(
+    endpoint: string,
+    body?: Record<string, any>,
+  ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: "PATCH",
       body: body ? JSON.stringify(body) : undefined,
@@ -118,7 +142,10 @@ class ApiClient {
   }
 
   // DELETE Request
-  async delete<T>(endpoint: string, body?: Record<string, any>): Promise<ApiResponse<T>> {
+  async delete<T>(
+    endpoint: string,
+    body?: Record<string, any>,
+  ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: "DELETE",
       body: body ? JSON.stringify(body) : undefined,

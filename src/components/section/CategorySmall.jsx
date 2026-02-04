@@ -13,21 +13,33 @@ import Link from "next/link";
 
 export default function CategorySmall() {
   const categories = [
-    { to: "/category/laptop", label: "Laptop", icon: <Laptop /> },
-    { to: "/category/components", label: "Components", icon: <Components /> },
-    { to: "/category/monitor", label: "Monitor", icon: <Monitor /> },
-    { to: "/category/casing", label: "Casing", icon: <Casing /> },
+    { to: "/products?category=1", label: "Laptop", icon: <Laptop /> },
     {
-      to: "/category/accessories",
+      to: "/products?category=2",
+      label: "Components",
+      icon: <Components />,
+    },
+    { to: "/products?category=3", label: "Monitor", icon: <Monitor /> },
+    { to: "/products?category=4", label: "Casing", icon: <Casing /> },
+    {
+      to: "/products?category=5",
       label: "Accessories",
       icon: <Accessories />,
     },
-    { to: "/category/mouse", label: "Mouse", icon: <Mouse /> },
-    { to: "/category/keyboard", label: "Keyboard", icon: <Keyboard /> },
-    { to: "/category/headphone", label: "Headphone", icon: <Headphone /> },
-    { to: "/category/speaker", label: "Speaker", icon: <Speaker /> },
-    { to: "/category/gaming", label: "Gaming", icon: <Gaming /> },
-    { to: "/category/cctv", label: "CCTV", icon: <CCTV /> },
+    { to: "/products?category=6", label: "Mouse", icon: <Mouse /> },
+    {
+      to: "/products?category=7",
+      label: "Keyboard",
+      icon: <Keyboard />,
+    },
+    {
+      to: "/products?category=8",
+      label: "Headphone",
+      icon: <Headphone />,
+    },
+    { to: "/products?category=9", label: "Speaker", icon: <Speaker /> },
+    { to: "/products?category=10", label: "Gaming", icon: <Gaming /> },
+    { to: "/products?category=11", label: "CCTV", icon: <CCTV /> },
   ];
 
   return (

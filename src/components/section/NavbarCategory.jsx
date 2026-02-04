@@ -56,14 +56,13 @@ export default function NavbarCategory() {
   // Handle main category click → redirect to products with category filter
   const handleMainCategoryClick = (e, category) => {
     e.preventDefault(); // prevent default link behavior
-    router.push(`/products?category=${category.slug}`);
+    router.push(`/products?category=${category.id}`);
   };
 
   // Handle subcategory click → redirect to products with search query
-  const handleSubCategoryClick = (e, subCategoryName) => {
+  const handleSubCategoryClick = (e, subCategoryId) => {
     e.preventDefault();
-    // You can also use sub.slug if your backend supports it better
-    router.push(`/products?sub-category=${encodeURIComponent(subCategoryName)}`);
+    router.push(`/products?sub_category=${subCategoryId}`);
   };
 
   if (isLoading) {
@@ -101,7 +100,7 @@ export default function NavbarCategory() {
           {/* Left Scroll Button */}
           <button
             onClick={() => scroll("left")}
-            className="absolute left-0 z-20 p-1 bg-[#eaf7fc]/80 hover:text-primary lg:hidden"
+            className="absolute left-0 z-20 p-1 bg-[#eaf7fc]/80 hover:text-primary"
             aria-label="Scroll left"
           >
             <ChevronLeft size={24} />
@@ -120,10 +119,10 @@ export default function NavbarCategory() {
               >
                 {/* Main Category */}
                 <Link
-                  href={`/products?category=${item.slug}`}
+                  href={`/products?category=${item.id}`}
                   onClick={(e) => handleMainCategoryClick(e, item)}
                   className={`md:text-lg font-medium whitespace-nowrap transition-colors ${
-                    pathname.includes(`/products?category=${item.slug}`)
+                    pathname.includes(`/products?category=${item.id}`)
                       ? "text-primary font-semibold"
                       : "text-[#303030] hover:text-primary"
                   }`}
@@ -142,7 +141,7 @@ export default function NavbarCategory() {
           {/* Right Scroll Button */}
           <button
             onClick={() => scroll("right")}
-            className="absolute right-0 z-20 p-1 bg-[#eaf7fc]/80 hover:text-primary lg:hidden"
+            className="absolute right-0 z-20 p-1 bg-[#eaf7fc]/80 hover:text-primary"
             aria-label="Scroll right"
           >
             <ChevronRight size={24} />
@@ -159,8 +158,8 @@ export default function NavbarCategory() {
                 {allCategories[activeFilter].subcategory.map((sub) => (
                   <Link
                     key={sub.id}
-                    href={`/products?query=${encodeURIComponent(sub.name)}`}
-                    onClick={(e) => handleSubCategoryClick(e, sub.name)}
+                    href={`/products?sub_category=${sub.id}`}
+                    onClick={(e) => handleSubCategoryClick(e, sub.id)}
                     className="text-sm md:text-base text-[#303030] hover:text-primary hover:font-medium transition-all duration-200 hover:underline underline-offset-4"
                   >
                     {sub.name}

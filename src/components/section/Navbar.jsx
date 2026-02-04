@@ -1,13 +1,18 @@
 "use client";
 import CommonWrapper from "@/components/layout/CommonWrapper";
 import { useAuth } from "@/Provider/AuthProvider";
-import { User, LogOut, Handbag } from "lucide-react";
+import {
+  User,
+  LogOut,
+  Handbag,
+} from "lucide-react";
 import SafeImage from "@/components/ui/SafeImage";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 import { useSearchProducts } from "@/api/hooks";
+import Image from "next/image";
 
 export default function Navbar() {
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -31,30 +36,27 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="bg-white/50 backdrop-blur-[50px] sticky top-0 z-50 shadow-xs">
+      <div className="bg-white sticky top-0 z-50 shadow-xs">
         <CommonWrapper>
           <div className="flex justify-between items-center relative py-2.5 md:py-4">
             {/* ---------- LOGO ---------- */}
             <Link href={"/"}>
               <div className="sm:block md:block mr-1 py-2">
-                {/* <Image
+                <Image
                   src={"/icons/logo.png"}
                   height={400}
                   width={800}
                   alt="Website logo"
                   className="h-10 md:h-14 w-auto object-contain"
-                /> */}
-                <h1 className="text-xl md:text-2xl font-semibold text-primary">
-                  {" "}
-                  Technology Hat
-                </h1>
+                />
               </div>
             </Link>
 
             {/* ---------- SEARCH ---------- */}
-            <div className="hidden px-2 md:flex justify-between items-center md:w-xs lg:w-2xl relative mx-4 sm:mx-0 lg:mx-3 md:mx-4 py-2 rounded-xl bg-white border border-[#bee5f6]">
+            <div className="hidden px-2 md:flex justify-between items-center md:w-xs lg:w-2xl relative mx-4 sm:mx-0 lg:mx-3 md:mx-4 py-2 rounded-xl bg-white border border-primary">
               <div className="relative flex-1">
                 <input
+                  required
                   value={searchTerm}
                   onChange={(e) => {
                     setSearchTerm(e.target.value);
@@ -149,7 +151,7 @@ export default function Navbar() {
                         className="w-5 h-auto"
                       />
                       <div className="flex flex-col justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
-                        <p className="text-[10px] text-white">2</p>
+                        <p className="text-[10px] text-white">0</p>
                       </div>
                     </div>
 
@@ -157,7 +159,7 @@ export default function Navbar() {
                       <p className="text-base font-medium text-primary">
                         Favourites
                       </p>
-                      <p className="text-sm text-[#505050]">৳650</p>
+                      <p className="text-sm text-[#505050]">৳0</p>
                     </div>
                   </Link>
 
@@ -176,13 +178,13 @@ export default function Navbar() {
                         className="w-5 h-auto"
                       />
                       <div className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
-                        <p className="text-[10px] text-white">3</p>
+                        <p className="text-[10px] text-white">0</p>
                       </div>
                     </div>
 
                     <div className="md:block hidden">
                       <p className="text-sm font-medium text-primary">Cart</p>
-                      <p className="text-sm text-[#505050]">৳200</p>
+                      <p className="text-sm text-[#505050]">৳0</p>
                     </div>
                   </Link>
 
@@ -195,13 +197,13 @@ export default function Navbar() {
                         <Handbag size={20} />
                       </div>
                       <div className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
-                        <p className="text-[10px] text-white">3</p>
+                        <p className="text-[10px] text-white">0</p>
                       </div>
                     </div>
 
                     <div className="md:block hidden">
                       <p className="text-sm font-medium text-primary">Orders</p>
-                      <p className="text-sm text-[#505050]">৳200</p>
+                      <p className="text-sm text-[#505050]">৳0</p>
                     </div>
                   </Link>
                 </>
@@ -273,7 +275,7 @@ export default function Navbar() {
                                 <Handbag size={20} />
                               </div>
                               <div className="flex justify-center items-center w-3.5 h-3.5 absolute left-5 top-[6.5px] rounded-3xl bg-primary">
-                                <p className="text-[10px] text-white">3</p>
+                                <p className="text-[10px] text-white">0</p>
                               </div>
                             </div>
 
