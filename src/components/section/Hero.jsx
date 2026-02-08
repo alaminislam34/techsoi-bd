@@ -40,7 +40,7 @@ export default function Hero() {
     <div className="my-3 md:my-8">
       <CommonWrapper>
         {/* Main Container: overflow-hidden must be here */}
-        <div className="bg-gray-200 rounded-2xl w-full h-75 sm:h-100 md:h-125 lg:h-150 relative overflow-hidden">
+        <div className="bg-gray-200 rounded-2xl w-full h-full relative overflow-hidden">
           <AnimatePresence initial={false}>
             <motion.div
               key={currentIndex}
@@ -49,12 +49,12 @@ export default function Hero() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
-              className="absolute inset-0 w-full h-full"
+              className="w-full h-full"
             >
               <SafeImage
                 width={1400}
-                height={700}
-                className="w-full h-full object-cover rounded-2xl"
+                height={1000}
+                className="w-full h-full object-contain rounded-2xl"
                 src={heroImages[currentIndex]?.image}
                 alt={`Hero Slide ${currentIndex}`}
                 priority

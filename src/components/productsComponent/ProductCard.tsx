@@ -79,7 +79,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   ৳{price}
                 </p>
                 <p className="text-sm lg:text-lg line-through text-[#808080]">
-                  ৳{oldPrice}
+                 {oldPrice <= 0 ? "" : `৳${oldPrice}`}
                 </p>
               </div>
 
