@@ -68,7 +68,7 @@ export default function Hero() {
                 <SafeImage
                   width={1200}
                   height={600}
-                  className="w-full h-fit object-contain rounded-xl"
+                  className="w-full object-contain rounded-xl"
                   src={slides[currentIndex]?.image}
                   fallbackSrc={HeroImage}
                   alt="hero"
