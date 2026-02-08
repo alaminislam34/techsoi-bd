@@ -55,7 +55,7 @@ export default function Hero() {
     <>
       <div className="my-3 md:my-8">
         <CommonWrapper>
-          <div className="bg-black rounded-2xl w-full h-full relative flex justify-end items-center overflow-hidden">
+          <div className="bg-gray-50 rounded-2xl w-full h-full relative flex justify-end items-center overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.div
                 key={`${slides[currentIndex]?.id || "hero"}-${currentIndex}`}
