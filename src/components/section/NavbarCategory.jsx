@@ -109,7 +109,7 @@ export default function NavbarCategory() {
           {/* Category List */}
           <div
             ref={scrollRef}
-            className="flex items-center gap-4 md:gap-8 py-2 overflow-x-auto no-scrollbar scroll-smooth w-full px-6 md:px-0"
+            className="flex items-center gap-4 md:gap-8 overflow-x-auto no-scrollbar scroll-smooth w-full px-6 md:px-0"
           >
             {allCategories.map((item, index) => (
               <div

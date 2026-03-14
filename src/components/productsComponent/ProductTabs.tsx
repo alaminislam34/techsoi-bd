@@ -19,13 +19,13 @@ export default function ProductTabs({
   reviewCount,
   productId,
 }: ProductTabsProps) {
-  const [activeTab, setActiveTab] = useState("description");
+  const [activeTab, setActiveTab] = useState("specs");
 
   return (
     <div className="mt-16 border border-[#BEE5F6] rounded-xl">
       {/* Tab Buttons */}
       <div className="flex border-b border-[#BEE5F6] lg:p-4 md:p-2 sm:p-2 p-1">
-        {["description", "specs", "reviews"].map((tab) => (
+        {["specs", "description", "reviews"].map((tab) => (
           <button
             key={tab}
             className={`px-3 py-2 text-xs sm:px-6 sm:py-3 sm:text-base rounded-xl font-semibold transition-colors duration-200 ${
@@ -35,10 +35,10 @@ export default function ProductTabs({
             }`}
             onClick={() => setActiveTab(tab)}
           >
-            {tab === "description"
-              ? "Description"
-              : tab === "specs"
-                ? "Technical Specs"
+            {tab === "specs"
+              ? "Technical Specs"
+              : tab === "description"
+                ? "Description"
                 : "Reviews"}
           </button>
         ))}

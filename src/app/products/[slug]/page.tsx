@@ -87,8 +87,19 @@ export default function ProductDetails() {
   const stockValue = Number(product?.stock);
   const isInStock = Number.isFinite(stockValue) ? stockValue > 0 : true;
   const maxQty = Number.isFinite(stockValue) && stockValue > 0 ? stockValue : 1;
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
 
-  // If slug isn't ready yet (client component hydration) or the query is loading, show loader
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { left, top, width, height } =
+      e.currentTarget.getBoundingClientRect();
+
+    const x = ((e.pageX - left - window.scrollX) / width) * 100;
+    const y = ((e.pageY - top - window.scrollY) / height) * 100;
+
+    setMousePos({ x, y });
+  };
+
   if (isLoading || !slug) {
     return (
       <CommonWrapper>
@@ -99,7 +110,6 @@ export default function ProductDetails() {
     );
   }
 
-  // If the request errored, show a helpful message; otherwise show a not-found message
   if (!product) {
     const message = isError
       ? `Error: ${apiError?.message ?? "Failed to load product"}`
@@ -130,18 +140,25 @@ export default function ProductDetails() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* LEFT IMAGES */}
             <div>
-              <div className="w-full h-95 md:h-105 relative border border-[#BEE5F6] rounded-2xl p-4">
+              <div
+                className="w-full aspect-4/3 relative border border-[#BEE5F6] rounded-2xl overflow-hidden cursor-zoom-in"
+                onMouseMove={handleMouseMove}
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => setIsHovering(false)}
+              >
                 <img
                   src={activeImg || "/images/monitor.jpg"}
                   alt={product.name}
-                  className="w-full h-full object-cover rounded-2xl"
-                  onError={(e) => {
-                    e.currentTarget.src = "/images/monitor.jpg";
+                  className={`w-full h-full object-cover rounded-2xl transition-transform duration-200 ease-out ${
+                    isHovering ? "scale-150" : "scale-100"
+                  }`}
+                  style={{
+                    transformOrigin: `${mousePos.x}% ${mousePos.y}%`,
                   }}
                 />
               </div>
 
-              <div className="flex gap-4 mt-4">
+              <div className="flex gap-4 mt-4 overflow-x-auto pb-2">
                 {(
                   ([product.main_image, ...extraImages].filter(
                     Boolean,
@@ -150,19 +167,16 @@ export default function ProductDetails() {
                   <button
                     key={idx}
                     onClick={() => setActiveImg(img)}
-                    className={`w-20 h-20 p-1 rounded-xl border transition-all duration-200 ${
+                    className={`w-20 h-20 shrink-0 p-1 rounded-xl border transition-all duration-200 ${
                       activeImg === img
                         ? "border-primary ring-1 ring-primary"
-                        : "border-gray-300"
+                        : "border-gray-200"
                     }`}
                   >
                     <img
                       src={img || "/images/monitor.jpg"}
                       alt={`variant-${idx}`}
                       className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.currentTarget.src = "/images/monitor.jpg";
-                      }}
                     />
                   </button>
                 ))}

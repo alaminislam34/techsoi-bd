@@ -18,7 +18,6 @@ export default function Navbar() {
   const router = useRouter();
   const [websiteInfo, setWebsiteInfo] = useState(null);
   const [isHydrated, setIsHydrated] = useState(false);
-  console.log(user);
   // Search state
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
@@ -33,7 +32,6 @@ export default function Navbar() {
     try {
       const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
       const appUrl = process.env.NEXT_PUBLIC_APP_URL;
-      console.log("google client id:", clientId);
       if (!clientId || !appUrl) {
         console.error("Google Login environment variables missing!");
         toast.error("Google login is not configured properly.");
@@ -43,7 +41,6 @@ export default function Navbar() {
       const redirectUri = `${appUrl}/api/auth/callback/google`;
       const scope = encodeURIComponent("email profile openid");
       const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
-      console.log(redirectUri);
       window.location.href = googleUrl;
     } catch (error) {
       console.error("Google login error:", error);
@@ -80,7 +77,7 @@ export default function Navbar() {
       {/* ---------- MAIN NAVBAR ---------- */}
       <div className="bg-[#303030] backdrop-blur-[50px] sticky top-0 z-50 shadow-xs">
         <CommonWrapper>
-          <div className="flex justify-between items-center relative py-2.5 md:py-4">
+          <div className="flex justify-between items-center relative py-2 md:py-2.5">
             {/* ---------- LOGO ---------- */}
             <Link href="/" className="sm:block md:block mr-1 py-2">
               <Image
@@ -88,14 +85,15 @@ export default function Navbar() {
                 height={400}
                 width={800}
                 alt="Website logo"
-                className="h-10 md:h-14 w-auto object-contain"
+                className="h-7 md:h-10 w-auto object-contain"
               />
             </Link>
 
             {/* ---------- SEARCH BAR ---------- */}
-            <div className="hidden px-2 md:flex justify-between items-center md:w-xs lg:w-2xl relative mx-4 sm:mx-0 lg:mx-3 md:mx-4 py-2 rounded-xl bg-white border-2 border-primary">
+            <div className="hidden px-2 md:px-4 md:flex justify-between items-center md:w-xs lg:w-2xl relative mx-4 sm:mx-0 lg:mx-3 md:mx-4 py-2 rounded-xl bg-white border-2 border-primary">
               <div className="relative flex-1 ">
                 <input
+                  required
                   value={searchTerm}
                   onChange={(e) => {
                     setSearchTerm(e.target.value);
@@ -105,7 +103,7 @@ export default function Navbar() {
                   onBlur={() =>
                     setTimeout(() => setShowSuggestions(false), 150)
                   }
-                  className="lg:text-lg w-full focus:outline-none "
+                  className="w-full focus:outline-none text-sm"
                   placeholder="Search products.."
                 />
 
