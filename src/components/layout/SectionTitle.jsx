@@ -6,7 +6,7 @@ export default function SectionTitle({ title, titleInColor, description }) {
                     <span className="text-[#202020]">
                         {title}
                     </span>
-                    <span className="text-[#2cace2]">
+                    <span className="text-primary">
                         &nbsp;{titleInColor}
                     </span>
                 </p>

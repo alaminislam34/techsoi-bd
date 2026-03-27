@@ -1,182 +1,306 @@
 "use client";
 
-import { useState } from "react";
-import Image, { StaticImageData } from "next/image";
-import { Trash2, Minus, Plus, ShoppingCart } from "lucide-react";
-
-import FavA from "@/assets/reviewImg/fav1.jpg";
-import FavB from "@/assets/reviewImg/fav1.jpg";
-import FavAC from "@/assets/reviewImg/fav1.jpg";
+import { useEffect, useState } from "react";
+import SafeImage from "@/components/ui/SafeImage";
+import {
+  Trash2,
+  Minus,
+  Plus,
+  ShoppingCart,
+  Loader2,
+  HeartOff,
+} from "lucide-react";
 import CommonWrapper from "@/components/layout/CommonWrapper";
 import WebFutures from "@/components/section/WebFutures";
 import BlogTitle from "@/components/layout/BlogTitle";
 import BlogCard from "@/components/parts/BlogCard";
-
-type FavItem = {
-id: number;
-name: string;
-price: number;
-status: string;
-img: StaticImageData | string;
-qty: number;
-};
-
-const initialFavourites: FavItem[] = [
-{
-id: 1,
-name: "A donut dressed up as a Smart Assistant",
-price: 3600,
-status: "In stock",
-img: FavA,
-qty: 1,
-},
-{
-id: 2,
-name: "A donut dressed up as a Smart Assistant",
-price: 3600,
-status: "In stock",
-img: FavB,
-qty: 1,
-},
-{
-id: 3,
-name: "A donut dressed up as a Smart Assistant",
-price: 3600,
-status: "In stock",
-img: FavAC,
-qty: 1,
-},
-];
+import { toast } from "react-toastify";
+import { apiClient } from "@/api/apiClient";
+import { API_ENDPOINTS } from "@/api/ApiEndPoint";
+import Cookies from "js-cookie";
 
 export default function FavouritePage() {
-const [favourites, setFavourites] = useState<FavItem[]>(initialFavourites);
+  const [favorites, setFavorites] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
-const increaseQty = (id: number) => {
-setFavourites((prev) =>
-prev.map((it) => (it.id === id ? { ...it, qty: it.qty + 1 } : it))
-);
-};
+  const getClientToken = () => {
+    if (typeof window === "undefined") {
+      return undefined;
+    }
 
-const decreaseQty = (id: number) => {
-setFavourites((prev) =>
-prev.map((it) =>
-it.id === id && it.qty > 1 ? { ...it, qty: it.qty - 1 } : it
-)
-);
-};
+    return (
+      window.localStorage.getItem("accessToken") ||
+      Cookies.get("accessTokenClient") ||
+      Cookies.get("accessToken")
+    );
+  };
 
-return (
-<> <CommonWrapper> 
-  <section className="w-full py-10 ">
-     <div className=" bg-white border border-gray-200 rounded-2xl p-6 ">
-       <h2 className="text-2xl font-semibold mb-6">My Favourite</h2>
+  const fetchFavorites = async () => {
+    try {
+      setIsLoading(true);
+      setIsError(false);
 
-        {/* Table header - visible on md+ */}
-        <div className="hidden md:grid grid-cols-12 text-gray-600 font-medium text-sm border-b pb-3 mb-4">
-          <div className="col-span-1">Delete</div>
-          <div className="col-span-5">Products</div>
-          <div className="col-span-2">Stock Status</div>
-          <div className="col-span-2">Quantity</div>
-          <div className="col-span-2 text-right">Total Price</div>
-        </div>
+      const token = getClientToken();
+      if (!token) {
+        setFavorites([]);
+        return;
+      }
 
-        {/* Items */}
-        {favourites.map((item) => (
-          <div
-            key={item.id}
-            className="grid md:grid-cols-12 grid-cols-1 gap-y-4 md:gap-y-0 items-center py-6 border-b last:border-none"
-          >
-            {/* Delete */}
-            <div className="md:col-span-1 flex items-start md:items-center">
-              <button className="text-gray-500 hover:text-red-500">
-                <Trash2 size={20} />
-              </button>
-            </div>
+      const response = await apiClient.request<any[]>(
+        API_ENDPOINTS.FAV_LIST_GET,
+        {
+          auth: true,
+          method: "GET",
+        },
+      );
+    
+      setFavorites(response?.data || []);
+    } catch (error: any) {
+      console.error("Failed to load favourites:", error);
+      if (error?.status !== 401) {
+        toast.error(error?.message || "Failed to load favourites");
+      }
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-            {/* Product */}
-            <div className="md:col-span-5 flex items-start md:items-center gap-4">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl border p-1 overflow-hidden relative shrink-0">
-                <Image
-                  src={item.img}
-                  alt={item.name}
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <p className="font-medium text-gray-700 text-sm sm:text-base">
-                {item.name}
-              </p>
-            </div>
+  const handleAddToCart = async (productId: number, quantity: number) => {
+    try {
+      setIsAddingToCart(true);
+      await apiClient.request(API_ENDPOINTS.CART_PRODUCT_ADD, {
+        auth: true,
+        method: "POST",
+        body: JSON.stringify({ product_id: productId, quantity }),
+      });
+      toast.success("Added to cart");
+    } catch (error: any) {
+      console.error("Failed to add to cart:", error);
+      toast.error(error?.message || "Failed to add to cart");
+    } finally {
+      setIsAddingToCart(false);
+    }
+  };
+  // Local quantity state (kept as per your design)
+  const [quantities, setQuantities] = useState<Record<number, number>>({});
 
-            {/* Stock */}
-            <div className="md:col-span-2">
-              <span className="bg-yellow-400 text-black px-3 py-1 rounded-lg text-sm font-medium">
-                {item.status}
-              </span>
-            </div>
+  // Initialize quantity to 1 for each favorite item
+  useEffect(() => {
+    if (favorites.length > 0) {
+      const initialQuantities: Record<number, number> = {};
+      favorites.forEach((fav: any) => {
+        initialQuantities[fav.id] = 1;
+      });
+      setQuantities(initialQuantities);
+    }
+  }, [favorites]);
 
-            {/* Quantity selector */}
-            <div className="md:col-span-2 flex items-center">
-              <div className="flex items-center border border-blue-400 rounded-lg px-2 py-1 w-28 justify-between">
-                <button
-                  onClick={() => decreaseQty(item.id)}
-                  aria-label="decrease"
-                  className="text-blue-400"
-                >
-                  <Minus size={16} />
-                </button>
+  useEffect(() => {
+    fetchFavorites();
+  }, []);
 
-                <span className="text-sm font-semibold">
-                  {item.qty.toString().padStart(2, "0")}
-                </span>
+  const handleDelete = async (favId: number) => {
+    try {
+      setIsDeleting(true);
+      await apiClient.request(API_ENDPOINTS.FAV_LIST_DELETE(favId), {
+        auth: true,
+        method: "DELETE",
+      });
 
-                <button
-                  onClick={() => increaseQty(item.id)}
-                  aria-label="increase"
-                  className="text-blue-400"
-                >
-                  <Plus size={16} />
-                </button>
-              </div>
-            </div>
+      setFavorites((prev) => prev.filter((fav) => fav.id !== favId));
+      toast.success("Removed from favorites");
+    } catch (error: any) {
+      console.error("Failed to remove favourite:", error);
+      toast.error(error?.message || "Failed to remove item");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
-            {/* Price + Add to Cart */}
-            <div className="md:col-span-2 flex flex-col md:flex-row items-center md:justify-end gap-3 w-full">
-              <div className="w-28 text-right">
-                <p className="text-blue-500 font-semibold text-lg">
-                  ৳{item.price * item.qty}
-                </p>
-              </div>
+  const updateQty = (id: number, delta: number) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [id]: Math.max(1, (prev[id] || 1) + delta),
+    }));
+  };
 
-              <button
-                type="button"
-                className="border border-blue-400 text-blue-500 flex items-center justify-center gap-2 px-4 py-2 rounded-lg hover:bg-blue-500 hover:text-white transition text-sm min-w-[140px]"
-              >
-                <ShoppingCart size={16} />
-                <span className="whitespace-nowrap">Add to Cart</span>
-              </button>
-            </div>
-          </div>
-        ))}
+  if (isLoading) {
+    return (
+      <div className="h-[60vh] flex flex-col items-center justify-center text-primary gap-4">
+        <Loader2 className="animate-spin" size={40} />
+        <p className="font-medium">Loading your favourites...</p>
       </div>
-    </section>
-  </CommonWrapper>
+    );
+  }
 
-  {/* WebFutures Section */}
-  <WebFutures />
+  return (
+    <>
+      <CommonWrapper>
+        <section className="w-full py-10">
+          <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+            <h2 className="text-2xl font-bold mb-6 text-gray-800">
+              My Favourite
+            </h2>
 
-  {/* Blog Section */}
-  <CommonWrapper>
-    <BlogTitle
-      title={"Our Latest Blog"}
-      description={"Get Your Desired Product from Featured Category!"}
-      btnText={"Read All"}
-      btnLink={"#"}
-    />
-    <BlogCard limit={3} />
-  </CommonWrapper>
-</>
+            {favorites.length === 0 ? (
+              <div className="py-20 flex flex-col items-center justify-center text-gray-400">
+                <HeartOff size={48} className="mb-4 opacity-20" />
+                <p>Your favourite list is empty.</p>
+              </div>
+            ) : (
+              <>
+                <>
+                  {/* Table Wrapper */}
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-175 text-left border-collapse">
+                      <thead className="hidden md:table-header-group">
+                        <tr className="text-gray-500 font-bold text-xs uppercase tracking-wider border-b border-b-gray-200 border-r-gray-200 pb-4 ">
+                          <th className="py-4">Action</th>
+                          <th className="py-4">Product Details</th>
+                          <th className="py-4 text-center">Status</th>
+                          <th className="py-4 text-center">Quantity</th>
+                          <th className="py-4 text-center">Price</th>
+                          <th className="py-4 text-center">Action</th>
+                        </tr>
+                      </thead>
 
+                      {/* Table Body */}
+                      <tbody className="divide-y divide-gray-100 ">
+                        {favorites.map((fav: any) => {
+                          const product = fav.product?.[0]; // Product is an array, get first item
+                          const currentQty = quantities[fav.id] || 1;
 
-);
+                          // Ensure price is a number
+                          const salePrice = Number(product?.sale_price) || 0;
+                          const regularPrice =
+                            Number(product?.regular_price) || 0;
+                          const price = salePrice || regularPrice || 0;
+
+                          return (
+                            <tr
+                              key={fav.id}
+                              className="group hover:bg-gray-50 transition-colors "
+                            >
+                              {/* Action - Delete */}
+                              <td className="py-2">
+                                <button
+                                  onClick={() => handleDelete(fav.id)}
+                                  disabled={isDeleting}
+                                  className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all disabled:opacity-50"
+                                >
+                                  <Trash2 size={20} />
+                                </button>
+                              </td>
+
+                              {/* Product Details */}
+                              <td className="py-2">
+                                <div className="flex items-center gap-4">
+                                  <div className="w-8 h-8 rounded-xl border border-gray-100 p-2 relative overflow-hidden bg-gray-50 shrink-0">
+                                    {product?.main_image ? (
+                                      <SafeImage
+                                        src={product?.main_image}
+                                        alt={product?.name || "Product"}
+                                        fill
+                                        className="object-contain p-1"
+                                      />
+                                    ) : (
+                                      <div className="w-full h-full "></div>
+                                    )}
+                                  </div>
+                                  <h3 className="font-semibold text-gray-800 text-sm md:text-base leading-tight">
+                                    {product?.name || "Product"}
+                                  </h3>
+                                </div>
+                              </td>
+
+                              {/* Status */}
+                              <td className="py-2 text-center">
+                                <span className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold">
+                                  {product?.stock_status || "In Stock"}
+                                </span>
+                              </td>
+
+                              {/* Quantity */}
+                              <td className="py-2">
+                                <div className="flex items-center justify-center">
+                                  <div className="flex items-center border border-gray-200 rounded-lg w-28 px-1 py-1">
+                                    <button
+                                      onClick={() => updateQty(fav.id, -1)}
+                                      className="p-1 text-gray-500 hover:text-primary"
+                                    >
+                                      <Minus size={14} />
+                                    </button>
+                                    <span className="flex-1 text-center font-bold text-sm">
+                                      {String(currentQty).padStart(2, "0")}
+                                    </span>
+                                    <button
+                                      onClick={() => updateQty(fav.id, 1)}
+                                      className="p-1 text-gray-500 hover:text-primary"
+                                    >
+                                      <Plus size={14} />
+                                    </button>
+                                  </div>
+                                </div>
+                              </td>
+
+                              {/* Price */}
+                              <td className="py-2 text-center">
+                                <span className="font-bold text-primary text-base">
+                                  ৳
+                                  {price > 0
+                                    ? (price * currentQty).toLocaleString()
+                                    : "0"}
+                                </span>
+                              </td>
+
+                              {/* Add to Cart */}
+                              <td className="py-2">
+                                <data className="flex items-center justify-center">
+                                  <button
+                                    onClick={() =>
+                                      handleAddToCart(
+                                        fav.product_id,
+                                        currentQty,
+                                      )
+                                    }
+                                    disabled={isAddingToCart}
+                                    className="flex items-center justify-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-opacity-90 transition-all w-full md:w-auto disabled:opacity-60"
+                                  >
+                                    <ShoppingCart size={14} />
+                                    Add to Cart
+                                  </button>
+                                </data>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              </>
+            )}
+          </div>
+        </section>
+      </CommonWrapper>
+
+      <WebFutures />
+
+      <CommonWrapper>
+        <div className="py-12">
+          <BlogTitle
+            title="Our Latest Blog"
+            description="Stay updated with our newest arrivals and tech tips."
+            btnText="Read All"
+            btnLink="/blogs"
+          />
+          <BlogCard limit={3} />
+        </div>
+      </CommonWrapper>
+    </>
+  );
 }

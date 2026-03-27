@@ -1,20 +1,15 @@
-
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
 
-// import NavbarTop from "@/components/section/NavbarTop";
+import NavbarTop from "@/components/section/NavbarTop";
 import Navbar from "@/components/section/Navbar";
 import Manubar from "@/components/section/Manubar";
 import NavbarCategory from "@/components/section/NavbarCategory";
 import Footer from "@/components/section/Footer";
+import { AuthProvider } from "@/Provider/AuthProvider";
+import QueryProvider from "@/Provider/QueryProvider";
 
-import "./globals.css"; 
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-dm-sans",
-});
+import "./globals.css";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   title: "Techsoi BD",
@@ -28,19 +23,25 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={dmSans.className}>
-        
-        {/* Global Navbar */}
-        {/* <NavbarTop /> */}
-        <Navbar />
-        <Manubar />
-        <NavbarCategory />
-
-        {/* Page Content */}
-        <main>{children}</main>
-
-        {/* Global Footer */}
-        <Footer />
+      <body suppressHydrationWarning>
+        <QueryProvider>
+          <AuthProvider>
+            {/* Global Navbar */}
+            <NavbarTop />
+            <Navbar />
+            <Manubar />
+            <NavbarCategory />
+            {/* Page Content */}
+            <main>{children}</main>
+            {/* Global Footer */}
+            <Footer />
+            <ToastContainer
+              position="top-center"
+              autoClose={2000}
+              hideProgressBar={false}
+            />{" "}
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

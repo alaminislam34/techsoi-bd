@@ -1,7 +1,12 @@
+"use client";
+
 import CommonWrapper from "@/components/layout/CommonWrapper";
+import axios from "axios";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Footer() {
+  const [info, setInfo] = useState({});
   const quickLinks = [
     { to: "/", label: "Home" },
     { to: "/about-us", label: "About Us" },
@@ -16,8 +21,21 @@ export default function Footer() {
     { to: "/casing", label: "Casing" },
   ];
 
+  useEffect(() => {
+    const fetch = async () => {
+      const res = await axios.get("https://api.techsoibd.com/api/website-info");
+      if (res.data) {
+        setInfo(res.data.data);
+      } else {
+        setInfo(null);
+      }
+    };
+
+    fetch();
+  }, []);
+
   return (
-    <footer className="bg-[#eaf7fc] mt-12 md:mt-[120px]">
+    <footer className="bg-[#eaf7fc] mt-12 md:mt-30">
       <CommonWrapper>
         <div className="w-full flex flex-col md:flex-row justify-between items-center py-6 gap-4">
           <p className="text-sm md:text-base text-center md:text-left text-[#808080]">
@@ -38,9 +56,8 @@ export default function Footer() {
                   viewBox="0 0 185 40"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-40 md:w-[185px] h-auto"
+                  className="w-40 md:w-46.25 h-auto"
                 >
-                  {/* ... SVG Paths remain exactly the same ... */}
                   <path
                     d="M77.9891 0.273926H84.6235V11.3036C86.1527 8.94812 88.116 6.80388 91.479 6.80388C96.5009 6.80388 99.4277 10.7783 99.4277 17.2125V35.3606H92.7894V19.7226C92.7894 15.9576 91.3039 14.0213 88.7729 14.0213C86.2422 14.0213 84.6235 15.9579 84.6235 19.7226V35.3606H77.9891V0.273926Z"
                     fill="#231F20"
@@ -96,32 +113,9 @@ export default function Footer() {
 
             <div className="flex flex-col gap-4">
               <Link
-                href={"mailto:hellotechsoi@gmail.com"}
+                href={`mailto:${info?.email || "technologiestechsoi@gmail.com"}`}
                 className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-              >
-                <svg
-                  width={24}
-                  height={24}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  className="w-5 h-5 text-[#2CACE2]"
-                >
-                  <path
-                    d="M3.77762 11.9424C2.8296 10.2893 2.37185 8.93948 2.09584 7.57121C1.68762 5.54758 2.62181 3.57081 4.16938 2.30947C4.82345 1.77638 5.57323 1.95852 5.96 2.6524L6.83318 4.21891C7.52529 5.46057 7.87134 6.08139 7.8027 6.73959C7.73407 7.39779 7.26737 7.93386 6.33397 9.00601L3.77762 11.9424ZM3.77762 11.9424C5.69651 15.2883 8.70784 18.3013 12.0576 20.2224M12.0576 20.2224C13.7107 21.1704 15.0605 21.6282 16.4288 21.9042C18.4524 22.3124 20.4292 21.3782 21.6905 19.8306C22.2236 19.1766 22.0415 18.4268 21.3476 18.04L19.7811 17.1668C18.5394 16.4747 17.9186 16.1287 17.2604 16.1973C16.6022 16.2659 16.0661 16.7326 14.994 17.666L12.0576 20.2224Z"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <p className="text-base md:text-lg text-[#303030]">
-                  hellotechsoi@gmail.com
-                </p>
-              </Link>
-              <Link
-                href={"tel:+8880000000000"}
-                className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-              >
-                <svg
+              > <svg
                   width={24}
                   height={24}
                   viewBox="0 0 24 24"
@@ -141,8 +135,31 @@ export default function Footer() {
                     strokeLinejoin="round"
                   />
                 </svg>
+               
                 <p className="text-base md:text-lg text-[#303030]">
-                  +888 0000 000 000
+                  {info?.email || "technologiestechsoi@gmail.com"}
+                </p>
+              </Link>
+              <Link
+                href={`tel:${info?.phone || "+880 1672-224906"}`}
+                className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+              >
+                <svg
+                  width={24}
+                  height={24}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className="w-5 h-5 text-[#2CACE2]"
+                >
+                  <path
+                    d="M3.77762 11.9424C2.8296 10.2893 2.37185 8.93948 2.09584 7.57121C1.68762 5.54758 2.62181 3.57081 4.16938 2.30947C4.82345 1.77638 5.57323 1.95852 5.96 2.6524L6.83318 4.21891C7.52529 5.46057 7.87134 6.08139 7.8027 6.73959C7.73407 7.39779 7.26737 7.93386 6.33397 9.00601L3.77762 11.9424ZM3.77762 11.9424C5.69651 15.2883 8.70784 18.3013 12.0576 20.2224M12.0576 20.2224C13.7107 21.1704 15.0605 21.6282 16.4288 21.9042C18.4524 22.3124 20.4292 21.3782 21.6905 19.8306C22.2236 19.1766 22.0415 18.4268 21.3476 18.04L19.7811 17.1668C18.5394 16.4747 17.9186 16.1287 17.2604 16.1973C16.6022 16.2659 16.0661 16.7326 14.994 17.666L12.0576 20.2224Z"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <p className="text-base md:text-lg text-[#303030]">
+                  {info?.phone || "+880 1672-224906"}
                 </p>
               </Link>
               <div className="flex items-start gap-3">
@@ -165,7 +182,7 @@ export default function Footer() {
                   />
                 </svg>
                 <p className="text-base md:text-lg text-[#303030]">
-                  Mohakhali, Amtoli, Dhaka, Bangladesh.
+                  {info?.address || "Mohakhali, Amtoli, Dhaka, Bangladesh."}
                 </p>
               </div>
             </div>
@@ -210,9 +227,9 @@ export default function Footer() {
               <p className="text-lg md:text-2xl font-semibold text-[#303030]">
                 Follow us
               </p>
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col items-start gap-4">
                 <Link
-                  href={"#"}
+                  href={info?.facebook_link || "#"}
                   className="flex items-center gap-2 hover:text-[#2CACE2] transition-colors"
                 >
                   <svg
@@ -233,10 +250,10 @@ export default function Footer() {
                       fill="currentColor"
                     />
                   </svg>
-                  <span className="text-sm md:text-lg">Facebook</span>
+                  <span className="text-sm md:text-lg pb-1.5">Facebook</span>
                 </Link>
                 <Link
-                  href={"#"}
+                  href={info?.instagram_link || "#"}
                   className="flex items-center gap-2 hover:text-[#2CACE2] transition-colors"
                 >
                   <svg
@@ -265,7 +282,58 @@ export default function Footer() {
                       strokeLinejoin="round"
                     />
                   </svg>
-                  <span className="text-sm md:text-lg">Instagram</span>
+                  <span className="text-sm md:text-lg pb-1.5">Instagram</span>
+                </Link>
+                <Link
+                  href={info?.tiktok_link || "#"}
+                  className="flex items-center gap-2 hover:text-[#2CACE2] transition-colors"
+                >
+                  <svg
+                    width={24}
+                    height={24}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    className="w-6 h-6 ml-0.5"
+                  >
+                    <path
+                      d="M0.75 10.25C0.75 5.77166 0.75 3.53249 2.14124 2.14124C3.53249 0.75 5.77166 0.75 10.25 0.75C14.7283 0.75 16.9675 0.75 18.3588 2.14124C19.75 3.53249 19.75 5.77166 19.75 10.25C19.75 14.7283 19.75 16.9675 18.3588 18.3588C16.9675 19.75 14.7283 19.75 10.25 19.75C5.77166 19.75 3.53249 19.75 2.14124 18.3588C0.75 16.9675 0.75 14.7283 0.75 10.25Z"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M8.6438 10.0279C9.05384 10.0865 9.43379 9.80168 9.49244 9.39164C9.5511 8.9816 9.26624 8.60165 8.8562 8.543L8.75 9.28544L8.6438 10.0279ZM15.75 8.5C16.1642 8.5 16.5 8.16421 16.5 7.75C16.5 7.33579 16.1642 7 15.75 7V7.75V8.5ZM12.5 4.25C12.5 3.83579 12.1642 3.5 11.75 3.5C11.3358 3.5 11 3.83579 11 4.25H11.75H12.5ZM11.75 12.75H11C11 14.2688 9.76878 15.5 8.25 15.5V16.25V17C10.5972 17 12.5 15.0972 12.5 12.75H11.75ZM8.25 16.25V15.5C6.73122 15.5 5.5 14.2688 5.5 12.75H4.75H4C4 15.0972 5.90279 17 8.25 17V16.25ZM4.75 12.75H5.5C5.5 11.2312 6.73122 10 8.25 10V9.25V8.5C5.90279 8.5 4 10.4028 4 12.75H4.75ZM8.25 9.25V10C8.38412 10 8.51557 10.0095 8.6438 10.0279L8.75 9.28544L8.8562 8.543C8.65783 8.51463 8.4554 8.5 8.25 8.5V9.25ZM15.75 7.75V7C14.9754 7 14.1424 6.6808 13.5059 6.14923C12.87 5.61819 12.5 4.93835 12.5 4.25H11.75H11C11 5.49465 11.6635 6.56481 12.5444 7.30052C13.4246 8.0357 14.5916 8.5 15.75 8.5V7.75ZM11.75 4.25H11V12.75H11.75H12.5V4.25H11.75Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+
+                  <span className="text-sm md:text-lg pb-1.5">Tiktok</span>
+                </Link>
+                <Link
+                  href={`${info.youtube_link || "https://www.youtube.com/@techsoitechnologies3169"}`}
+                  className="flex items-center gap-2 hover:text-[#2CACE2] transition-colors"
+                >
+                  <svg
+                    width={24}
+                    height={24}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    className="w-6 h-6 ml-0.5"
+                  >
+                    <path
+                      d="M10.75 17.75C12.5597 17.75 14.2951 17.5712 15.9034 17.2434C17.9123 16.8339 18.9168 16.6291 19.8334 15.4506C20.75 14.2721 20.75 12.9193 20.75 10.2135V8.28645C20.75 5.58073 20.75 4.22787 19.8334 3.04937C18.9168 1.87088 17.9123 1.66613 15.9034 1.25662C14.2951 0.928774 12.5597 0.75 10.75 0.75C8.94031 0.75 7.20489 0.928774 5.59656 1.25662C3.58766 1.66613 2.58321 1.87088 1.6666 3.04937C0.75 4.22787 0.75 5.58073 0.75 8.28645V10.2135C0.75 12.9193 0.75 14.2721 1.6666 15.4506C2.58321 16.6291 3.58766 16.8339 5.59656 17.2434C7.20489 17.5712 8.94031 17.75 10.75 17.75Z"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                    />
+                    <path
+                      d="M14.7121 9.56288C14.5637 10.1687 13.7741 10.6038 12.1949 11.4741C10.4772 12.4205 9.61844 12.8938 8.9228 12.7115C8.6872 12.6497 8.4702 12.5411 8.28799 12.3938C7.75 11.9589 7.75 11.0559 7.75 9.25C7.75 7.44408 7.75 6.54112 8.28799 6.10618C8.4702 5.95886 8.6872 5.85029 8.9228 5.78854C9.61844 5.60621 10.4772 6.07945 12.1949 7.02593C13.7741 7.89616 14.5637 8.33128 14.7121 8.93712C14.7626 9.14326 14.7626 9.35674 14.7121 9.56288Z"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+
+                  <span className="text-sm md:text-lg pb-1.5">Youtube</span>
                 </Link>
               </div>
             </div>
@@ -274,7 +342,7 @@ export default function Footer() {
 
         <div className="flex justify-center md:justify-end items-center w-full py-6 border-t border-[#bee5f6]">
           <p className="text-xs md:text-base text-[#808080]">
-            Build by Mr. Jhon &amp; Mr. Don
+            Build by techsoibd.com
           </p>
         </div>
       </CommonWrapper>

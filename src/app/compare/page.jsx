@@ -1,128 +1,141 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import CommonWrapper from "@/components/layout/CommonWrapper";
-import { Download, Plus } from "lucide-react";
-import Image from "next/image";
-
-// Reusable Product Card Component
-const ProductCard = ({ title, product, onAdd }) => {
-  const specs = [
-    { label: "Height", value: "38.6mm" },
-    { label: "Material", value: "Stainless Stee" },
-    { label: "Case", value: "40g" },
-    {
-      label: "Color",
-      value: "blue, gray, green, light blue, lime, purple, red, yellow",
-    },
-    { label: "Depth", value: "10.5mm" },
-    { label: "Width", value: "38.6mm" },
-    { label: "Size", value: "Large, Medium, Small" },
-  ];
-
-  return (
-    <div className="border border-primary/20 bg-white shadow-sm rounded-2xl p-6 h-full transition-all">
-      {/* Header */}
-      <h2 className="mb-6 text-xl text-primary py-3 border-b border-primary/20 font-bold">
-        {title}
-      </h2>
-
-      {!product ? (
-        /* Empty State: Plus Icon Placeholder */
-        <div
-          onClick={onAdd}
-          className="flex flex-col items-center justify-center min-h-[400px] border-2 border-dashed border-gray-200 rounded-2xl cursor-pointer hover:border-primary/50 hover:bg-primary/5 group transition-all"
-        >
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-            <Plus size={32} className="text-gray-400 group-hover:text-white" />
-          </div>
-          <p className="mt-4 text-gray-500 font-medium group-hover:text-primary">
-            Add Product to Compare
-          </p>
-        </div>
-      ) : (
-        /* Product Selected State */
-        <div className="animate-in fade-in duration-500">
-          <div className="relative w-full mb-6 shadow-md rounded-xl overflow-hidden">
-            <Image
-              src="https://cdn.shopify.com/s/files/1/0630/5362/7541/files/94C17AA_1_ea18903a-85f6-46cb-bd5d-ed8c922aaaf3.jpg?v=1756737831"
-              alt="Product"
-              height={500}
-              width={500}
-              className="aspect-video object-contain p-4 w-full"
-            />
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold text-gray-800">
-              A donut dressed up as a Smart Assistant
-            </h3>
-            <p className="text-sm text-gray-500 leading-relaxed">
-              There are many variations of passages of Lorem Ipsum available,
-              but the majority have suffered alteration in some form.
-            </p>
-          </div>
-
-          <div className="mt-8">
-            <div className="flex justify-between items-center border-b border-primary/20 pb-2 mb-4">
-              <span className="text-lg font-bold text-gray-700">
-                Specification
-              </span>
-              <span className="text-lg font-bold text-primary">৳36000</span>
-            </div>
-
-            <div className="divide-y divide-gray-100">
-              {specs.map((spec, index) => (
-                <div key={index} className="grid grid-cols-3 py-4 text-sm">
-                  <span className="text-gray-500 font-medium">
-                    {spec.label}
-                  </span>
-                  <span className="col-span-2 text-gray-700">{spec.value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
+import CompareProductCard from "@/components/productsComponent/CompareProductCard";
+import ProductSelectionModal from "@/components/productsComponent/ProductSelectionModal";
+import ComparisonTable from "@/components/productsComponent/ComparisonTable";
+import DownloadButton from "@/components/productsComponent/DownloadButton";
+import { useGetAllProducts } from "@/api/hooks/useProducts";
+import { toast } from "react-toastify";
 
 const CompareProduct = () => {
-  // State to track if products are selected for Slot 1 and Slot 2
   const [product1, setProduct1] = useState(null);
   const [product2, setProduct2] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalSlot, setModalSlot] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showAll, setShowAll] = useState(false);
 
-  // Function to simulate adding a product (You can replace this with a Modal trigger)
-  const handleAddProduct = (slot) => {
-    if (slot === 1) setProduct1({ id: 1, name: "Sample Mouse" });
-    else setProduct2({ id: 2, name: "Sample Mouse" });
+  const { data: allProductsResp, isLoading: allLoading } = useGetAllProducts();
+  const allProducts = allProductsResp?.data || [];
+
+  const openAddModal = (slot) => {
+    setModalSlot(slot);
+    setIsModalOpen(true);
+    setSearchQuery("");
+    setShowAll(false);
   };
+
+  const addProductToSlot = (product, slot) => {
+    if (slot === 1) setProduct1(product);
+    else setProduct2(product);
+    setIsModalOpen(false);
+    toast.success("Product added to compare!");
+  };
+
+  const removeFromSlot = (slot) => {
+    if (slot === 1) setProduct1(null);
+    else setProduct2(null);
+    toast.info("Product removed");
+  };
+
+  useEffect(() => {
+    if (!isModalOpen) return;
+
+    const onKey = (e) => {
+      if (e.key === "Escape") setIsModalOpen(false);
+    };
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", onKey);
+
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isModalOpen]);
+
+  const filteredProducts = useMemo(() => {
+    let list = Array.isArray(allProducts) ? allProducts.slice() : [];
+
+    if (!showAll) {
+      if (modalSlot === 1 && product2) {
+        list = list.filter(
+          (p) => p.category_id === product2.category_id && p.id !== product2.id,
+        );
+      } else if (modalSlot === 2 && product1) {
+        list = list.filter(
+          (p) => p.category_id === product1.category_id && p.id !== product1.id,
+        );
+      }
+    }
+
+    if (searchQuery && searchQuery.trim().length) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter((p) => (p.name || "").toLowerCase().includes(q));
+    }
+
+    return list;
+  }, [allProducts, modalSlot, product1, product2, searchQuery, showAll]);
 
   return (
     <CommonWrapper>
-      <div className="py-10 bg-gray-50/30">
-        <div className="max-w-7xl mx-auto px-4">
-          {/* Top Actions */}
-          <div className="flex items-center justify-end py-4">
-            <button className="px-5 py-2.5 font-semibold bg-white text-primary border border-primary/30 rounded-xl hover:bg-primary hover:text-white transition-all flex items-center gap-2 shadow-sm">
-              <Download size={20} /> Download
-            </button>
+      <div className="py-12 min-h-screen">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header Section */}
+          <div className="mb-12">
+            <div className="text-center mb-10">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Compare Products
+              </h1>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Select and compare up to 2 products side by side to make the
+                best purchase decision
+              </p>
+            </div>
+
+            {/* Download Button */}
+            <DownloadButton product1={product1} product2={product2} />
           </div>
 
-          {/* Grid Layout */}
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 items-start">
-            <ProductCard
-              title="Choose Product"
+          {/* Product Cards Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <CompareProductCard
+              title="Product 1"
               product={product1}
-              onAdd={() => handleAddProduct(1)}
+              onAdd={() => openAddModal(1)}
+              onRemove={() => removeFromSlot(1)}
+              slot={1}
             />
-            <ProductCard
-              title="Compare Product"
+            <CompareProductCard
+              title="Product 2"
               product={product2}
-              onAdd={() => handleAddProduct(2)}
+              onAdd={() => openAddModal(2)}
+              onRemove={() => removeFromSlot(2)}
+              slot={2}
             />
           </div>
+
+          {/* Comparison Table */}
+          <ComparisonTable product1={product1} product2={product2} />
+
+          {/* Product Selection Modal */}
+          <ProductSelectionModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            filteredProducts={filteredProducts}
+            allLoading={allLoading}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            showAll={showAll}
+            onToggleShowAll={() => setShowAll(!showAll)}
+            onSelectProduct={(product) => addProductToSlot(product, modalSlot)}
+            modalSlot={modalSlot}
+            product1={product1}
+            product2={product2}
+          />
         </div>
       </div>
     </CommonWrapper>

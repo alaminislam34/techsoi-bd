@@ -25,13 +25,13 @@ export default function Manubar() {
       {/* ===== DESKTOP MENU ===== */}
       <div className="bg-primary hidden lg:block">
         <CommonWrapper>
-          <div className="flex justify-between items-center py-4">
+          <div className="flex justify-between items-center py-2">
             <div className="flex gap-10">
               {navLinks.map((link) => (
                 <Link
                   href={link.to}
                   key={link.to}
-                  className={`text-lg text-white ${
+                  className={`text-lg text-white duration-300 drop-shadow-md ${
                     parthName === link.to ? "font-medium" : "hover:font-medium"
                   }`}
                 >
@@ -42,19 +42,19 @@ export default function Manubar() {
             <div className="flex flex-row gap-2">
               <Link
                 href={"/compare"}
-                className="sm:px-4 px-3 cursor-pointer text-sm md:text-base truncate py-2 rounded-lg text-white border border-white"
+                className="sm:px-4 px-3 cursor-pointer text-sm truncate py-2 rounded-lg bg-black text-[#D0FF00] border-2 border-[#D0FF00] "
               >
                 Compare
               </Link>
               <Link
                 href={"/pcbuilder"}
-                className="sm:px-4 px-3 cursor-pointer py-2 text-sm md:text-base truncate rounded-lg text-white border border-white"
+                className="sm:px-4 px-3 cursor-pointer py-2 text-sm truncate rounded-lg bg-black text-[#D0FF00] border-2 border-[#D0FF00] "
               >
                 PC Builder
               </Link>
               <button
                 onClick={() => setIsContactOpen(true)}
-                className="sm:px-4 px-3 cursor-pointer text-sm md:text-base truncate py-2 rounded-lg bg-white text-[#505050]"
+                className="sm:px-4 px-3 cursor-pointer text-sm truncate py-2 rounded-lg bg-white text-[#505050]"
               >
                 Contact Us
               </button>
