@@ -6,7 +6,6 @@ import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import axios from "axios";
 import { API_ENDPOINTS } from "@/api/ApiEndPoint";
-import { toast } from "react-toastify"; // optional - for nice error messages
 
 export default function NavbarCategory() {
   const [allCategories, setAllCategories] = useState([]);
@@ -36,7 +35,6 @@ export default function NavbarCategory() {
       } catch (err) {
         console.error("Error fetching categories:", err);
         setFetchError("Failed to load categories");
-        toast.error("Failed to load categories. Please try again later.");
       } finally {
         setIsLoading(false);
       }
@@ -53,7 +51,6 @@ export default function NavbarCategory() {
     }
   };
 
-  // Handle main category click → redirect to products with category filter
   const handleMainCategoryClick = (e, category) => {
     e.preventDefault(); // prevent default link behavior
     router.push(`/products?category=${category.id}`);
