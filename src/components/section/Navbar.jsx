@@ -11,6 +11,7 @@ import { useSearchProducts } from "@/api/hooks";
 import Image from "next/image";
 import axios from "axios";
 import { MdWhatsapp } from "react-icons/md";
+import { toast } from "react-toastify";
 
 export default function Navbar() {
   const [openDropdown, setOpenDropdown] = useState(false);
@@ -32,9 +33,21 @@ export default function Navbar() {
     try {
       const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
       const appUrl = process.env.NEXT_PUBLIC_APP_URL;
-      if (!clientId || !appUrl) {
-        console.error("Google Login environment variables missing!");
-        toast.error("Google login is not configured properly.");
+      const missingVars = [];
+
+      if (!clientId) {
+        missingVars.push("NEXT_PUBLIC_GOOGLE_CLIENT_ID");
+      }
+
+      if (!appUrl) {
+        missingVars.push("NEXT_PUBLIC_APP_URL");
+      }
+
+      if (missingVars.length > 0) {
+        toast.error(
+          `Google login is not configured. Missing: ${missingVars.join(", ")}. Please set these values in your environment file and restart the app.`,
+          { autoClose: 7000 },
+        );
         return;
       }
 
