@@ -398,19 +398,16 @@ export default function Navbar() {
           <span className="text-[10px] text-gray-600">Orders</span>
         </Link>
       </div>
-
-      {/* WhatsApp Floating Button */}
-      {websiteInfo?.whatsapp_link && (
-        <div className="fixed z-50 bottom-20 lg:bottom-8 lg:right-8 right-4">
-          <a
-            href={websiteInfo.whatsapp_link}
-            target="_blank"
-            className="flex p-3 rounded-full bg-[#25D366] text-white shadow-xl hover:scale-110 transition-transform"
-          >
-            <MdWhatsapp className="text-2xl lg:text-3xl" />
-          </a>
-        </div>
-      )}
+      <div className="fixed z-50 bottom-20 md:bottom-8 lg:right-8 right-4">
+        <a
+          href="https://wa.me/8801672224906"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex p-2 lg:p-3 text-2xl lg:text-3xl rounded-full bg-[#25D366] text-white shadow-xl hover:scale-110 transition-transform duration-300"
+        >
+          <MdWhatsapp />
+        </a>
+      </div>
     </>
   );
 }

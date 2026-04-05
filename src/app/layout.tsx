@@ -7,9 +7,8 @@ import NavbarCategory from "@/components/section/NavbarCategory";
 import Footer from "@/components/section/Footer";
 import { AuthProvider } from "@/Provider/AuthProvider";
 import QueryProvider from "@/Provider/QueryProvider";
-
-import "./globals.css";
 import { ToastContainer } from "react-toastify";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Techsoi BD",
